@@ -1,0 +1,7 @@
+{
+  "name": "گیشو | سامانه رزرواسیون و فروش آنلاین بلیت",
+  "description": "سامانه مدرن رزرواسیون و فروش آنلاین بلیت رویدادها، کنسرت‌ها، تئاتر و سالن‌ها با پلان تعاملی صندلی، درگاه بانکی و گیت اعتبارسنجی بلیت",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
