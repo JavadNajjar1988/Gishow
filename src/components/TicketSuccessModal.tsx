@@ -95,7 +95,7 @@ export const TicketSuccessModal: React.FC<TicketSuccessModalProps> = ({
               <div className="flex items-start justify-between gap-4">
                 <div className="space-y-1 text-right">
                   <span className="text-[11px] font-bold text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded border border-amber-200">
-                    بلیت رسمی سامانه گیشو (Gishow)
+                    بلیت رسمی سامانه لیندو تیکت (LinduTicket)
                   </span>
                   <h3 className="text-lg sm:text-2xl font-black text-slate-950 pt-1">
                     {factor.event.title}

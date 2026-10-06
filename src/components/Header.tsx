@@ -1,5 +1,5 @@
 import React from 'react';
-import { Ticket, ShieldCheck, LayoutDashboard, Search, Sparkles, Sun, Moon } from 'lucide-react';
+import { Ticket, ShieldCheck, LayoutDashboard, Search, Sparkles, Sun, Moon, Store, Crown } from 'lucide-react';
 import { ActiveAppMode } from '../types';
 
 interface HeaderProps {
@@ -45,17 +45,17 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
               <div>
                 <span className={`text-xl font-black tracking-tight flex items-center gap-1.5 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                  گیشو
+                  لیندو تیکت
                   <span className={`text-[11px] font-semibold px-1.5 py-0.5 rounded border ${
                     isDark 
                       ? 'text-amber-400 bg-amber-400/10 border-amber-400/20' 
                       : 'text-amber-700 bg-amber-50 border-amber-200'
                   }`}>
-                    Gishow
+                    LinduTicket
                   </span>
                 </span>
                 <p className={`text-[10px] hidden sm:block font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                  سامانه فروش آنلاین بلیت و رزرواسیون سالن
+                  سامانه هوشمند فروش آنلاین بلیت و رزرواسیون سالن
                 </p>
               </div>
             </button>
@@ -112,6 +112,19 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
 
               <button
+                onClick={() => onModeChange('box-office')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+                  activeMode === 'box-office'
+                    ? 'bg-emerald-600 text-white font-bold shadow-xs'
+                    : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-950'
+                }`}
+                title="گیشه مجازی و صدور بلیت حضوری / کارتخوان POS"
+              >
+                <Store className="w-3.5 h-3.5" />
+                <span>گیشه مجازی</span>
+              </button>
+
+              <button
                 onClick={() => onModeChange('checker')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
                   activeMode === 'checker'
@@ -125,13 +138,26 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
 
               <button
+                onClick={() => onModeChange('producer')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
+                  activeMode === 'producer'
+                    ? 'bg-amber-500 text-slate-950 font-black shadow-xs'
+                    : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-950'
+                }`}
+                title="کنسول اختصاصی تهیه‌کننده و مدیر برنامه (LinduProducer Hub)"
+              >
+                <Crown className="w-3.5 h-3.5" />
+                <span>پنل تهیه‌کننده</span>
+              </button>
+
+              <button
                 onClick={() => onModeChange('admin')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
                   activeMode === 'admin'
                     ? 'bg-indigo-600 text-white font-bold shadow-xs'
                     : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-950'
                 }`}
-                title="پنل مدیریت و تهیه‌کننده (AdminSite)"
+                title="پنل مدیریت کل سامانه (AdminSite)"
               >
                 <LayoutDashboard className="w-3.5 h-3.5" />
                 <span>مدیریت</span>

@@ -13,11 +13,14 @@ import { CheckoutModal } from './components/CheckoutModal';
 import { TicketSuccessModal } from './components/TicketSuccessModal';
 import { TicketChecker } from './components/TicketChecker';
 import { AdminDashboard } from './components/AdminDashboard';
+import { ProducerDashboard } from './components/ProducerDashboard';
+import { VirtualBoxOffice } from './components/VirtualBoxOffice';
 import { Footer } from './components/Footer';
 import { InfoModal } from './components/InfoModal';
 
-import { MOCK_EVENTS, MOCK_SALONS, INITIAL_FACTORS } from './data/mockData';
-import { ActiveAppMode, EventItem, RunTurn, Salon, Seat, FactorItem, TicketScanCheckResult } from './types';
+import { MOCK_EVENTS, MOCK_SALONS, INITIAL_FACTORS, MOCK_DISCOUNT_CODES } from './data/mockData';
+import { ActiveAppMode, EventItem, RunTurn, Salon, Seat, FactorItem, TicketScanCheckResult, DiscountCode } from './types';
+import { toPersianDigits } from './utils/formatters';
 
 export default function App() {
   // Theme state: defaults to 'light' per user's request
@@ -48,11 +51,26 @@ export default function App() {
   const [events, setEvents] = useState<EventItem[]>(MOCK_EVENTS);
   const [salons, setSalons] = useState<Salon[]>(MOCK_SALONS);
   const [factors, setFactors] = useState<FactorItem[]>(INITIAL_FACTORS);
+  const [discountCodes, setDiscountCodes] = useState<DiscountCode[]>(MOCK_DISCOUNT_CODES);
 
   // Filters
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedCity, setSelectedCity] = useState('همه شهرها');
+  const [soldOutFilter, setSoldOutFilter] = useState<'all' | 'available' | 'sold_out'>('all');
+
+  // Discount Codes Actions
+  const handleAddDiscountCode = (newCode: DiscountCode) => {
+    setDiscountCodes((prev) => [newCode, ...prev]);
+  };
+
+  const handleUpdateDiscountCode = (updated: DiscountCode) => {
+    setDiscountCodes((prev) => prev.map((d) => (d.code === updated.code ? updated : d)));
+  };
+
+  const handleDeleteDiscountCode = (codeStr: string) => {
+    setDiscountCodes((prev) => prev.filter((d) => d.code !== codeStr));
+  };
 
   // Modal States
   const [eventForDetails, setEventForDetails] = useState<EventItem | null>(null);
@@ -94,6 +112,8 @@ export default function App() {
   // Filtered Events
   const filteredEvents = useMemo(() => {
     return events.filter((e) => {
+      const isSoldOut = !!e.isSoldOut || (e.runTurns?.length > 0 && e.runTurns.every((t) => t.isSoldOut || t.availableSeatsCount === 0));
+
       const matchSearch = searchQuery.trim() === '' || 
         e.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         e.salonName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -102,9 +122,13 @@ export default function App() {
       const matchCategory = selectedCategory === 'all' || e.category === selectedCategory;
       const matchCity = selectedCity === 'همه شهرها' || e.city === selectedCity;
 
-      return matchSearch && matchCategory && matchCity;
+      const matchSoldOut = soldOutFilter === 'all' ||
+        (soldOutFilter === 'available' && !isSoldOut) ||
+        (soldOutFilter === 'sold_out' && isSoldOut);
+
+      return matchSearch && matchCategory && matchCity && matchSoldOut;
     });
-  }, [events, searchQuery, selectedCategory, selectedCity]);
+  }, [events, searchQuery, selectedCategory, selectedCity, soldOutFilter]);
 
   // Featured Event for Hero Banner
   const featuredEvent = useMemo(() => {
@@ -234,14 +258,55 @@ export default function App() {
             {/* Event Cards Grid */}
             <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
                 <div>
                   <h2 className={`text-xl sm:text-2xl font-black ${isDark ? 'text-white' : 'text-slate-950'}`}>
                     برنامه‌ها و رویدادهای در حال فروش
                   </h2>
                   <p className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                    {filteredEvents.length} رویداد فعال در شهرهای مشهد و تهران
+                    {toPersianDigits(filteredEvents.length)} رویداد در دسته‌بندی انتخابی
                   </p>
+                </div>
+
+                {/* Sold Out & Availability Filter */}
+                <div className={`flex items-center gap-1 p-1 rounded-2xl border text-xs ${
+                  isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-2xs'
+                }`}>
+                  <button
+                    onClick={() => setSoldOutFilter('all')}
+                    className={`px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer ${
+                      soldOutFilter === 'all'
+                        ? isDark ? 'bg-slate-800 text-white' : 'bg-slate-900 text-white'
+                        : 'text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    همه رویدادها ({toPersianDigits(events.length)})
+                  </button>
+
+                  <button
+                    onClick={() => setSoldOutFilter('available')}
+                    className={`px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer ${
+                      soldOutFilter === 'available'
+                        ? 'bg-emerald-600 text-white shadow-xs'
+                        : 'text-slate-400 hover:text-emerald-400'
+                    }`}
+                  >
+                    دارای بلیت ({toPersianDigits(events.filter((e) => !e.isSoldOut && !(e.runTurns?.length > 0 && e.runTurns.every((t) => t.isSoldOut || t.availableSeatsCount === 0))).length)})
+                  </button>
+
+                  <button
+                    onClick={() => setSoldOutFilter('sold_out')}
+                    className={`px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                      soldOutFilter === 'sold_out'
+                        ? 'bg-rose-600 text-white shadow-xs'
+                        : 'text-slate-400 hover:text-rose-400'
+                    }`}
+                  >
+                    <span>سولد اوت (تکمیل ظرفیت)</span>
+                    <span className="text-[10px] bg-rose-500/20 text-rose-300 px-1 rounded font-mono">
+                      {toPersianDigits(events.filter((e) => e.isSoldOut || (e.runTurns?.length > 0 && e.runTurns.every((t) => t.isSoldOut || t.availableSeatsCount === 0))).length)}
+                    </span>
+                  </button>
                 </div>
               </div>
 
@@ -269,7 +334,20 @@ export default function App() {
           </div>
         )}
 
-        {/* MODE 2: TICKET CHECKER GATE (checker.gishow.ir) */}
+        {/* MODE 2: VIRTUAL BOX OFFICE (گیشه مجازی و صدور بلیت حضوری / POS) */}
+        {activeMode === 'box-office' && (
+          <VirtualBoxOffice
+            theme={theme}
+            events={events}
+            salons={salons}
+            onBackToPortal={() => setActiveMode('portal')}
+            onIssueTicket={(newFactor) => {
+              setFactors((prev) => [newFactor, ...prev]);
+            }}
+          />
+        )}
+
+        {/* MODE 3: TICKET CHECKER GATE (checker.gishow.ir) */}
         {activeMode === 'checker' && (
           <TicketChecker
             theme={theme}
@@ -280,19 +358,46 @@ export default function App() {
           />
         )}
 
-        {/* MODE 3: ADMIN & PRODUCER DASHBOARD (AdminSite) */}
+        {/* MODE 4: DEDICATED PRODUCER CONSOLE (کنسول تهیه‌کننده و مدیر برنامه) */}
+        {activeMode === 'producer' && (
+          <ProducerDashboard
+            theme={theme}
+            events={events}
+            salons={salons}
+            factors={factors}
+            discountCodes={discountCodes}
+            onAddDiscountCode={handleAddDiscountCode}
+            onUpdateDiscountCode={handleUpdateDiscountCode}
+            onDeleteDiscountCode={handleDeleteDiscountCode}
+            onBackToPortal={() => setActiveMode('portal')}
+            onUpdateEvent={(updated) => setEvents((prev) => prev.map((e) => (e.id === updated.id ? updated : e)))}
+            onIssueComplimentaryTicket={(newFactor) => {
+              setFactors((prev) => [newFactor, ...prev]);
+            }}
+          />
+        )}
+
+        {/* MODE 5: ADMIN DASHBOARD (AdminSite) */}
         {activeMode === 'admin' && (
           <AdminDashboard
             theme={theme}
             events={events}
             factors={factors}
             salons={salons}
+            discountCodes={discountCodes}
+            onAddDiscountCode={handleAddDiscountCode}
+            onUpdateDiscountCode={handleUpdateDiscountCode}
+            onDeleteDiscountCode={handleDeleteDiscountCode}
             onBackToPortal={() => setActiveMode('portal')}
             onAddEvent={handleAddEvent}
             onAddSalon={(newSalon) => setSalons((prev) => [newSalon, ...prev])}
+            onUpdateSalon={(updated) => setSalons((prev) => prev.map((s) => (s.id === updated.id ? updated : s)))}
+            onDeleteSalon={(salonId) => setSalons((prev) => prev.filter((s) => s.id !== salonId))}
             onDeleteEvent={(eventId) => setEvents((prev) => prev.filter((e) => e.id !== eventId))}
             onUpdateEvent={(updated) => setEvents((prev) => prev.map((e) => (e.id === updated.id ? updated : e)))}
             onToggleTheme={toggleTheme}
+            onOpenBoxOffice={() => setActiveMode('box-office')}
+            onOpenProducer={() => setActiveMode('producer')}
           />
         )}
 
@@ -340,6 +445,7 @@ export default function App() {
           runTurn={checkoutContext.runTurn}
           salon={checkoutContext.salon}
           selectedSeats={checkoutContext.selectedSeats}
+          discountCodes={discountCodes}
           onClose={() => setCheckoutContext(null)}
           onPaymentSuccess={handlePaymentSuccess}
         />

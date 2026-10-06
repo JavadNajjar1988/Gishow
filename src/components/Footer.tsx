@@ -36,7 +36,7 @@ export const Footer: React.FC<FooterProps> = ({
                 <Ticket className="w-4 h-4" />
               </div>
               <span className={`text-base font-black ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                سامانه گیشو (Gishow)
+                سامانه لیندو تیکت (LinduTicket)
               </span>
             </div>
             <p className={`text-xs leading-relaxed font-normal ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
@@ -120,7 +120,7 @@ export const Footer: React.FC<FooterProps> = ({
         <div className={`mt-10 pt-6 border-t flex flex-wrap items-center justify-between gap-4 text-[11px] ${
           isDark ? 'border-slate-900 text-slate-500' : 'border-slate-100 text-slate-500'
         }`}>
-          <p>© ۱۴۰۵ سامانه گیشو (Gishow). تمامی حقوق برای سامانه و تهیه‌کنندگان محفوظ است.</p>
+          <p>© ۱۴۰۵ سامانه لیندو تیکت (LinduTicket). تمامی حقوق برای سامانه و تهیه‌کنندگان محفوظ است.</p>
           <div className="flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-emerald-500" />
             <span>متصل به شبکه شاپرک و درگاه‌های بانکی عضو شتاب</span>

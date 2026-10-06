@@ -24,6 +24,11 @@ export interface PartOfSalon {
   rows: number;
   seatsPerRow: number;
   price: number;
+  shape?: 'straight' | 'arc' | 'angled_left' | 'angled_right';
+  rowStart?: number;
+  isAccessible?: boolean;
+  doorAccess?: string;
+  color?: string;
 }
 
 export interface Salon {
@@ -33,6 +38,9 @@ export interface Salon {
   address: string;
   capacity: number;
   parts: PartOfSalon[];
+  layoutTemplate?: 'arena' | 'theater' | 'blackbox' | 'custom';
+  stagePosition?: 'top' | 'center' | 'thrust';
+  aislesCount?: number;
 }
 
 export type SeatStatus = 'available' | 'selected' | 'reserved' | 'sold';
@@ -67,14 +75,23 @@ export interface EventItem {
   accentColor: string;
   isFeatured?: boolean;
   isActive: boolean;
+  isSoldOut?: boolean;
   runTurns: RunTurn[];
 }
 
 export interface DiscountCode {
+  id?: string;
   code: string;
   discountPercent?: number;
   fixedAmount?: number;
   description: string;
+  eventId?: string; // 'all' or specific eventId
+  eventTitle?: string;
+  maxUsage?: number;
+  usedCount?: number;
+  expiresAt?: string;
+  isActive?: boolean;
+  minOrderAmount?: number;
 }
 
 export interface FactorItem {
@@ -92,7 +109,7 @@ export interface FactorItem {
   discountAmount: number;
   finalAmount: number;
   discountCode?: string;
-  paymentGateway: 'mellat' | 'parsian' | 'zarinpal';
+  paymentGateway: 'mellat' | 'parsian' | 'zarinpal' | 'pos' | 'cash' | 'complimentary';
   paidAt: string;
   qrPayload: string;
   isCheckedIn: boolean;
@@ -106,7 +123,7 @@ export interface TicketScanCheckResult {
   timestamp: string;
 }
 
-export type ActiveAppMode = 'portal' | 'checker' | 'admin' | 'my-tickets';
+export type ActiveAppMode = 'portal' | 'checker' | 'admin' | 'my-tickets' | 'box-office' | 'producer';
 
 // Gishow Specific Feature Models (Mapped directly from Gishow / LinduTicket ASP.NET MVC controllers)
 

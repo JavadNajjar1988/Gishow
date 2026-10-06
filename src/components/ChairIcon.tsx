@@ -1,5 +1,6 @@
 import React from 'react';
 import { SeatStatus } from '../types';
+import { toPersianDigits } from '../utils/formatters';
 
 interface ChairIconProps {
   status: SeatStatus;
@@ -117,9 +118,9 @@ export const ChairIcon: React.FC<ChairIconProps> = ({
       {/* Seat Number in center */}
       <span
         style={{ color: textColor }}
-        className="absolute inset-0 flex items-center justify-center text-[10px] sm:text-[11px] font-bold select-none pointer-events-none tracking-tight pt-1"
+        className="absolute inset-0 flex items-center justify-center text-[10px] sm:text-[11px] font-bold select-none pointer-events-none tracking-tight pt-0.5"
       >
-        {status === 'selected' ? '✓' : seatNumber}
+        {status === 'selected' ? '✓' : toPersianDigits(seatNumber)}
       </span>
     </div>
   );

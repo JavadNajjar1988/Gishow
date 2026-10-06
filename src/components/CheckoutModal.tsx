@@ -10,6 +10,7 @@ interface CheckoutModalProps {
   runTurn: RunTurn;
   salon: Salon;
   selectedSeats: Seat[];
+  discountCodes?: DiscountCode[];
   onClose: () => void;
   onPaymentSuccess: (factor: FactorItem) => void;
 }
@@ -20,6 +21,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   runTurn,
   salon,
   selectedSeats,
+  discountCodes,
   onClose,
   onPaymentSuccess,
 }) => {
@@ -44,22 +46,45 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
     const code = discountInput.trim().toUpperCase();
     if (!code) return;
 
-    const found = MOCK_DISCOUNT_CODES.find((d) => d.code === code);
-    if (found) {
-      let calcAmount = 0;
-      if (found.discountPercent) {
-        calcAmount = (subtotal * found.discountPercent) / 100;
-      } else if (found.fixedAmount) {
-        calcAmount = found.fixedAmount;
-      }
-      setAppliedDiscount({
-        code: found.code,
-        percent: found.discountPercent,
-        amount: calcAmount,
-      });
-    } else {
-      setDiscountError('کد تخفیف وارد شده معتبر نمی‌باشد.');
+    const availableCodes = discountCodes || MOCK_DISCOUNT_CODES;
+    const found = availableCodes.find((d) => d.code.toUpperCase() === code);
+    if (!found) {
+      setDiscountError('کد تخفیف وارد شده نامعتبر می‌باشد.');
+      return;
     }
+
+    if (found.isActive === false) {
+      setDiscountError('این کد تخفیف در حال حاضر غیرفعال است.');
+      return;
+    }
+
+    if (found.eventId && found.eventId !== 'all' && found.eventId !== event.id) {
+      setDiscountError(`این کد تخفیف تنها مخصوص «${found.eventTitle || 'رویدادی دیگر'}» است.`);
+      return;
+    }
+
+    if (found.minOrderAmount && subtotal < found.minOrderAmount) {
+      setDiscountError(`حداقل خرید برای اعمال این تخفیف ${formatPrice(found.minOrderAmount)} است.`);
+      return;
+    }
+
+    if (found.maxUsage && found.usedCount && found.usedCount >= found.maxUsage) {
+      setDiscountError('مهلت و سقف استفاده از این کد تخفیف به پایان رسیده است.');
+      return;
+    }
+
+    let calcAmount = 0;
+    if (found.discountPercent) {
+      calcAmount = Math.round((subtotal * found.discountPercent) / 100);
+    } else if (found.fixedAmount) {
+      calcAmount = found.fixedAmount;
+    }
+
+    setAppliedDiscount({
+      code: found.code,
+      percent: found.discountPercent,
+      amount: Math.min(subtotal, calcAmount),
+    });
   };
 
   const handleStartPayment = (e: React.FormEvent) => {
@@ -397,7 +422,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               }`}>
                 <div className="flex justify-between">
                   <span className={isDark ? 'text-slate-400' : 'text-slate-500'}>پذیرنده:</span>
-                  <span className="font-semibold">سامانه رزرواسیون گیشو (gishow.ir)</span>
+                  <span className="font-semibold">سامانه رزرواسیون لیندو تیکت (LinduTicket)</span>
                 </div>
                 <div className="flex justify-between">
                   <span className={isDark ? 'text-slate-400' : 'text-slate-500'}>مبلغ تراکنش:</span>

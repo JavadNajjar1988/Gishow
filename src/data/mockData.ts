@@ -175,8 +175,9 @@ export const MOCK_EVENTS: EventItem[] = [
         date: '۱۴۰۵/۰۸/۱۹',
         time: '۲۱:۴۵',
         weekday: 'پنج‌شنبه',
-        availableSeatsCount: 18,
+        availableSeatsCount: 0,
         totalSeatsCount: 380,
+        isSoldOut: true,
       }
     ]
   },
@@ -298,6 +299,7 @@ export const MOCK_EVENTS: EventItem[] = [
     accentColor: 'text-orange-400',
     isFeatured: false,
     isActive: true,
+    isSoldOut: true,
     runTurns: [
       {
         id: 'sans-401',
@@ -305,8 +307,9 @@ export const MOCK_EVENTS: EventItem[] = [
         date: '۱۴۰۵/۰۸/۱۵',
         time: '۲۰:۳۰',
         weekday: 'دوشنبه',
-        availableSeatsCount: 88,
+        availableSeatsCount: 0,
         totalSeatsCount: 380,
+        isSoldOut: true,
       }
     ]
   },
@@ -383,19 +386,65 @@ export const MOCK_EVENTS: EventItem[] = [
 
 export const MOCK_DISCOUNT_CODES: DiscountCode[] = [
   {
-    code: 'GISHOW20',
-    discountPercent: 20,
-    description: '۲۰٪ تخفیف ویژه کاربران سامانه گیشو'
+    id: 'disc-1',
+    code: 'LINDU25',
+    discountPercent: 25,
+    description: '۲۵٪ تخفیف ویژه افتتاحیه رسمی سامانه لیندو تیکت',
+    eventId: 'all',
+    maxUsage: 500,
+    usedCount: 142,
+    expiresAt: '۱۴۰۵/۰۹/۳۰',
+    isActive: true,
+    minOrderAmount: 200000,
   },
   {
-    code: 'NOROOZ',
-    fixedAmount: 50000,
-    description: '۵۰,۰۰۰ تومان تخفیف هدیه'
-  },
-  {
+    id: 'disc-2',
     code: 'VIPCLUB',
     discountPercent: 15,
-    description: '۱۵٪ تخفیف اعضای باشگاه مشتریان'
+    description: '۱۵٪ تخفیف اعضای وفادار باشگاه مشتریان',
+    eventId: 'all',
+    maxUsage: 300,
+    usedCount: 88,
+    expiresAt: '۱۴۰۵/۱۰/۱۵',
+    isActive: true,
+    minOrderAmount: 300000,
+  },
+  {
+    id: 'disc-3',
+    code: 'GHORBANI50',
+    fixedAmount: 50000,
+    description: '۵۰,۰۰۰ تومان تخفیف اختصاصی کنسرت علیرضا قربانی',
+    eventId: 'event-1',
+    eventTitle: 'کنسرت بزرگ علیرضا قربانی',
+    maxUsage: 200,
+    usedCount: 64,
+    expiresAt: '۱۴۰۵/۰۸/۲۲',
+    isActive: true,
+    minOrderAmount: 250000,
+  },
+  {
+    id: 'disc-4',
+    code: 'THEATER20',
+    discountPercent: 20,
+    description: '۲۰٪ تخفیف ویژه تئاتر موزیکال بینوایان',
+    eventId: 'event-2',
+    eventTitle: 'تئاتر موزیکال بینوایان',
+    maxUsage: 150,
+    usedCount: 37,
+    expiresAt: '۱۴۰۵/۰۸/۲۹',
+    isActive: true,
+  },
+  {
+    id: 'disc-5',
+    code: 'NOROOZ100',
+    fixedAmount: 100000,
+    description: '۱۰۰,۰۰۰ تومان هدیه خرید برای سبدهای بالای ۱ میلیون تومان',
+    eventId: 'all',
+    maxUsage: 100,
+    usedCount: 19,
+    expiresAt: '۱۴۰۵/۱۲/۲۹',
+    isActive: true,
+    minOrderAmount: 1000000,
   }
 ];
 

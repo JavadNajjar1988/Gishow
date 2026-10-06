@@ -32,8 +32,22 @@ import {
   ChevronLeft,
   ChevronRight,
   Sun,
-  Moon
+  Moon,
+  Store,
+  Edit3,
+  Sliders,
+  RotateCcw,
+  MapPin,
+  Crown,
+  Compass,
+  MessageSquare,
+  Send,
+  Percent,
+  Flame,
+  Copy
 } from 'lucide-react';
+import { ChairIcon } from './ChairIcon';
+import { SalonPlanBuilderModal } from './SalonPlanBuilderModal';
 import {
   EventItem,
   FactorItem,
@@ -46,7 +60,8 @@ import {
   UserAccount,
   UserRole,
   PartOfSalon,
-  RunTurn
+  RunTurn,
+  DiscountCode
 } from '../types';
 import { formatPrice, toPersianDigits } from '../utils/formatters';
 import {
@@ -55,7 +70,8 @@ import {
   MOCK_BANK_TERMINALS,
   MOCK_DOCUMENTS,
   DEFAULT_SITE_SETTINGS,
-  MOCK_USERS
+  MOCK_USERS,
+  MOCK_DISCOUNT_CODES
 } from '../data/mockData';
 
 interface AdminDashboardProps {
@@ -63,12 +79,20 @@ interface AdminDashboardProps {
   events: EventItem[];
   factors: FactorItem[];
   salons: Salon[];
+  discountCodes?: DiscountCode[];
+  onAddDiscountCode?: (code: DiscountCode) => void;
+  onUpdateDiscountCode?: (updated: DiscountCode) => void;
+  onDeleteDiscountCode?: (codeId: string) => void;
   onBackToPortal: () => void;
   onAddEvent: (newEvent: EventItem) => void;
   onAddSalon?: (newSalon: Salon) => void;
+  onUpdateSalon?: (updated: Salon) => void;
+  onDeleteSalon?: (salonId: string) => void;
   onDeleteEvent?: (eventId: string) => void;
   onUpdateEvent?: (updated: EventItem) => void;
   onToggleTheme?: () => void;
+  onOpenBoxOffice?: () => void;
+  onOpenProducer?: () => void;
 }
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({
@@ -76,12 +100,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   events,
   factors,
   salons,
+  discountCodes,
+  onAddDiscountCode,
+  onUpdateDiscountCode,
+  onDeleteDiscountCode,
   onBackToPortal,
   onAddEvent,
   onAddSalon,
+  onUpdateSalon,
+  onDeleteSalon,
   onDeleteEvent,
   onUpdateEvent,
   onToggleTheme,
+  onOpenBoxOffice,
+  onOpenProducer,
 }) => {
   const isDark = theme === 'dark';
 
@@ -90,6 +122,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     | 'overview'
     | 'salons'
     | 'events'
+    | 'producer_hub'
     | 'users'
     | 'chair_block'
     | 'factors'
@@ -107,10 +140,70 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   // Modals state
   const [showAddEventModal, setShowAddEventModal] = useState(false);
   const [showAddSalonModal, setShowAddSalonModal] = useState(false);
+  const [showPlanBuilderModal, setShowPlanBuilderModal] = useState(false);
+  const [editingSalonForBuilder, setEditingSalonForBuilder] = useState<Salon | null>(null);
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [showAddSansModal, setShowAddSansModal] = useState<EventItem | null>(null);
   const [showAddArtistModal, setShowAddArtistModal] = useState(false);
   const [viewSalonPlan, setViewSalonPlan] = useState<Salon | null>(null);
+
+  // Discounts state & management
+  const [internalDiscounts, setInternalDiscounts] = useState<DiscountCode[]>(discountCodes || MOCK_DISCOUNT_CODES);
+  const activeDiscounts = discountCodes || internalDiscounts;
+  const [showAddDiscountModal, setShowAddDiscountModal] = useState(false);
+  const [newDiscCode, setNewDiscCode] = useState('');
+  const [newDiscDesc, setNewDiscDesc] = useState('');
+  const [newDiscType, setNewDiscType] = useState<'percent' | 'fixed'>('percent');
+  const [newDiscValue, setNewDiscValue] = useState<number>(20);
+  const [newDiscEventId, setNewDiscEventId] = useState<string>('all');
+  const [newDiscMaxUsage, setNewDiscMaxUsage] = useState<number>(100);
+  const [newDiscMinOrder, setNewDiscMinOrder] = useState<number>(0);
+  const [newDiscExpiry, setNewDiscExpiry] = useState<string>('۱۴۰۵/۱۰/۳۰');
+  const [copiedCodeToast, setCopiedCodeToast] = useState<string | null>(null);
+
+  // New Sans Modal Sold Out option
+  const [newSansIsSoldOut, setNewSansIsSoldOut] = useState<boolean>(false);
+
+  // Producer Hub State (اختصاصی تهیه‌کننده و مدیر برنامه)
+  const [producerSelectedEventId, setProducerSelectedEventId] = useState<string>(events[0]?.id || '');
+  const [producerSubTab, setProducerSubTab] = useState<'analytics' | 'sanses' | 'holds' | 'attendees' | 'discounts' | 'sms' | 'settlement'>('analytics');
+  const [producerEventPromoCode, setProducerEventPromoCode] = useState('');
+  const [producerEventPromoPercent, setProducerEventPromoPercent] = useState(20);
+  const [producerEventPromoCount, setProducerEventPromoCount] = useState(100);
+  const [producerPromoCodes, setProducerPromoCodes] = useState<Array<{ code: string; percent: number; usedCount: number; maxCount: number }>>([
+    { code: 'PRODUCERVIP', percent: 20, usedCount: 38, maxCount: 100 },
+    { code: 'SPECIAL15', percent: 15, usedCount: 54, maxCount: 150 },
+  ]);
+  const [producerSmsText, setProducerSmsText] = useState('');
+  const [producerSmsSuccess, setProducerSmsSuccess] = useState(false);
+  const [producerSettlementSuccess, setProducerSettlementSuccess] = useState(false);
+  const [producerHoldSeatInput, setProducerHoldSeatInput] = useState('');
+  const [producerHeldSeats, setProducerHeldSeats] = useState<string[]>([
+    'vip-r1-s1', 'vip-r1-s2', 'vip-r1-s3', 'vip-r1-s4'
+  ]);
+  const [eventSalesPaused, setEventSalesPaused] = useState<Record<string, boolean>>({});
+
+  // Producer Memoized Calculations
+  const producerEvent = useMemo(() => {
+    return events.find((e) => e.id === producerSelectedEventId) || events[0];
+  }, [events, producerSelectedEventId]);
+
+  const producerSalon = useMemo(() => {
+    if (!producerEvent) return salons[0];
+    return salons.find((s) => s.id === producerEvent.salonId) || salons[0];
+  }, [salons, producerEvent]);
+
+  const producerFactors = useMemo(() => {
+    if (!producerEvent) return [];
+    return factors.filter((f) => f.event.id === producerEvent.id);
+  }, [factors, producerEvent]);
+
+  const producerGrossSale = producerFactors.reduce((acc, f) => acc + f.finalAmount, 0);
+  const producerCommission = Math.round((producerGrossSale * 4) / 100);
+  const producerNet = producerGrossSale - producerCommission - Math.round((producerCommission * 9) / 100);
+  const producerTicketsSold = producerFactors.reduce((acc, f) => acc + f.seats.length, 0);
+  const producerTotalCap = (producerEvent?.runTurns?.length || 1) * (producerSalon?.capacity || 400);
+  const producerOccupancy = producerTotalCap > 0 ? Math.min(100, Math.round((producerTicketsSold / producerTotalCap) * 100)) : 0;
 
   // Users State (UserListsController)
   const [users, setUsers] = useState<UserAccount[]>(MOCK_USERS);
@@ -122,16 +215,30 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [newUserNationalCode, setNewUserNationalCode] = useState('');
   const [newUserRole, setNewUserRole] = useState<UserRole>('customer');
 
-  // New Salon Form State (SalonsController / Salons/Create)
+  // Salon Builder Form State (Salons/Create & Floorplan Designer)
+  const [editingSalonId, setEditingSalonId] = useState<string | null>(null);
   const [newSalonName, setNewSalonName] = useState('');
   const [newSalonCity, setNewSalonCity] = useState('مشهد');
   const [newSalonAddress, setNewSalonAddress] = useState('');
+  const [newSalonLayoutType, setNewSalonLayoutType] = useState<'horseshoe' | 'proscenium' | 'amphitheater'>('horseshoe');
+  const [builderPreviewTab, setBuilderPreviewTab] = useState<'blueprint' | 'chairs'>('blueprint');
   const [newSalonParts, setNewSalonParts] = useState<
-    Array<{ name: string; tier: 'vip' | 'ground' | 'balcony' | 'lodge'; rows: number; seatsPerRow: number; price: number }>
+    Array<{
+      id: string;
+      name: string;
+      tier: 'vip' | 'ground' | 'balcony' | 'lodge';
+      position: 'front' | 'center' | 'right' | 'left' | 'balcony' | 'lodge';
+      rows: number;
+      seatsPerRow: number;
+      startRow: number;
+      price: number;
+    }>
   >([
-    { name: 'جایگاه ویژه VIP', tier: 'vip', rows: 3, seatsPerRow: 14, price: 850000 },
-    { name: 'همکف اصلی', tier: 'ground', rows: 8, seatsPerRow: 18, price: 650000 },
-    { name: 'بالکن اول', tier: 'balcony', rows: 4, seatsPerRow: 16, price: 350000 },
+    { id: 'p1', name: 'جایگاه ویژه VIP', tier: 'vip', position: 'front', rows: 3, seatsPerRow: 14, startRow: 1, price: 850000 },
+    { id: 'p2', name: 'همکف مرکزی', tier: 'ground', position: 'center', rows: 7, seatsPerRow: 10, startRow: 4, price: 650000 },
+    { id: 'p3', name: 'همکف بال راست', tier: 'ground', position: 'right', rows: 7, seatsPerRow: 6, startRow: 4, price: 550000 },
+    { id: 'p4', name: 'همکف بال چپ', tier: 'ground', position: 'left', rows: 7, seatsPerRow: 6, startRow: 4, price: 550000 },
+    { id: 'p5', name: 'بالکن طبقه اول', tier: 'balcony', position: 'balcony', rows: 4, seatsPerRow: 16, startRow: 11, price: 380000 },
   ]);
 
   // New Event Form State (BarnameController / Barname/Create)
@@ -196,21 +303,102 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     });
   }, [events, searchQuery]);
 
-  // Create Salon Handler
-  const handleCreateSalon = (e: React.FormEvent) => {
+  // Open Create Salon Modal (Architectural Visual Plan Builder)
+  const handleOpenCreateSalon = () => {
+    setEditingSalonForBuilder(null);
+    setShowPlanBuilderModal(true);
+  };
+
+  // Open Edit Salon Modal (Architectural Visual Plan Builder)
+  const handleOpenEditSalon = (salon: Salon) => {
+    setEditingSalonForBuilder(salon);
+    setShowPlanBuilderModal(true);
+  };
+
+  // Save Salon from Architectural Plan Builder
+  const handleSaveSalonFromBuilder = (savedSalon: Salon) => {
+    if (editingSalonForBuilder) {
+      if (onUpdateSalon) onUpdateSalon(savedSalon);
+    } else {
+      if (onAddSalon) onAddSalon(savedSalon);
+    }
+    setShowPlanBuilderModal(false);
+    setEditingSalonForBuilder(null);
+  };
+
+  // Add Part to Salon
+  const handleAddPart = () => {
+    const nextIdx = newSalonParts.length + 1;
+    setNewSalonParts((prev) => [
+      ...prev,
+      {
+        id: `part-${Date.now()}`,
+        name: `جایگاه ردیف‌های جدید ${nextIdx}`,
+        tier: 'ground',
+        position: 'center',
+        rows: 5,
+        seatsPerRow: 10,
+        startRow: 1,
+        price: 500000,
+      },
+    ]);
+  };
+
+  // Remove Part from Salon
+  const handleRemovePart = (index: number) => {
+    if (newSalonParts.length <= 1) {
+      alert('حداقل یک جایگاه یا بخش برای سالن باید تعریف شده باشد.');
+      return;
+    }
+    setNewSalonParts((prev) => prev.filter((_, idx) => idx !== index));
+  };
+
+  // Apply Blueprint Preset
+  const handleApplyPreset = (preset: 'horseshoe' | 'theater' | 'cinema') => {
+    if (preset === 'horseshoe') {
+      setNewSalonLayoutType('horseshoe');
+      setNewSalonParts([
+        { id: `p-${Date.now()}-1`, name: 'جایگاه ویژه (VIP)', tier: 'vip', position: 'front', rows: 3, seatsPerRow: 14, startRow: 1, price: 850000 },
+        { id: `p-${Date.now()}-2`, name: 'همکف مرکزی', tier: 'ground', position: 'center', rows: 7, seatsPerRow: 10, startRow: 4, price: 650000 },
+        { id: `p-${Date.now()}-3`, name: 'همکف بال راست', tier: 'ground', position: 'right', rows: 7, seatsPerRow: 6, startRow: 4, price: 550000 },
+        { id: `p-${Date.now()}-4`, name: 'همکف بال چپ', tier: 'ground', position: 'left', rows: 7, seatsPerRow: 6, startRow: 4, price: 550000 },
+        { id: `p-${Date.now()}-5`, name: 'بالکن طبقه اول', tier: 'balcony', position: 'balcony', rows: 4, seatsPerRow: 16, startRow: 11, price: 380000 },
+      ]);
+    } else if (preset === 'theater') {
+      setNewSalonLayoutType('proscenium');
+      setNewSalonParts([
+        { id: `p-${Date.now()}-1`, name: 'همکف ارکستر جلو', tier: 'vip', position: 'front', rows: 4, seatsPerRow: 16, startRow: 1, price: 750000 },
+        { id: `p-${Date.now()}-2`, name: 'همکف میانی اصلی', tier: 'ground', position: 'center', rows: 8, seatsPerRow: 18, startRow: 5, price: 600000 },
+        { id: `p-${Date.now()}-3`, name: 'لژ اختصاصی راست', tier: 'lodge', position: 'right', rows: 2, seatsPerRow: 4, startRow: 1, price: 900000 },
+        { id: `p-${Date.now()}-4`, name: 'لژ اختصاصی چپ', tier: 'lodge', position: 'left', rows: 2, seatsPerRow: 4, startRow: 1, price: 900000 },
+        { id: `p-${Date.now()}-5`, name: 'بالکن فوقانی تالار', tier: 'balcony', position: 'balcony', rows: 5, seatsPerRow: 20, startRow: 13, price: 400000 },
+      ]);
+    } else {
+      setNewSalonLayoutType('amphitheater');
+      setNewSalonParts([
+        { id: `p-${Date.now()}-1`, name: 'ردیف‌های پیشین سن (A)', tier: 'vip', position: 'front', rows: 4, seatsPerRow: 14, startRow: 1, price: 500000 },
+        { id: `p-${Date.now()}-2`, name: 'ردیف‌های میانی سالن (B)', tier: 'ground', position: 'center', rows: 8, seatsPerRow: 18, startRow: 5, price: 400000 },
+        { id: `p-${Date.now()}-3`, name: 'ردیف‌های بالایی سالن (C)', tier: 'ground', position: 'balcony', rows: 6, seatsPerRow: 20, startRow: 13, price: 300000 },
+      ]);
+    }
+  };
+
+  // Save Salon & Floorplan Handler
+  const handleSaveSalon = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newSalonName) return;
 
     const totalCap = newSalonParts.reduce((acc, p) => acc + p.rows * p.seatsPerRow, 0);
-    const createdSalon: Salon = {
-      id: `salon-${Date.now()}`,
+    const targetId = editingSalonId || `salon-${Date.now()}`;
+    const salonObj: Salon = {
+      id: targetId,
       name: newSalonName,
       city: newSalonCity,
       address: newSalonAddress || `${newSalonCity} - خیابان اصلی`,
       capacity: totalCap,
       parts: newSalonParts.map((p, idx) => ({
-        id: `part-${Date.now()}-${idx}`,
-        salonId: `salon-${Date.now()}`,
+        id: p.id || `part-${Date.now()}-${idx}`,
+        salonId: targetId,
         name: p.name,
         tier: p.tier,
         rows: Number(p.rows),
@@ -219,10 +407,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       })),
     };
 
-    if (onAddSalon) {
-      onAddSalon(createdSalon);
+    if (editingSalonId) {
+      if (onUpdateSalon) {
+        onUpdateSalon(salonObj);
+      }
+    } else {
+      if (onAddSalon) {
+        onAddSalon(salonObj);
+      }
     }
     setShowAddSalonModal(false);
+    setEditingSalonId(null);
     setNewSalonName('');
     setNewSalonAddress('');
   };
@@ -306,8 +501,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       date: newSansDate,
       time: newSansTime,
       weekday: newSansWeekday,
-      availableSeatsCount: chosenSalon.capacity,
+      availableSeatsCount: newSansIsSoldOut ? 0 : chosenSalon.capacity,
       totalSeatsCount: chosenSalon.capacity,
+      isSoldOut: newSansIsSoldOut,
     };
 
     const updated = {
@@ -319,6 +515,74 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       onUpdateEvent(updated);
     }
     setShowAddSansModal(null);
+    setNewSansIsSoldOut(false);
+  };
+
+  // Toggle Event Sold Out Status
+  const handleToggleEventSoldOut = (evt: EventItem) => {
+    if (!onUpdateEvent) return;
+    const isNowSoldOut = !evt.isSoldOut;
+    onUpdateEvent({
+      ...evt,
+      isSoldOut: isNowSoldOut,
+      runTurns: evt.runTurns.map((rt) => ({
+        ...rt,
+        isSoldOut: isNowSoldOut,
+        availableSeatsCount: isNowSoldOut ? 0 : rt.totalSeatsCount,
+      })),
+    });
+  };
+
+  // Create Discount Code
+  const handleCreateDiscountSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newDiscCode.trim()) return;
+
+    const chosenEvent = events.find((ev) => ev.id === newDiscEventId);
+    const newDiscount: DiscountCode = {
+      id: `disc-${Date.now()}`,
+      code: newDiscCode.trim().toUpperCase(),
+      description: newDiscDesc.trim() || `تخفیف ${newDiscType === 'percent' ? `${newDiscValue}٪` : formatPrice(newDiscValue)}`,
+      discountPercent: newDiscType === 'percent' ? Number(newDiscValue) : undefined,
+      fixedAmount: newDiscType === 'fixed' ? Number(newDiscValue) : undefined,
+      eventId: newDiscEventId,
+      eventTitle: chosenEvent?.title,
+      maxUsage: Number(newDiscMaxUsage),
+      usedCount: 0,
+      minOrderAmount: Number(newDiscMinOrder) || undefined,
+      expiresAt: newDiscExpiry,
+      isActive: true,
+    };
+
+    if (onAddDiscountCode) {
+      onAddDiscountCode(newDiscount);
+    } else {
+      setInternalDiscounts((prev) => [newDiscount, ...prev]);
+    }
+
+    setShowAddDiscountModal(false);
+    setNewDiscCode('');
+    setNewDiscDesc('');
+    setNewDiscValue(20);
+  };
+
+  // Toggle Discount Code Active/Inactive
+  const handleToggleDiscountActive = (item: DiscountCode) => {
+    const updated: DiscountCode = { ...item, isActive: item.isActive === false ? true : false };
+    if (onUpdateDiscountCode) {
+      onUpdateDiscountCode(updated);
+    } else {
+      setInternalDiscounts((prev) => prev.map((d) => (d.code === item.code ? updated : d)));
+    }
+  };
+
+  // Delete Discount Code
+  const handleDeleteDiscount = (code: string) => {
+    if (onDeleteDiscountCode) {
+      onDeleteDiscountCode(code);
+    } else {
+      setInternalDiscounts((prev) => prev.filter((d) => d.code !== code));
+    }
   };
 
   const roleLabels: Record<UserRole, { label: string; color: string }> = {
@@ -344,7 +608,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-base font-black">داشبورد جامع مدیریت گیشو</span>
+                <span className="text-base font-black">داشبورد جامع مدیریت لیندو تیکت</span>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
                   LinduTicket Core v2.4
                 </span>
@@ -369,8 +633,30 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </button>
             )}
 
+            {onOpenBoxOffice && (
+              <button
+                onClick={onOpenBoxOffice}
+                className="px-3.5 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer shadow-sm"
+                title="صدور مستقیم بلیت و ثبت کارتخوان POS در گیشه سالن"
+              >
+                <Store className="w-3.5 h-3.5" />
+                <span>گیشه مجازی (POS)</span>
+              </button>
+            )}
+
+            {onOpenProducer && (
+              <button
+                onClick={onOpenProducer}
+                className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer shadow-sm shadow-amber-500/20"
+                title="ورود به پنل و کنسول اختصاصی اختیارات تهیه‌کننده و مدیر برنامه"
+              >
+                <Crown className="w-3.5 h-3.5" />
+                <span>کنسول تهیه‌کننده</span>
+              </button>
+            )}
+
             <button
-              onClick={() => setShowAddSalonModal(true)}
+              onClick={handleOpenCreateSalon}
               className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer shadow-sm"
             >
               <Building className="w-3.5 h-3.5" />
@@ -418,6 +704,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             { id: 'overview', label: '📊 نمای کلی و شاخص‌ها', count: null },
             { id: 'salons', label: '🏛️ مدیریت سالن‌ها و پلان‌ها', count: salons.length },
             { id: 'events', label: '🎭 رویدادها و سانس‌ها', count: events.length },
+            { id: 'producer_hub', label: '👑 کنسول تهیه‌کننده و مدیر برنامه', count: events.length },
             { id: 'users', label: '👥 مدیریت کاربران و دسترسی‌ها', count: users.length },
             { id: 'chair_block', label: '🎟️ بلاک صندلی ارگان‌ها', count: blockedSeatIds.length },
             { id: 'factors', label: '🧾 تراکنش‌ها و فاکتورها', count: factors.length },
@@ -626,7 +913,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
 
               <button
-                onClick={() => setShowAddSalonModal(true)}
+                onClick={handleOpenCreateSalon}
                 className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer shadow-md"
               >
                 <Plus className="w-4 h-4" />
@@ -672,16 +959,39 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </div>
 
                   <div className="flex items-center justify-between pt-2">
-                    <button
-                      onClick={() => setViewSalonPlan(salon)}
-                      className="px-3 py-1.5 rounded-xl border border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/10 text-xs font-bold transition-colors flex items-center gap-1 cursor-pointer"
-                    >
-                      <Eye className="w-3.5 h-3.5" />
-                      <span>مشاهده نقشه پلان</span>
-                    </button>
-                    <span className="text-[10px] text-slate-400 font-mono">
-                      {toPersianDigits(salon.parts.length)} بخش تعریف شده
-                    </span>
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        onClick={() => setViewSalonPlan(salon)}
+                        className="px-2.5 py-1.5 rounded-xl border border-indigo-500/30 text-indigo-400 hover:bg-indigo-500/10 text-xs font-bold transition-colors flex items-center gap-1 cursor-pointer"
+                        title="مشاهده چیدمان صندلی‌های سالن"
+                      >
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>نقشه صندلی‌ها</span>
+                      </button>
+
+                      <button
+                        onClick={() => handleOpenEditSalon(salon)}
+                        className="px-2.5 py-1.5 rounded-xl border border-amber-500/30 text-amber-500 hover:bg-amber-500/10 text-xs font-bold transition-colors flex items-center gap-1 cursor-pointer"
+                        title="ویرایش و بازطراحی پلان سالن"
+                      >
+                        <Edit3 className="w-3.5 h-3.5" />
+                        <span>ویرایش پلان</span>
+                      </button>
+                    </div>
+
+                    {onDeleteSalon && (
+                      <button
+                        onClick={() => {
+                          if (confirm(`آیا از حذف سالن "${salon.name}" اطمینان دارید؟`)) {
+                            onDeleteSalon(salon.id);
+                          }
+                        }}
+                        className="p-1.5 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                        title="حذف سالن"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
@@ -769,30 +1079,57 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                           {formatPrice(evt.minPrice)} تا {formatPrice(evt.maxPrice)}
                         </td>
                         <td className="p-4">
-                          <button
-                            onClick={() => {
-                              if (onUpdateEvent) {
-                                onUpdateEvent({ ...evt, isActive: !evt.isActive });
-                              }
-                            }}
-                            className={`px-2.5 py-1 rounded-full text-[10px] font-bold border cursor-pointer ${
-                              evt.isActive
-                                ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
-                                : 'bg-slate-500/10 text-slate-400 border-slate-500/20'
-                            }`}
-                          >
-                            {evt.isActive ? 'در حال فروش' : 'متوقف شده'}
-                          </button>
+                          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-1.5">
+                            <button
+                              onClick={() => {
+                                if (onUpdateEvent) {
+                                  onUpdateEvent({ ...evt, isActive: !evt.isActive });
+                                }
+                              }}
+                              className={`px-2.5 py-1 rounded-full text-[10px] font-bold border cursor-pointer whitespace-nowrap transition-colors ${
+                                evt.isActive
+                                  ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20 hover:bg-emerald-500/20'
+                                  : 'bg-slate-500/10 text-slate-400 border-slate-500/20 hover:bg-slate-500/20'
+                              }`}
+                            >
+                              {evt.isActive ? 'در حال فروش' : 'متوقف'}
+                            </button>
+
+                            <button
+                              onClick={() => handleToggleEventSoldOut(evt)}
+                              className={`px-2.5 py-1 rounded-full text-[10px] font-bold border cursor-pointer whitespace-nowrap transition-colors flex items-center gap-1 ${
+                                evt.isSoldOut
+                                  ? 'bg-rose-500/15 text-rose-400 border-rose-500/30 hover:bg-rose-500/25'
+                                  : 'bg-slate-800/40 text-slate-400 border-slate-700/60 hover:text-white hover:border-slate-500'
+                              }`}
+                              title="تغییر وضعیت رویداد به سولد اوت (تکمیل ظرفیت)"
+                            >
+                              <Flame className="w-3 h-3 text-rose-500" />
+                              <span>{evt.isSoldOut ? 'سولد اوت' : 'ظرفیت موجود'}</span>
+                            </button>
+                          </div>
                         </td>
                         <td className="p-4">
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1.5">
+                            <button
+                              onClick={() => {
+                                setProducerSelectedEventId(evt.id);
+                                setActiveTab('producer_hub');
+                              }}
+                              className="px-2.5 py-1 rounded-lg bg-amber-500/15 text-amber-400 hover:bg-amber-500/25 border border-amber-500/30 text-[11px] font-bold cursor-pointer flex items-center gap-1 transition-colors"
+                              title="ورود به پنل اختصاصی تهیه‌کننده این رویداد"
+                            >
+                              <span>👑 پنل تهیه‌کننده</span>
+                            </button>
+
                             <button
                               onClick={() => setShowAddSansModal(evt)}
-                              className="px-2.5 py-1 rounded-lg bg-indigo-600/20 text-indigo-400 hover:bg-indigo-600/30 text-[11px] font-bold cursor-pointer"
+                              className="px-2 py-1 rounded-lg bg-indigo-600/20 text-indigo-400 hover:bg-indigo-600/30 text-[11px] font-bold cursor-pointer"
                               title="افزودن سانس جدید"
                             >
                               + سانس
                             </button>
+
                             {onDeleteEvent && (
                               <button
                                 onClick={() => onDeleteEvent(evt.id)}
@@ -810,6 +1147,583 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </table>
               </div>
             </div>
+
+          </div>
+        )}
+
+        {/* =========================================================================
+            TAB 3.5: PRODUCER & EVENT MANAGER CONSOLE (ProducerHubController)
+        ========================================================================= */}
+        {activeTab === 'producer_hub' && (
+          <div className="space-y-6">
+            
+            {/* Header & Event Selector */}
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <h2 className="text-base font-bold flex items-center gap-2">
+                  <Crown className="w-5 h-5 text-amber-500" />
+                  کنسول و اختیارات اختصاصی تهیه‌کننده و مدیر برنامه (Producer Console)
+                </h2>
+                <p className="text-xs text-slate-400 mt-1">
+                  مدیریت اجرایی و مالی رویداد، نظارت بر سانس‌ها، صدور بلیت‌های مهمان، بلاک سهمیه حامیان مالی و تسویه حساب بانکی.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                {/* Event Selector */}
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-slate-400 font-bold hidden sm:inline">انتخاب رویداد:</span>
+                  <select
+                    value={producerSelectedEventId}
+                    onChange={(e) => setProducerSelectedEventId(e.target.value)}
+                    className={`px-3 py-2 text-xs font-bold rounded-xl border cursor-pointer ${
+                      isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300 text-slate-900 shadow-2xs'
+                    }`}
+                  >
+                    {events.map((evt) => (
+                      <option key={evt.id} value={evt.id}>
+                        🎭 {evt.title} ({evt.city})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {onOpenProducer && (
+                  <button
+                    onClick={onOpenProducer}
+                    className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-amber-500/20"
+                    title="مشاهده در نمای مستقل تمام‌صفحه کنسول تهیه‌کننده"
+                  >
+                    <Crown className="w-4 h-4" />
+                    <span>نمای تمام‌صفحه کنسول</span>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Active Event Banner */}
+            <div className={`p-6 rounded-3xl border transition-colors ${
+              isDark ? 'bg-gradient-to-r from-slate-900 to-indigo-950/40 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
+            }`}>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold px-2.5 py-0.5 rounded-lg bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                      رویداد فعال تهیه‌کننده
+                    </span>
+                    <span className="text-xs text-slate-400">
+                      سالن: {producerSalon.name} ({producerSalon.city})
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-black">{producerEvent.title}</h3>
+                  <p className="text-xs text-slate-400">
+                    بازه زمانی: {producerEvent.dateRange} · {toPersianDigits(producerEvent.runTurns.length)} سانس
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      const updated = {
+                        ...producerEvent,
+                        isActive: !producerEvent.isActive,
+                      };
+                      if (onUpdateEvent) onUpdateEvent(updated);
+                    }}
+                    className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all flex items-center gap-1.5 cursor-pointer ${
+                      producerEvent.isActive
+                        ? 'border-rose-500/30 text-rose-400 hover:bg-rose-500/10'
+                        : 'border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10'
+                    }`}
+                  >
+                    <span>{producerEvent.isActive ? 'توقف موقت فروش این رویداد' : 'بازگشایی فروش آنلاین'}</span>
+                  </button>
+
+                  <button
+                    onClick={() => setShowAddSansModal(producerEvent)}
+                    className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>افزودن سانس فوق‌العاده</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* 4 Financial & Sales KPI Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              
+              <div className={`p-5 rounded-3xl border space-y-2.5 ${
+                isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
+              }`}>
+                <div className="flex items-center justify-between text-xs text-slate-400 font-bold">
+                  <span>فروش ناخالص گیشه</span>
+                  <DollarSign className="w-4 h-4 text-emerald-400" />
+                </div>
+                <div className="text-xl font-black font-mono text-emerald-400">
+                  {formatPrice(producerGrossSale)}
+                </div>
+                <div className="text-[10px] text-slate-400">
+                  از {toPersianDigits(producerFactors.length)} تراکنش موفق
+                </div>
+              </div>
+
+              <div className={`p-5 rounded-3xl border space-y-2.5 ${
+                isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
+              }`}>
+                <div className="flex items-center justify-between text-xs text-slate-400 font-bold">
+                  <span>خالص سهم تهیه‌کننده</span>
+                  <Crown className="w-4 h-4 text-amber-400" />
+                </div>
+                <div className="text-xl font-black font-mono text-amber-400">
+                  {formatPrice(producerNet)}
+                </div>
+                <div className="text-[10px] text-emerald-500 font-bold">
+                  پس از کسر ۴٪ کارمزد و ۹٪ مالیات
+                </div>
+              </div>
+
+              <div className={`p-5 rounded-3xl border space-y-2.5 ${
+                isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
+              }`}>
+                <div className="flex items-center justify-between text-xs text-slate-400 font-bold">
+                  <span>صندلی‌های فروخته‌شده</span>
+                  <Ticket className="w-4 h-4 text-indigo-400" />
+                </div>
+                <div className="text-xl font-black font-mono">
+                  {toPersianDigits(producerTicketsSold)} صندلی
+                </div>
+                <div className="text-[10px] text-slate-400">
+                  از {toPersianDigits(producerTotalCap)} ظرفیت کل سانس‌ها
+                </div>
+              </div>
+
+              <div className={`p-5 rounded-3xl border space-y-2.5 ${
+                isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
+              }`}>
+                <div className="flex items-center justify-between text-xs text-slate-400 font-bold">
+                  <span>درصد تکمیل سالن</span>
+                  <Users className="w-4 h-4 text-rose-400" />
+                </div>
+                <div className="text-xl font-black font-mono text-rose-400">
+                  {toPersianDigits(producerOccupancy)}٪
+                </div>
+                <div className="text-[10px] text-slate-400">
+                  میانگین پرشدگی صندلی‌ها
+                </div>
+              </div>
+
+            </div>
+
+            {/* Sub-tabs Navigation */}
+            <div className={`flex items-center gap-1.5 border-b pb-3 text-xs font-bold overflow-x-auto scrollbar-none ${
+              isDark ? 'border-slate-800' : 'border-slate-200'
+            }`}>
+              {[
+                { id: 'analytics', label: '📊 تحلیل فروش جایگاه‌ها' },
+                { id: 'sanses', label: '⏰ مدیریت سانس‌ها و زمان‌بندی' },
+                { id: 'holds', label: '🎟️ سهمیه بلیت‌های مهمان و تشریفات' },
+                { id: 'attendees', label: '👥 لیست تماشاگران و خریداران' },
+                { id: 'discounts', label: '🏷️ کدهای تخفیف ویژه' },
+                { id: 'sms', label: '📱 اطلاع‌رسانی پیامکی' },
+                { id: 'settlement', label: '💰 تسویه حساب و شماره شبا' },
+              ].map((subTab) => (
+                <button
+                  key={subTab.id}
+                  onClick={() => setProducerSubTab(subTab.id as any)}
+                  className={`px-3.5 py-2 rounded-xl transition-all cursor-pointer whitespace-nowrap text-xs font-bold ${
+                    producerSubTab === subTab.id
+                      ? 'bg-amber-500 text-slate-950 font-black shadow-xs'
+                      : isDark
+                      ? 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
+                      : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200'
+                  }`}
+                >
+                  {subTab.label}
+                </button>
+              ))}
+            </div>
+
+            {/* SUBTAB 1: ANALYTICS */}
+            {producerSubTab === 'analytics' && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                
+                {/* Breakdown by Parts */}
+                <div className={`p-6 rounded-3xl border space-y-4 ${
+                  isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
+                }`}>
+                  <h4 className="text-xs font-bold text-slate-400">تفکیک فروش و ظرفیت جایگاه‌های سالن:</h4>
+                  <div className="space-y-3">
+                    {producerSalon.parts.map((p) => {
+                      const partCap = p.rows * p.seatsPerRow;
+                      const soldEstimate = Math.min(partCap, Math.round((partCap * producerOccupancy) / 100));
+                      return (
+                        <div key={p.id} className="space-y-1 text-xs">
+                          <div className="flex justify-between items-center">
+                            <span className="font-bold">{p.name} ({p.tier.toUpperCase()})</span>
+                            <span className="font-mono text-slate-400">
+                              {toPersianDigits(soldEstimate)} / {toPersianDigits(partCap)} صندلی · {formatPrice(p.price)}
+                            </span>
+                          </div>
+                          <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                            <div
+                              className="h-full bg-gradient-to-r from-amber-500 to-indigo-500 rounded-full"
+                              style={{ width: `${Math.min(100, Math.round((soldEstimate / partCap) * 100))}%` }}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Financial Summary */}
+                <div className={`p-6 rounded-3xl border space-y-4 ${
+                  isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
+                }`}>
+                  <h4 className="text-xs font-bold text-slate-400">جدول مالی شفاف فروش:</h4>
+                  <div className="space-y-2.5 text-xs">
+                    <div className="flex justify-between py-1.5 border-b border-slate-800">
+                      <span className="text-slate-400">مجموع فروش ناخالص:</span>
+                      <span className="font-mono font-bold">{formatPrice(producerGrossSale)}</span>
+                    </div>
+                    <div className="flex justify-between py-1.5 border-b border-slate-800 text-rose-400">
+                      <span>کارمزد خدمات سامانه (۴٪):</span>
+                      <span className="font-mono font-bold">-{formatPrice(producerCommission)}</span>
+                    </div>
+                    <div className="flex justify-between py-1.5 border-b border-slate-800 text-rose-400">
+                      <span>مالیات بر ارزش افزوده (۹٪ کارمزد):</span>
+                      <span className="font-mono font-bold">-{formatPrice(Math.round((producerCommission * 9) / 100))}</span>
+                    </div>
+                    <div className="flex justify-between p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold">
+                      <span>خالص بستانکاری تهیه‌کننده:</span>
+                      <span className="font-mono font-black text-sm">{formatPrice(producerNet)}</span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            )}
+
+            {/* SUBTAB 2: SANSES */}
+            {producerSubTab === 'sanses' && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-bold text-slate-400">سانس‌های اجرا و زمان‌بندی:</h4>
+                  <button
+                    onClick={() => setShowAddSansModal(producerEvent)}
+                    className="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>افزودن سانس جدید</span>
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {producerEvent.runTurns.map((turn, idx) => (
+                    <div
+                      key={turn.id}
+                      className={`p-4 rounded-2xl border space-y-3 ${
+                        isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-indigo-400">
+                          سانس {toPersianDigits(idx + 1)} · {turn.weekday}
+                        </span>
+                        <span className="text-xs font-mono font-bold text-amber-400">{turn.time}</span>
+                      </div>
+
+                      <div className="text-sm font-black">{turn.date}</div>
+
+                      <div className="pt-2 border-t border-slate-800 flex justify-between text-xs text-slate-400">
+                        <span>ظرفیت سالن:</span>
+                        <span className="font-mono font-bold text-white">{toPersianDigits(turn.totalSeatsCount)} صندلی</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* SUBTAB 3: COMPLIMENTARY & GUEST TICKETS */}
+            {producerSubTab === 'holds' && (
+              <div className="space-y-5">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <h4 className="text-sm font-bold">صدور بلیت‌های مهمان ویژه و سهمیه تهیه‌کننده</h4>
+                    <p className="text-xs text-slate-400 mt-0.5">
+                      صدور بلیت رایگان رسمی با بارکد QR برای مهمانان افتخاری، داوران و همراهان گروه اجرایی
+                    </p>
+                  </div>
+                </div>
+
+                {/* Form to issue complimentary ticket */}
+                <div className={`p-5 rounded-3xl border space-y-4 ${
+                  isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
+                }`}>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                    <div>
+                      <label className="block mb-1 text-slate-400 font-bold">نام مهمان ویژه:</label>
+                      <input
+                        type="text"
+                        placeholder="جناب آقای رضایی"
+                        className={`w-full p-2.5 rounded-xl border text-xs ${
+                          isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200'
+                        }`}
+                      />
+                    </div>
+                    <div>
+                      <label className="block mb-1 text-slate-400 font-bold">شماره تماس مهمان:</label>
+                      <input
+                        type="text"
+                        placeholder="۰۹۱۲۰۰۰۰۰۰۰"
+                        className={`w-full p-2.5 rounded-xl border text-xs font-mono ${
+                          isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200'
+                        }`}
+                      />
+                    </div>
+                    <div>
+                      <label className="block mb-1 text-slate-400 font-bold">جایگاه صندلی:</label>
+                      <select
+                        className={`w-full p-2.5 rounded-xl border text-xs ${
+                          isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200'
+                        }`}
+                      >
+                        {producerSalon.parts.map((p) => (
+                          <option key={p.id} value={p.name}>{p.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end pt-2">
+                    <button
+                      onClick={() => alert('بلیت مهمان با موفقیت صادر و بارکد ورود ثبت شد.')}
+                      className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer shadow-md shadow-amber-500/20"
+                    >
+                      <Ticket className="w-4 h-4" />
+                      <span>صدور آنی بلیت مهمان ویژه</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Quarantined Sponsor seats */}
+                <div className={`p-5 rounded-3xl border space-y-3 ${
+                  isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
+                }`}>
+                  <div className="flex items-center justify-between">
+                    <h5 className="text-xs font-bold flex items-center gap-2">
+                      <Lock className="w-4 h-4 text-amber-500" />
+                      صندلی‌های قرنطینه و سهمیه ارگان‌ها / حامیان مالی
+                    </h5>
+                    <span className="text-[11px] font-mono text-slate-400">
+                      {toPersianDigits(producerHeldSeats.length)} صندلی قفل شده
+                    </span>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    {producerHeldSeats.map((seatId) => (
+                      <span
+                        key={seatId}
+                        className="px-2.5 py-1 rounded-lg text-xs font-mono font-bold bg-amber-500/10 text-amber-500 border border-amber-500/30 flex items-center gap-1.5"
+                      >
+                        <Lock className="w-3 h-3" />
+                        {seatId.toUpperCase()}
+                        <button
+                          onClick={() => setProducerHeldSeats((prev) => prev.filter((s) => s !== seatId))}
+                          className="hover:text-rose-400 cursor-pointer mr-1"
+                          title="آزادسازی صندلی برای خرید عمومی"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+            )}
+
+            {/* SUBTAB 4: ATTENDEES */}
+            {producerSubTab === 'attendees' && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-bold text-slate-400">
+                    اسامی و مشخصات خریداران بلیت رویداد ({toPersianDigits(producerFactors.length)} فاکتور):
+                  </h4>
+                </div>
+
+                <div className={`rounded-3xl border overflow-hidden ${
+                  isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
+                }`}>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-right text-xs">
+                      <thead className={`border-b ${
+                        isDark ? 'bg-slate-950/80 text-slate-400 border-slate-800' : 'bg-slate-50 text-slate-500 border-slate-200'
+                      }`}>
+                        <tr>
+                          <th className="p-4 font-bold">شماره فاکتور</th>
+                          <th className="p-4 font-bold">خریدار</th>
+                          <th className="p-4 font-bold">شماره تماس</th>
+                          <th className="p-4 font-bold">صندلی‌ها</th>
+                          <th className="p-4 font-bold">مبلغ پرداختی</th>
+                          <th className="p-4 font-bold">وضعیت ورود (گیت)</th>
+                        </tr>
+                      </thead>
+                      <tbody className={`divide-y ${
+                        isDark ? 'divide-slate-800/60 text-slate-200' : 'divide-slate-100 text-slate-700'
+                      }`}>
+                        {producerFactors.map((f) => (
+                          <tr key={f.factorNumber} className="hover:bg-slate-800/30">
+                            <td className="p-4 font-mono font-bold text-indigo-400">{f.factorNumber}</td>
+                            <td className="p-4 font-bold">{f.customerName}</td>
+                            <td className="p-4 font-mono text-slate-400">{f.customerMobile}</td>
+                            <td className="p-4">
+                              {f.seats.map((s) => `${s.partName} ردیف ${s.row} صندلی ${s.number}`).join('، ')}
+                            </td>
+                            <td className="p-4 font-mono font-bold text-emerald-400">{formatPrice(f.finalAmount)}</td>
+                            <td className="p-4">
+                              {f.isCheckedIn ? (
+                                <span className="text-emerald-500 font-bold flex items-center gap-1">
+                                  <CheckCircle2 className="w-3.5 h-3.5" />
+                                  وارد سالن شده
+                                </span>
+                              ) : (
+                                <span className="text-slate-400">ورود ثبت نشده</span>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* SUBTAB 5: DISCOUNTS */}
+            {producerSubTab === 'discounts' && (
+              <div className="space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <h4 className="text-xs font-bold text-slate-400">کدهای تخفیف ویژه این رویداد:</h4>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {producerPromoCodes.map((promo) => (
+                    <div
+                      key={promo.code}
+                      className={`p-4 rounded-2xl border flex items-center justify-between ${
+                        isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
+                      }`}
+                    >
+                      <div>
+                        <div className="font-mono font-black text-amber-400 text-sm">{promo.code}</div>
+                        <div className="text-[11px] text-slate-400 mt-0.5">
+                          تخفیف {toPersianDigits(promo.percent)}٪ · مصرف {toPersianDigits(promo.usedCount)} از {toPersianDigits(promo.maxCount)}
+                        </div>
+                      </div>
+                      <span className="px-2.5 py-1 rounded-xl text-xs font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                        فعال
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* SUBTAB 6: SMS BROADCAST */}
+            {producerSubTab === 'sms' && (
+              <div className={`p-6 rounded-3xl border space-y-4 ${
+                isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
+              }`}>
+                <h4 className="text-sm font-bold flex items-center gap-2">
+                  <MessageSquare className="w-4 h-4 text-indigo-400" />
+                  ارسال پیامک اطلاع‌رسانی گروهی به خریداران بلیت
+                </h4>
+                <textarea
+                  rows={3}
+                  value={producerSmsText}
+                  onChange={(e) => setProducerSmsText(e.target.value)}
+                  placeholder="متن پیامک ارسالی (مثلاً: تماشاگر گرامی، درب‌های سالن ۳۰ دقیقه قبل از اجرا باز می‌شود...)"
+                  className={`w-full p-3 rounded-2xl border text-xs leading-relaxed ${
+                    isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-900'
+                  }`}
+                />
+                <div className="flex justify-between items-center pt-2">
+                  <span className="text-xs text-slate-400">
+                    گیرندگان: {toPersianDigits(producerFactors.length)} نفر خریدار بلیت
+                  </span>
+                  <button
+                    onClick={() => {
+                      setProducerSmsSuccess(true);
+                      setTimeout(() => setProducerSmsSuccess(false), 5000);
+                    }}
+                    className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-md"
+                  >
+                    <Send className="w-4 h-4" />
+                    <span>ارسال پیامک به تمام تماشاگران</span>
+                  </button>
+                </div>
+                {producerSmsSuccess && (
+                  <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span>پیامک به صف ارسال مخابرات تحویل داده شد.</span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* SUBTAB 7: FINANCIAL SETTLEMENT */}
+            {producerSubTab === 'settlement' && (
+              <div className={`p-6 rounded-3xl border space-y-5 ${
+                isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
+              }`}>
+                <h4 className="text-sm font-bold flex items-center gap-2">
+                  <CreditCard className="w-4 h-4 text-emerald-400" />
+                  درخواست تسویه حساب مالی و واریز به شماره شبا
+                </h4>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                  <div>
+                    <label className="block mb-1 text-slate-400 font-bold">شماره شبای بانکی تهیه‌کننده:</label>
+                    <input
+                      type="text"
+                      defaultValue="IR720120000000008765432101"
+                      className={`w-full p-2.5 rounded-xl border font-mono font-bold ${
+                        isDark ? 'bg-slate-800 border-slate-700 text-amber-400' : 'bg-slate-50 border-slate-200 text-amber-600'
+                      }`}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block mb-1 text-slate-400 font-bold">مبلغ قابل تسویه در این مرحله:</label>
+                    <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono font-black text-sm">
+                      {formatPrice(producerNet)}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex justify-end pt-2">
+                  <button
+                    onClick={() => {
+                      setProducerSettlementSuccess(true);
+                      setTimeout(() => setProducerSettlementSuccess(false), 5000);
+                    }}
+                    className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all cursor-pointer shadow-md shadow-emerald-600/20"
+                  >
+                    تایید و ارسال درخواست تسویه حساب
+                  </button>
+                </div>
+
+                {producerSettlementSuccess && (
+                  <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-bold flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span>درخواست تسویه با موفقیت ثبت شد و حداکثر تا ۲۴ ساعت آینده به حساب واریز می‌گردد.</span>
+                  </div>
+                )}
+              </div>
+            )}
 
           </div>
         )}
@@ -1430,29 +2344,180 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             TAB 11: DISCOUNTS (MarkdownListsController)
         ========================================================================= */}
         {activeTab === 'discounts' && (
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {[
-              { code: 'GISHOW20', type: '۲۰٪ تخفیف', desc: 'تخفیف ویژه افتتاحیه سامانه گیشو', used: '۱۴۲ بار' },
-              { code: 'NOROOZ', type: '۵۰,۰۰۰ تومان', desc: 'تخفیف جشنواره مناسبتی', used: '۸۷ بار' },
-              { code: 'VIPCLUB', type: '۱۵٪ تخفیف', desc: 'تخفیف اعضای باشگاه مشتریان', used: '۵۳ بار' },
-            ].map((d) => (
-              <div key={d.code} className={`p-5 rounded-2xl border space-y-2 transition-colors ${
+          <div className="space-y-6">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <h3 className="text-base font-bold flex items-center gap-2">
+                  <Tag className="w-5 h-5 text-amber-500" />
+                  مدیریت کدهای تخفیف و پروموشن‌ها (MarkdownLists)
+                </h3>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  تعریف، تخصیص به رویداد، پایش میزان مصرف و فعال/غیرفعال‌سازی کدهای تخفیف سامانه لیندو تیکت
+                </p>
+              </div>
+
+              <button
+                onClick={() => setShowAddDiscountModal(true)}
+                className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-black transition-all flex items-center gap-2 cursor-pointer shadow-md shadow-amber-500/20"
+              >
+                <Plus className="w-4 h-4" />
+                <span>تعریف کد تخفیف جدید</span>
+              </button>
+            </div>
+
+            {/* Quick KPI stats */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className={`p-5 rounded-2xl border ${
                 isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'
               }`}>
-                <div className="flex items-center justify-between">
-                  <span className={`font-mono text-sm font-black px-2 py-1 rounded ${
-                    isDark ? 'text-amber-400 bg-amber-400/10' : 'text-amber-800 bg-amber-50 border border-amber-200'
-                  }`}>
-                    {d.code}
-                  </span>
-                  <span className="text-xs text-emerald-500 font-bold">{d.type}</span>
+                <div className="text-xs text-slate-400 font-bold">تعداد کل کدهای تخفیف</div>
+                <div className="text-2xl font-mono font-black text-amber-400 mt-2">
+                  {toPersianDigits(activeDiscounts.length)} کد
                 </div>
-                <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>{d.desc}</p>
-                <div className="text-[10px] pt-2 border-t border-slate-200 dark:border-slate-800 text-slate-400">
-                  استفاده شده: {d.used}
+                <div className="text-[11px] text-slate-500 mt-1">
+                  {toPersianDigits(activeDiscounts.filter((d) => d.isActive !== false).length)} کد فعال در گیشه
                 </div>
               </div>
-            ))}
+
+              <div className={`p-5 rounded-2xl border ${
+                isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'
+              }`}>
+                <div className="text-xs text-slate-400 font-bold">مجموع دفعات استفاده موفق</div>
+                <div className="text-2xl font-mono font-black text-indigo-400 mt-2">
+                  {toPersianDigits(activeDiscounts.reduce((sum, d) => sum + (d.usedCount || 0), 0))} بار
+                </div>
+                <div className="text-[11px] text-slate-500 mt-1">
+                  توسط خریداران در فرایند پرداخت
+                </div>
+              </div>
+
+              <div className={`p-5 rounded-2xl border ${
+                isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'
+              }`}>
+                <div className="text-xs text-slate-400 font-bold">بیشترین تخفیف فعال</div>
+                <div className="text-2xl font-mono font-black text-emerald-400 mt-2">
+                  {toPersianDigits(Math.max(...activeDiscounts.map((d) => d.discountPercent || 0), 0))}٪ تخفیف
+                </div>
+                <div className="text-[11px] text-slate-500 mt-1">
+                  اعمال خودکار روی فاکتور نهایی
+                </div>
+              </div>
+            </div>
+
+            {/* Discounts Table */}
+            <div className={`rounded-3xl border overflow-hidden ${
+              isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
+            }`}>
+              <div className="overflow-x-auto">
+                <table className="w-full text-right text-xs">
+                  <thead className={`border-b ${
+                    isDark ? 'bg-slate-950/80 text-slate-400 border-slate-800' : 'bg-slate-50 text-slate-500 border-slate-200'
+                  }`}>
+                    <tr>
+                      <th className="p-4 font-bold">کد تخفیف</th>
+                      <th className="p-4 font-bold">میزان تخفیف</th>
+                      <th className="p-4 font-bold">رویداد مرتبط</th>
+                      <th className="p-4 font-bold">سقف / مصرف</th>
+                      <th className="p-4 font-bold">حداقل خرید</th>
+                      <th className="p-4 font-bold">تاریخ انقضا</th>
+                      <th className="p-4 font-bold">وضعیت</th>
+                      <th className="p-4 font-bold">عملیات</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-200 dark:divide-slate-800">
+                    {activeDiscounts.map((disc) => (
+                      <tr key={disc.id || disc.code} className={`transition-colors ${
+                        isDark ? 'hover:bg-slate-800/40' : 'hover:bg-slate-50/60'
+                      }`}>
+                        <td className="p-4">
+                          <div className="flex items-center gap-2">
+                            <span className="font-mono font-black text-amber-400 bg-amber-400/10 px-2.5 py-1 rounded-lg border border-amber-400/20 text-xs">
+                              {disc.code}
+                            </span>
+                            <button
+                              onClick={() => {
+                                if (navigator?.clipboard?.writeText) {
+                                  navigator.clipboard.writeText(disc.code);
+                                }
+                                setCopiedCodeToast(disc.code);
+                                setTimeout(() => setCopiedCodeToast(null), 3000);
+                              }}
+                              className="text-slate-400 hover:text-white p-1 rounded hover:bg-slate-800 cursor-pointer"
+                              title="کپی کد تخفیف"
+                            >
+                              <Copy className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                          <div className="text-[11px] text-slate-400 mt-1 max-w-[200px] truncate" title={disc.description}>
+                            {disc.description}
+                          </div>
+                        </td>
+                        <td className="p-4 font-bold">
+                          {disc.discountPercent ? (
+                            <span className="text-emerald-400 font-mono text-sm">
+                              {toPersianDigits(disc.discountPercent)}٪ تخفیف
+                            </span>
+                          ) : (
+                            <span className="text-emerald-400 font-mono text-sm">
+                              {formatPrice(disc.fixedAmount || 0)}
+                            </span>
+                          )}
+                        </td>
+                        <td className="p-4">
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                            disc.eventId === 'all' || !disc.eventId
+                              ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20'
+                              : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                          }`}>
+                            {disc.eventId === 'all' || !disc.eventId ? 'کلیه رویدادها' : disc.eventTitle || 'اختصاصی رویداد'}
+                          </span>
+                        </td>
+                        <td className="p-4">
+                          <div className="font-mono text-xs">
+                            {toPersianDigits(disc.usedCount || 0)} از {disc.maxUsage ? toPersianDigits(disc.maxUsage) : 'نامحدود'}
+                          </div>
+                          {disc.maxUsage && (
+                            <div className="w-20 bg-slate-800 rounded-full h-1.5 mt-1 overflow-hidden">
+                              <div
+                                className="bg-amber-400 h-1.5 rounded-full"
+                                style={{ width: `${Math.min(100, Math.round(((disc.usedCount || 0) / disc.maxUsage) * 100))}%` }}
+                              />
+                            </div>
+                          )}
+                        </td>
+                        <td className="p-4 font-mono text-slate-400">
+                          {disc.minOrderAmount ? formatPrice(disc.minOrderAmount) : 'بدون شرط'}
+                        </td>
+                        <td className="p-4 font-mono text-slate-400">
+                          {disc.expiresAt || 'همیشگی'}
+                        </td>
+                        <td className="p-4">
+                          <button
+                            onClick={() => handleToggleDiscountActive(disc)}
+                            className={`px-2.5 py-1 rounded-full text-[10px] font-bold cursor-pointer transition-colors border ${
+                              disc.isActive !== false
+                                ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20'
+                                : 'bg-rose-500/10 text-rose-400 border-rose-500/30 hover:bg-rose-500/20'
+                            }`}
+                          >
+                            {disc.isActive !== false ? '● فعال' : '○ غیرفعال'}
+                          </button>
+                        </td>
+                        <td className="p-4">
+                          <button
+                            onClick={() => handleDeleteDiscount(disc.code)}
+                            className="text-slate-400 hover:text-rose-400 p-1.5 rounded-lg hover:bg-rose-500/10 cursor-pointer transition-colors"
+                            title="حذف کد تخفیف"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         )}
 
@@ -1604,6 +2669,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       </div>
 
       {/* =========================================================================
+          MODAL 0: INTERACTIVE ARCHITECTURAL HALL & FLOOR PLAN BUILDER
+      ========================================================================= */}
+      {showPlanBuilderModal && (
+        <SalonPlanBuilderModal
+          theme={theme}
+          initialSalon={editingSalonForBuilder}
+          onClose={() => {
+            setShowPlanBuilderModal(false);
+            setEditingSalonForBuilder(null);
+          }}
+          onSaveSalon={handleSaveSalonFromBuilder}
+        />
+      )}
+
+      {/* =========================================================================
           MODAL 1: CREATE NEW SALON (Salons/Create)
       ========================================================================= */}
       {showAddSalonModal && (
@@ -1624,7 +2704,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </button>
             </div>
 
-            <form onSubmit={handleCreateSalon} className="space-y-4 text-xs">
+            <form onSubmit={handleSaveSalon} className="space-y-4 text-xs">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block mb-1 font-medium">نام سالن یا تالار:</label>
@@ -2287,6 +3367,168 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 ثبت هنرمند
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+          MODAL 7: CREATE DISCOUNT CODE (تعریف کد تخفیف در پنل مدیریت)
+      ========================================================================= */}
+      {showAddDiscountModal && (
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className={`max-w-md w-full border rounded-3xl p-6 space-y-5 shadow-2xl ${
+            isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+          }`}>
+            <div className="flex items-center justify-between">
+              <h3 className="text-base font-bold flex items-center gap-2">
+                <Tag className="w-5 h-5 text-amber-500" />
+                تعریف کد تخفیف جدید (Discount Voucher)
+              </h3>
+              <button
+                onClick={() => setShowAddDiscountModal(false)}
+                className="text-slate-400 hover:text-white p-1 rounded-lg"
+              >
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateDiscountSubmit} className="space-y-4 text-xs">
+              <div>
+                <label className="block mb-1 font-bold text-slate-400">کد کوپن تخفیف (حروف لاتین یا عدد):</label>
+                <input
+                  type="text"
+                  required
+                  value={newDiscCode}
+                  onChange={(e) => setNewDiscCode(e.target.value.toUpperCase())}
+                  placeholder="مثال: SUMMER40 یا TEHRAN10"
+                  className={`w-full p-2.5 rounded-xl border font-mono font-bold uppercase ${
+                    isDark ? 'bg-slate-800 border-slate-700 text-amber-400' : 'bg-slate-50 border-slate-200 text-amber-600'
+                  }`}
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1 font-bold text-slate-400">توضیحات و مناسبت تخفیف:</label>
+                <input
+                  type="text"
+                  value={newDiscDesc}
+                  onChange={(e) => setNewDiscDesc(e.target.value)}
+                  placeholder="مثال: تخفیف مناسبتی افتتاح سالن جدید"
+                  className={`w-full p-2.5 rounded-xl border ${
+                    isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200'
+                  }`}
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block mb-1 font-bold text-slate-400">نوع تخفیف:</label>
+                  <select
+                    value={newDiscType}
+                    onChange={(e) => setNewDiscType(e.target.value as any)}
+                    className={`w-full p-2.5 rounded-xl border ${
+                      isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200'
+                    }`}
+                  >
+                    <option value="percent">درصدی (٪)</option>
+                    <option value="fixed">مبلغ ثابت (تومان)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block mb-1 font-bold text-slate-400">
+                    {newDiscType === 'percent' ? 'درصد تخفیف (۱ الی ۱۰۰):' : 'مبلغ تخفیف (تومان):'}
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    max={newDiscType === 'percent' ? 100 : 2000000}
+                    value={newDiscValue}
+                    onChange={(e) => setNewDiscValue(Number(e.target.value))}
+                    className={`w-full p-2.5 rounded-xl border font-mono font-bold ${
+                      isDark ? 'bg-slate-800 border-slate-700 text-emerald-400' : 'bg-slate-50 border-slate-200 text-emerald-600'
+                    }`}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block mb-1 font-bold text-slate-400">اختصاص به رویداد خاص:</label>
+                <select
+                  value={newDiscEventId}
+                  onChange={(e) => setNewDiscEventId(e.target.value)}
+                  className={`w-full p-2.5 rounded-xl border ${
+                    isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200'
+                  }`}
+                >
+                  <option value="all">کلیه رویدادهای سامانه لیندو تیکت</option>
+                  {events.map((ev) => (
+                    <option key={ev.id} value={ev.id}>
+                      {ev.title} ({ev.city})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block mb-1 font-bold text-slate-400">حداکثر سقف استفاده:</label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={newDiscMaxUsage}
+                    onChange={(e) => setNewDiscMaxUsage(Number(e.target.value))}
+                    className={`w-full p-2.5 rounded-xl border font-mono ${
+                      isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200'
+                    }`}
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1 font-bold text-slate-400">کف خرید سبد (تومان):</label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="10000"
+                    value={newDiscMinOrder}
+                    onChange={(e) => setNewDiscMinOrder(Number(e.target.value))}
+                    placeholder="۰ = بدون شرط"
+                    className={`w-full p-2.5 rounded-xl border font-mono ${
+                      isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200'
+                    }`}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block mb-1 font-bold text-slate-400">تاریخ انقضای کد تخفیف:</label>
+                <input
+                  type="text"
+                  value={newDiscExpiry}
+                  onChange={(e) => setNewDiscExpiry(e.target.value)}
+                  placeholder="۱۴۰۵/۱۰/۳۰"
+                  className={`w-full p-2.5 rounded-xl border font-mono ${
+                    isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200'
+                  }`}
+                />
+              </div>
+
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => setShowAddDiscountModal(false)}
+                  className="px-4 py-2 rounded-xl text-slate-400 hover:text-white cursor-pointer"
+                >
+                  انصراف
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black cursor-pointer shadow-md"
+                >
+                  ثبت کد تخفیف در سامانه
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

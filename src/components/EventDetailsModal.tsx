@@ -123,12 +123,17 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {event.runTurns.map((sans) => {
-                const isFewSeats = sans.availableSeatsCount < 30;
+                const isSoldOut = !!sans.isSoldOut || sans.availableSeatsCount === 0;
+                const isFewSeats = !isSoldOut && sans.availableSeatsCount < 30;
                 return (
                   <div
                     key={sans.id}
                     className={`p-4 rounded-2xl border transition-all flex items-center justify-between group ${
-                      isDark
+                      isSoldOut
+                        ? isDark
+                          ? 'border-rose-900/40 bg-slate-950/40 opacity-80'
+                          : 'border-rose-200 bg-rose-50/40 opacity-85'
+                        : isDark
                         ? 'border-slate-800 bg-slate-950/60 hover:border-amber-500/50 hover:bg-slate-950'
                         : 'border-slate-200 bg-slate-50/70 hover:border-amber-400 hover:bg-white shadow-2xs'
                     }`}
@@ -139,13 +144,19 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
                           {sans.weekday} {sans.date}
                         </span>
                         <span className={`text-[11px] font-bold px-2 py-0.5 rounded ${
-                          isDark ? 'text-amber-400 bg-amber-400/10' : 'text-amber-700 bg-amber-100/70'
+                          isSoldOut
+                            ? 'text-rose-500 bg-rose-500/10 border border-rose-500/20'
+                            : isDark ? 'text-amber-400 bg-amber-400/10' : 'text-amber-700 bg-amber-100/70'
                         }`}>
                           ساعت {sans.time}
                         </span>
                       </div>
                       <p className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                        {isFewSeats ? (
+                        {isSoldOut ? (
+                          <span className="text-rose-500 font-black">
+                            تکمیل ظرفیت (سولد اوت) - بلیت‌ها تمام شد
+                          </span>
+                        ) : isFewSeats ? (
                           <span className="text-rose-500 font-bold">
                             تنها {toPersianDigits(sans.availableSeatsCount)} صندلی باقی مانده!
                           </span>
@@ -155,13 +166,19 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
                       </p>
                     </div>
 
-                    <button
-                      onClick={() => onSelectSans(event, sans)}
-                      className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-1 transition-all cursor-pointer group-hover:scale-105"
-                    >
-                      <span>انتخاب صندلی</span>
-                      <ChevronLeft className="w-3.5 h-3.5" />
-                    </button>
+                    {isSoldOut ? (
+                      <span className="px-3 py-2 rounded-xl text-[11px] font-bold text-slate-400 bg-slate-800/60 border border-slate-700/60 select-none">
+                        پایان بلیت
+                      </span>
+                    ) : (
+                      <button
+                        onClick={() => onSelectSans(event, sans)}
+                        className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-1 transition-all cursor-pointer group-hover:scale-105"
+                      >
+                        <span>انتخاب صندلی</span>
+                        <ChevronLeft className="w-3.5 h-3.5" />
+                      </button>
+                    )}
                   </div>
                 );
               })}

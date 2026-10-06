@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, HelpCircle, FileText, Info } from 'lucide-react';
+import { X, HelpCircle, FileText, Info, ShieldCheck } from 'lucide-react';
 
 interface InfoModalProps {
   theme: 'light' | 'dark';
@@ -69,11 +69,11 @@ export const InfoModal: React.FC<InfoModalProps> = ({ theme, type, onClose, onTr
           <div className="space-y-3">
             <h3 className="text-base font-bold flex items-center gap-2">
               <Info className="w-5 h-5 text-indigo-500" />
-              درباره سامانه رزرواسیون گیشو (Gishow)
+              درباره سامانه لیندو تیکت (LinduTicket)
             </h3>
             <div className={`space-y-2 text-xs leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-              <p>گیشو (بر پایه پلتفرم LinduTicket) سامانه‌ای جامع و مدرن جهت فروش بلیت، رزرواسیون صندلی و مدیریت گیت ورود رویدادهای هنری، کنسرت‌ها و همایش‌های فرهنگی کشور است.</p>
-              <p>دفتر مرکزی: مشهد مقدس، میدان طالقانی، مجموعه فرهنگی شهرما.</p>
+              <p>لیندو تیکت (LinduTicket) پلتفرم مدرن و هوشمند جهت فروش آنلاین بلیت، رزرواسیون صندلی‌های سالن با پلان تعاملی و مدیریت گیت ورود و گیشه حضوری رویدادهای هنری، کنسرت‌ها و همایش‌های کشور است.</p>
+              <p>دفتر مرکزی: مشهد مقدس، میدان طالقانی، مجموعه همایش‌های شهرما.</p>
               <p>تلفن‌های تماس: ۰۹۱۵۲۴۵۴۶۱۲ - ۰۹۱۵۳۶۷۹۴۰۰</p>
             </div>
           </div>
@@ -86,9 +86,9 @@ export const InfoModal: React.FC<InfoModalProps> = ({ theme, type, onClose, onTr
               راهنمای پرداخت امن شاپرک (بانک مرکزی)
             </h3>
             <div className={`space-y-2 text-xs leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-              <p>• کلیه پرداخت‌های سامانه گیشو از طریق درگاه‌های مستقیم شاپرک (به‌پرداخت ملت، پارسیان و زرین‌پال) انجام می‌شود.</p>
+              <p>• کلیه پرداخت‌های سامانه لیندو تیکت از طریق درگاه‌های مستقیم شاپرک (به‌پرداخت ملت، پارسیان و زرین‌پال) انجام می‌شود.</p>
               <p>• آدرس درگاه پرداخت در مرورگر شما همواره با پیشوند رسمی <code className="font-mono text-amber-500">https://*.shaparak.ir</code> آغاز می‌گردد.</p>
-              <p>• پس از اتمام پرداخت و فشردن دکمه تکمیل خرید در صفحه بانک، حتماً منتظر انتقال خودکار به سامانه گیشو و دریافت کد رهگیری بمانید.</p>
+              <p>• پس از اتمام پرداخت و فشردن دکمه تکمیل خرید در صفحه بانک، حتماً منتظر انتقال خودکار به سامانه لیندو تیکت و دریافت کد رهگیری بمانید.</p>
               <p>• در صورت بروز هرگونه قطعی ارتباط بانکی، وجه کسر شده ظرف حداکثر ۷۲ ساعت به همان کارت بانکی بازگردانده خواهد شد.</p>
             </div>
           </div>
@@ -127,7 +127,7 @@ export const InfoModal: React.FC<InfoModalProps> = ({ theme, type, onClose, onTr
             {coopSent ? (
               <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 text-xs font-bold space-y-1">
                 <p>درخواست برگزاری رویداد با موفقیت ثبت شد.</p>
-                <p className="font-normal text-[11px] text-emerald-400">کارشناسان گیشه گیشو ظرف ۲۴ ساعت جهت هماهنگی سالن و صدور قرارداد با شما تماس خواهند گرفت.</p>
+                <p className="font-normal text-[11px] text-emerald-400">کارشناسان پشتیبانی لیندو تیکت ظرف ۲۴ ساعت جهت هماهنگی سالن و صدور قرارداد با شما تماس خواهند گرفت.</p>
               </div>
             ) : (
               <div className="space-y-2.5 text-xs">
