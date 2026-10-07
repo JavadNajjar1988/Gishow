@@ -1,0 +1,2180 @@
+{
+  "backup_sha256": "8ff0abb89bf13f5df135ee0c8456be1548b874b481ce26b359af9399e7a3b0fe",
+  "column_count": 217,
+  "scope": "Complete source-column coverage; proposed destinations, not an executable importer",
+  "canonical_money_unit": "IRR",
+  "source_money_unit": "legacy_toman",
+  "columns": [
+    {
+      "legacy_table": "__MigrationHistory",
+      "legacy_column": "MigrationId",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "archive_only",
+      "proposed_field": "MigrationId",
+      "conversion_rule": "do_not_replay_old_framework_migrations",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "__MigrationHistory",
+      "legacy_column": "ContextKey",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "archive_only",
+      "proposed_field": "ContextKey",
+      "conversion_rule": "do_not_replay_old_framework_migrations",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "__MigrationHistory",
+      "legacy_column": "Model",
+      "legacy_type": "varbinary",
+      "legacy_nullable": false,
+      "proposed_entity": "archive_only",
+      "proposed_field": "Model",
+      "conversion_rule": "do_not_replay_old_framework_migrations",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "__MigrationHistory",
+      "legacy_column": "ProductVersion",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "archive_only",
+      "proposed_field": "ProductVersion",
+      "conversion_rule": "do_not_replay_old_framework_migrations",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "Actresses",
+      "legacy_column": "ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "artists",
+      "proposed_field": "legacy_id",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "Actresses",
+      "legacy_column": "Name",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "artists",
+      "proposed_field": "name",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "Actresses",
+      "legacy_column": "Image",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "artists",
+      "proposed_field": "asset_reference",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "Actresses",
+      "legacy_column": "Barname_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "artists",
+      "proposed_field": "event_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "Actresses",
+      "legacy_column": "DateInsert",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "artists",
+      "proposed_field": "created_local",
+      "conversion_rule": "preserve_source_text_parse_solar_calendar_no_implicit_UTC",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "BankTerminals",
+      "legacy_column": "ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "bank_terminals",
+      "proposed_field": "legacy_id",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "BankTerminals",
+      "legacy_column": "Bank_Name_EN",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "bank_terminals",
+      "proposed_field": "provider_code",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "BankTerminals",
+      "legacy_column": "Bank_Name_FA",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "bank_terminals",
+      "proposed_field": "title",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "BankTerminals",
+      "legacy_column": "Terminal_ID",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "bank_terminals",
+      "proposed_field": "terminal_id",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "BankTerminals",
+      "legacy_column": "Merchant_ID",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "bank_terminals",
+      "proposed_field": "merchant_id",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "BankTerminals",
+      "legacy_column": "Transaction_Key",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "bank_terminals",
+      "proposed_field": "secret_reference",
+      "conversion_rule": "private_secret_store_no_plaintext_export",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "BankTerminals",
+      "legacy_column": "IsActive",
+      "legacy_type": "bit",
+      "legacy_nullable": false,
+      "proposed_entity": "bank_terminals",
+      "proposed_field": "is_active",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "BankTerminals",
+      "legacy_column": "IsShow",
+      "legacy_type": "bit",
+      "legacy_nullable": false,
+      "proposed_entity": "bank_terminals",
+      "proposed_field": "is_visible",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "BankTerminals",
+      "legacy_column": "DateInsert",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "bank_terminals",
+      "proposed_field": "created_local",
+      "conversion_rule": "preserve_source_text_parse_solar_calendar_no_implicit_UTC",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "Barnames",
+      "legacy_column": "ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "events",
+      "proposed_field": "legacy_id",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "Barnames",
+      "legacy_column": "Name",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "events",
+      "proposed_field": "title",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "Barnames",
+      "legacy_column": "DirectorName",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "events",
+      "proposed_field": "director_name",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "Barnames",
+      "legacy_column": "RunPeriod",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "events",
+      "proposed_field": "date_range_text",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "Barnames",
+      "legacy_column": "RunTime",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "events",
+      "proposed_field": "duration_legacy",
+      "conversion_rule": "preserve_source_value_semantics_require_review",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "Barnames",
+      "legacy_column": "AboutBarname",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "events",
+      "proposed_field": "description_html",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "Barnames",
+      "legacy_column": "DateStartBuyTickets",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "events",
+      "proposed_field": "sales_start_local",
+      "conversion_rule": "preserve_source_text_parse_solar_calendar_no_implicit_UTC",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "Barnames",
+      "legacy_column": "DateStartInform",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "events",
+      "proposed_field": "publication_start_local",
+      "conversion_rule": "preserve_source_text_parse_solar_calendar_no_implicit_UTC",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "Barnames",
+      "legacy_column": "IsActive",
+      "legacy_type": "bit",
+      "legacy_nullable": false,
+      "proposed_entity": "events",
+      "proposed_field": "is_active",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "Barnames",
+      "legacy_column": "CauseDeActive",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "events",
+      "proposed_field": "inactive_reason",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "Barnames",
+      "legacy_column": "Order_ForShow",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "events",
+      "proposed_field": "display_order",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "Barnames",
+      "legacy_column": "PriceChairInShow",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "events",
+      "proposed_field": "display_currency_legacy_label",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "Barnames",
+      "legacy_column": "PriceChairInSales",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "events",
+      "proposed_field": "sales_currency_legacy_label",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "Barnames",
+      "legacy_column": "LanguageID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "events",
+      "proposed_field": "language_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "Barnames",
+      "legacy_column": "DateInsert",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "events",
+      "proposed_field": "created_local",
+      "conversion_rule": "preserve_source_text_parse_solar_calendar_no_implicit_UTC",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "Barnames",
+      "legacy_column": "TicketDescription",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "events",
+      "proposed_field": "ticket_description",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "Barnames",
+      "legacy_column": "EventLocation",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "events",
+      "proposed_field": "location_legacy_embed",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInBarnames",
+      "legacy_column": "ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "seat_inventory_and_tickets",
+      "proposed_field": "legacy_id",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInBarnames",
+      "legacy_column": "Barname_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "seat_inventory_and_tickets",
+      "proposed_field": "event_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInBarnames",
+      "legacy_column": "RunTurns_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "seat_inventory_and_tickets",
+      "proposed_field": "sans_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInBarnames",
+      "legacy_column": "Salon_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "seat_inventory_and_tickets",
+      "proposed_field": "salon_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInBarnames",
+      "legacy_column": "Salon_Name",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "seat_inventory_and_tickets",
+      "proposed_field": "salon_name_snapshot",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInBarnames",
+      "legacy_column": "PartOfSalon_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "seat_inventory_and_tickets",
+      "proposed_field": "part_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInBarnames",
+      "legacy_column": "PartOfSalon_Name",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "seat_inventory_and_tickets",
+      "proposed_field": "part_name_snapshot",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInBarnames",
+      "legacy_column": "RowNumber",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "seat_inventory_and_tickets",
+      "proposed_field": "row_internal",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInBarnames",
+      "legacy_column": "RowTitel",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "seat_inventory_and_tickets",
+      "proposed_field": "row_title",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInBarnames",
+      "legacy_column": "ChairNumber",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "seat_inventory_and_tickets",
+      "proposed_field": "seat_internal",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInBarnames",
+      "legacy_column": "ChairsStatus",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "seat_inventory_and_tickets",
+      "proposed_field": "inventory_state",
+      "conversion_rule": "explicit_six_state_map_keep_virtual_and_deleted_distinct",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInBarnames",
+      "legacy_column": "TimeReserve",
+      "legacy_type": "bigint",
+      "legacy_nullable": false,
+      "proposed_entity": "seat_inventory_and_tickets",
+      "proposed_field": "reservation_clock_local",
+      "conversion_rule": "parse_12_digit_solar_YYYYMMDDHHmm_zero_means_unset_not_epoch",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInBarnames",
+      "legacy_column": "PriceChair",
+      "legacy_type": "bigint",
+      "legacy_nullable": false,
+      "proposed_entity": "seat_inventory_and_tickets",
+      "proposed_field": "price_minor",
+      "conversion_rule": "integer_IRR_from_legacy_toman_times_10_checked_overflow",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInBarnames",
+      "legacy_column": "Factor_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "seat_inventory_and_tickets",
+      "proposed_field": "order_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInBarnames",
+      "legacy_column": "Payment_Finishid",
+      "legacy_type": "bit",
+      "legacy_nullable": false,
+      "proposed_entity": "seat_inventory_and_tickets",
+      "proposed_field": "legacy_payment_flag",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInBarnames",
+      "legacy_column": "Barcode_RandomCode",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "seat_inventory_and_tickets",
+      "proposed_field": "legacy_barcode_random",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInBarnames",
+      "legacy_column": "UserToken",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "seat_inventory_and_tickets",
+      "proposed_field": "legacy_reservation_token",
+      "conversion_rule": "archive_only_never_reactivate_legacy_session_or_reservation_tokens",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInBarnames",
+      "legacy_column": "TrackingFactor",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "seat_inventory_and_tickets",
+      "proposed_field": "legacy_tracking_code",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInBarnames",
+      "legacy_column": "ImageBarCodeName",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "seat_inventory_and_tickets",
+      "proposed_field": "legacy_barcode_asset",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInBarnames",
+      "legacy_column": "RowNumberForShow",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "seat_inventory_and_tickets",
+      "proposed_field": "row_display",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInBarnames",
+      "legacy_column": "ChairNumberForShow",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "seat_inventory_and_tickets",
+      "proposed_field": "seat_display",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInBarnames",
+      "legacy_column": "Checker_Accept",
+      "legacy_type": "bit",
+      "legacy_nullable": false,
+      "proposed_entity": "seat_inventory_and_tickets",
+      "proposed_field": "ticket_checked_in",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInBarnames",
+      "legacy_column": "Checker_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "seat_inventory_and_tickets",
+      "proposed_field": "checker_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInBarnames",
+      "legacy_column": "Date_Check",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "seat_inventory_and_tickets",
+      "proposed_field": "checked_in_local",
+      "conversion_rule": "preserve_source_text_parse_solar_calendar_no_implicit_UTC",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInBarnames",
+      "legacy_column": "Barcode_Data",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "seat_inventory_and_tickets",
+      "proposed_field": "legacy_barcode",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInBarnames",
+      "legacy_column": "Checker_Accept_By",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "seat_inventory_and_tickets",
+      "proposed_field": "checked_in_by_snapshot",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInParts",
+      "legacy_column": "ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "seats",
+      "proposed_field": "legacy_id",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInParts",
+      "legacy_column": "Salon_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "seats",
+      "proposed_field": "salon_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInParts",
+      "legacy_column": "PartOfSalon_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "seats",
+      "proposed_field": "part_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInParts",
+      "legacy_column": "RowNumber",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "seats",
+      "proposed_field": "row_internal",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInParts",
+      "legacy_column": "RowTitel",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "seats",
+      "proposed_field": "row_title",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInParts",
+      "legacy_column": "ChairNumber",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "seats",
+      "proposed_field": "seat_internal",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInParts",
+      "legacy_column": "ChairsStatus",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "seats",
+      "proposed_field": "base_state",
+      "conversion_rule": "explicit_six_state_map_keep_virtual_and_deleted_distinct",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInParts",
+      "legacy_column": "RowNumberForShow",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "seats",
+      "proposed_field": "row_display",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInParts",
+      "legacy_column": "ChairNumberForShow",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "seats",
+      "proposed_field": "seat_display",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ChairInParts",
+      "legacy_column": "StartChairNumber",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "seats",
+      "proposed_field": "start_number",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorLists",
+      "legacy_column": "ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "orders_and_payment_history",
+      "proposed_field": "legacy_id",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorLists",
+      "legacy_column": "User_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "orders_and_payment_history",
+      "proposed_field": "buyer_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorLists",
+      "legacy_column": "Barname_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "orders_and_payment_history",
+      "proposed_field": "event_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorLists",
+      "legacy_column": "RunTurns_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "orders_and_payment_history",
+      "proposed_field": "sans_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorLists",
+      "legacy_column": "Salon_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "orders_and_payment_history",
+      "proposed_field": "salon_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorLists",
+      "legacy_column": "Part_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "orders_and_payment_history",
+      "proposed_field": "part_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorLists",
+      "legacy_column": "ChairCount",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "orders_and_payment_history",
+      "proposed_field": "seat_count",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorLists",
+      "legacy_column": "SelectChair_List",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "orders_and_payment_history",
+      "proposed_field": "legacy_seat_list",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorLists",
+      "legacy_column": "SumCost_Amount",
+      "legacy_type": "bigint",
+      "legacy_nullable": false,
+      "proposed_entity": "orders_and_payment_history",
+      "proposed_field": "subtotal_minor",
+      "conversion_rule": "integer_IRR_from_legacy_toman_times_10_checked_overflow",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorLists",
+      "legacy_column": "SumFactorMarkdown",
+      "legacy_type": "bigint",
+      "legacy_nullable": false,
+      "proposed_entity": "orders_and_payment_history",
+      "proposed_field": "discount_minor",
+      "conversion_rule": "integer_IRR_from_legacy_toman_times_10_checked_overflow",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorLists",
+      "legacy_column": "BankTerminal_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "orders_and_payment_history",
+      "proposed_field": "bank_terminal_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorLists",
+      "legacy_column": "Order_ID",
+      "legacy_type": "bigint",
+      "legacy_nullable": false,
+      "proposed_entity": "orders_and_payment_history",
+      "proposed_field": "legacy_gateway_order_id",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorLists",
+      "legacy_column": "RequestKey",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "orders_and_payment_history",
+      "proposed_field": "legacy_gateway_request_reference",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorLists",
+      "legacy_column": "Reference_Number",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "orders_and_payment_history",
+      "proposed_field": "legacy_gateway_reference",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorLists",
+      "legacy_column": "AppStatus_Code",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "orders_and_payment_history",
+      "proposed_field": "legacy_gateway_status_code",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorLists",
+      "legacy_column": "AppStatus",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "orders_and_payment_history",
+      "proposed_field": "legacy_gateway_status_text",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorLists",
+      "legacy_column": "RealTransaction_DateTime",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "orders_and_payment_history",
+      "proposed_field": "legacy_transaction_local",
+      "conversion_rule": "preserve_source_text_parse_solar_calendar_no_implicit_UTC",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorLists",
+      "legacy_column": "Payment_Finishid",
+      "legacy_type": "bit",
+      "legacy_nullable": false,
+      "proposed_entity": "orders_and_payment_history",
+      "proposed_field": "legacy_paid_flag",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorLists",
+      "legacy_column": "DateInsert",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "orders_and_payment_history",
+      "proposed_field": "created_local",
+      "conversion_rule": "preserve_source_text_parse_solar_calendar_no_implicit_UTC",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorLists",
+      "legacy_column": "DataInsertInt",
+      "legacy_type": "bigint",
+      "legacy_nullable": false,
+      "proposed_entity": "orders_and_payment_history",
+      "proposed_field": "created_clock_local",
+      "conversion_rule": "parse_12_digit_solar_YYYYMMDDHHmm_zero_means_unset_not_epoch",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorLists",
+      "legacy_column": "UserToken",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "orders_and_payment_history",
+      "proposed_field": "legacy_reservation_token",
+      "conversion_rule": "archive_only_never_reactivate_legacy_session_or_reservation_tokens",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorLists",
+      "legacy_column": "TrackingFactor",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "orders_and_payment_history",
+      "proposed_field": "legacy_tracking_code",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorLists",
+      "legacy_column": "User_Sold_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "orders_and_payment_history",
+      "proposed_field": "seller_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorLists",
+      "legacy_column": "DeleteKey",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "orders_and_payment_history",
+      "proposed_field": "retired_delete_challenge",
+      "conversion_rule": "do_not_activate_legacy_security_challenges_keep_original_backup",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorLists",
+      "legacy_column": "CellPhoneDeleteKey",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "orders_and_payment_history",
+      "proposed_field": "retired_delete_phone",
+      "conversion_rule": "do_not_activate_legacy_security_challenges_keep_original_backup",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorLists",
+      "legacy_column": "DeleteFactor",
+      "legacy_type": "bit",
+      "legacy_nullable": false,
+      "proposed_entity": "orders_and_payment_history",
+      "proposed_field": "is_deleted_legacy",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorLists",
+      "legacy_column": "DateDeleteFactor",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "orders_and_payment_history",
+      "proposed_field": "deleted_local",
+      "conversion_rule": "preserve_source_text_parse_solar_calendar_no_implicit_UTC",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorMarkdowns",
+      "legacy_column": "ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "applied_discounts",
+      "proposed_field": "legacy_id",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorMarkdowns",
+      "legacy_column": "Factor_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "applied_discounts",
+      "proposed_field": "order_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorMarkdowns",
+      "legacy_column": "Markdown_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "applied_discounts",
+      "proposed_field": "discount_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorMarkdowns",
+      "legacy_column": "Markdown_Code",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "applied_discounts",
+      "proposed_field": "code_snapshot",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorMarkdowns",
+      "legacy_column": "Markdown_Count",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "applied_discounts",
+      "proposed_field": "legacy_count",
+      "conversion_rule": "preserve_source_value_semantics_require_review",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorMarkdowns",
+      "legacy_column": "Factor_SumPrice",
+      "legacy_type": "bigint",
+      "legacy_nullable": false,
+      "proposed_entity": "applied_discounts",
+      "proposed_field": "subtotal_minor",
+      "conversion_rule": "integer_IRR_from_legacy_toman_times_10_checked_overflow",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorMarkdowns",
+      "legacy_column": "Markdown_SumPrice",
+      "legacy_type": "bigint",
+      "legacy_nullable": false,
+      "proposed_entity": "applied_discounts",
+      "proposed_field": "discount_minor",
+      "conversion_rule": "integer_IRR_from_legacy_toman_times_10_checked_overflow",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorMarkdowns",
+      "legacy_column": "Markdown_Class",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "applied_discounts",
+      "proposed_field": "kind_snapshot",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorMarkdowns",
+      "legacy_column": "Markdown_Price_Unit",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "applied_discounts",
+      "proposed_field": "value_snapshot",
+      "conversion_rule": "branch_by_discount_kind_percent_unchanged_fixed_amount_times_10",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorMarkdowns",
+      "legacy_column": "TimeReserve",
+      "legacy_type": "bigint",
+      "legacy_nullable": false,
+      "proposed_entity": "applied_discounts",
+      "proposed_field": "reservation_clock_local",
+      "conversion_rule": "parse_12_digit_solar_YYYYMMDDHHmm_zero_means_unset_not_epoch",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorMarkdowns",
+      "legacy_column": "Payment_Finishid",
+      "legacy_type": "bit",
+      "legacy_nullable": false,
+      "proposed_entity": "applied_discounts",
+      "proposed_field": "legacy_payment_flag",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "FactorMarkdowns",
+      "legacy_column": "UserToken",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "applied_discounts",
+      "proposed_field": "legacy_reservation_token",
+      "conversion_rule": "archive_only_never_reactivate_legacy_session_or_reservation_tokens",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ImageBarnames",
+      "legacy_column": "ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "event_assets",
+      "proposed_field": "legacy_id",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ImageBarnames",
+      "legacy_column": "ImageName",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "event_assets",
+      "proposed_field": "asset_reference",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ImageBarnames",
+      "legacy_column": "Barname_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "event_assets",
+      "proposed_field": "event_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ImageBarnames",
+      "legacy_column": "DateInsert",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "event_assets",
+      "proposed_field": "created_local",
+      "conversion_rule": "preserve_source_text_parse_solar_calendar_no_implicit_UTC",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ImagesMadareks",
+      "legacy_column": "ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "event_documents",
+      "proposed_field": "legacy_id",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ImagesMadareks",
+      "legacy_column": "ImageCaption",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "event_documents",
+      "proposed_field": "caption",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ImagesMadareks",
+      "legacy_column": "ImageName",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "event_documents",
+      "proposed_field": "asset_reference",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ImagesMadareks",
+      "legacy_column": "Barname_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "event_documents",
+      "proposed_field": "event_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "ImagesMadareks",
+      "legacy_column": "DateInsert",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "event_documents",
+      "proposed_field": "created_local",
+      "conversion_rule": "preserve_source_text_parse_solar_calendar_no_implicit_UTC",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "Languages",
+      "legacy_column": "ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "languages",
+      "proposed_field": "legacy_id",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "Languages",
+      "legacy_column": "LanguageName",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "languages",
+      "proposed_field": "legacy_name",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "MarkdownLists",
+      "legacy_column": "ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "discounts",
+      "proposed_field": "legacy_id",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "MarkdownLists",
+      "legacy_column": "Barname_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "discounts",
+      "proposed_field": "event_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "MarkdownLists",
+      "legacy_column": "Markdown_Code",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "discounts",
+      "proposed_field": "code",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "MarkdownLists",
+      "legacy_column": "Markdown_Count",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "discounts",
+      "proposed_field": "legacy_count",
+      "conversion_rule": "preserve_source_value_semantics_require_review",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "MarkdownLists",
+      "legacy_column": "Markdown_Class",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "discounts",
+      "proposed_field": "kind",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "MarkdownLists",
+      "legacy_column": "Markdown_Price_Unit",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "discounts",
+      "proposed_field": "value",
+      "conversion_rule": "branch_by_discount_kind_percent_unchanged_fixed_amount_times_10",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "MarkdownLists",
+      "legacy_column": "Condition_MinimumChair",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "discounts",
+      "proposed_field": "minimum_seats",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "MarkdownLists",
+      "legacy_column": "IsActive",
+      "legacy_type": "bit",
+      "legacy_nullable": false,
+      "proposed_entity": "discounts",
+      "proposed_field": "is_active",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "MarkdownLists",
+      "legacy_column": "DateInsert",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "discounts",
+      "proposed_field": "created_local",
+      "conversion_rule": "preserve_source_text_parse_solar_calendar_no_implicit_UTC",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "PartOfSalons",
+      "legacy_column": "ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "salon_parts",
+      "proposed_field": "legacy_id",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "PartOfSalons",
+      "legacy_column": "Salon_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "salon_parts",
+      "proposed_field": "salon_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "PartOfSalons",
+      "legacy_column": "Name",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "salon_parts",
+      "proposed_field": "name",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "PartOfSalons",
+      "legacy_column": "Floor",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "salon_parts",
+      "proposed_field": "floor_legacy",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "PartOfSalons",
+      "legacy_column": "Side",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "salon_parts",
+      "proposed_field": "side_legacy",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "PartOfSalons",
+      "legacy_column": "RowPart",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "salon_parts",
+      "proposed_field": "row_definition_legacy",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "PartOfSalons",
+      "legacy_column": "CountChairs",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "salon_parts",
+      "proposed_field": "seat_count",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "PartOfSalons",
+      "legacy_column": "DirectionChair",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "salon_parts",
+      "proposed_field": "orientation_legacy",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "PartOfSalons",
+      "legacy_column": "PartMapPointList",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "salon_parts",
+      "proposed_field": "geometry_legacy",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "PartOfSalons",
+      "legacy_column": "DateInsert",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "salon_parts",
+      "proposed_field": "created_local",
+      "conversion_rule": "preserve_source_text_parse_solar_calendar_no_implicit_UTC",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "RoleAccessLevels",
+      "legacy_column": "ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "permission_definitions",
+      "proposed_field": "legacy_id",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "RoleAccessLevels",
+      "legacy_column": "Role_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "permission_definitions",
+      "proposed_field": "role_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "RoleAccessLevels",
+      "legacy_column": "AccessLevel_Name",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "permission_definitions",
+      "proposed_field": "code",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "RoleAccessLevels",
+      "legacy_column": "AccessLevel_Titel",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "permission_definitions",
+      "proposed_field": "title",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "RoleAccessLevels",
+      "legacy_column": "Order_Item",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "permission_definitions",
+      "proposed_field": "display_order",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "RoleAccessLevels",
+      "legacy_column": "Group_Item",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "permission_definitions",
+      "proposed_field": "group_legacy",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "RoleAccessLevels",
+      "legacy_column": "DefuoltAccess",
+      "legacy_type": "bit",
+      "legacy_nullable": false,
+      "proposed_entity": "permission_definitions",
+      "proposed_field": "default_allowed",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "RoleLists",
+      "legacy_column": "ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "roles",
+      "proposed_field": "legacy_id",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "RoleLists",
+      "legacy_column": "RoleName",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "roles",
+      "proposed_field": "code",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "RoleLists",
+      "legacy_column": "RoleTitel",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "roles",
+      "proposed_field": "title",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "RunTurns",
+      "legacy_column": "ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "sanses",
+      "proposed_field": "legacy_id",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "RunTurns",
+      "legacy_column": "DateRun",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "sanses",
+      "proposed_field": "date_text_legacy",
+      "conversion_rule": "preserve_source_value_semantics_require_review",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "RunTurns",
+      "legacy_column": "TimeRun",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "sanses",
+      "proposed_field": "time_local",
+      "conversion_rule": "preserve_source_text_parse_solar_calendar_no_implicit_UTC",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "RunTurns",
+      "legacy_column": "Barname_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "sanses",
+      "proposed_field": "event_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "RunTurns",
+      "legacy_column": "Salon_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "sanses",
+      "proposed_field": "salon_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "RunTurns",
+      "legacy_column": "DateInsert",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "sanses",
+      "proposed_field": "created_local",
+      "conversion_rule": "preserve_source_text_parse_solar_calendar_no_implicit_UTC",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "RunTurns",
+      "legacy_column": "IsShow",
+      "legacy_type": "bit",
+      "legacy_nullable": false,
+      "proposed_entity": "sanses",
+      "proposed_field": "is_visible",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "RunTurns",
+      "legacy_column": "EventLocation",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "sanses",
+      "proposed_field": "location_legacy_embed",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "RunTurns",
+      "legacy_column": "TemporaryReservation",
+      "legacy_type": "bit",
+      "legacy_nullable": false,
+      "proposed_entity": "sanses",
+      "proposed_field": "assisted_reservation_enabled",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "RunTurns",
+      "legacy_column": "MessageTemporaryReservation",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "sanses",
+      "proposed_field": "assisted_reservation_message",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "Salons",
+      "legacy_column": "ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "salons",
+      "proposed_field": "legacy_id",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "Salons",
+      "legacy_column": "Name",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "salons",
+      "proposed_field": "name",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "Salons",
+      "legacy_column": "Address",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "salons",
+      "proposed_field": "address",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "Salons",
+      "legacy_column": "IsActive",
+      "legacy_type": "bit",
+      "legacy_nullable": false,
+      "proposed_entity": "salons",
+      "proposed_field": "is_active",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "Salons",
+      "legacy_column": "IsPlanShow",
+      "legacy_type": "bit",
+      "legacy_nullable": false,
+      "proposed_entity": "salons",
+      "proposed_field": "plan_visible",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "Salons",
+      "legacy_column": "PlanImageName",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "salons",
+      "proposed_field": "plan_asset_reference",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "Salons",
+      "legacy_column": "DateInsert",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "salons",
+      "proposed_field": "created_local",
+      "conversion_rule": "preserve_source_text_parse_solar_calendar_no_implicit_UTC",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "SettingSites",
+      "legacy_column": "ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "site_settings",
+      "proposed_field": "legacy_id",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "SettingSites",
+      "legacy_column": "KavehnegarMerchent",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "site_settings",
+      "proposed_field": "sms_secret_reference",
+      "conversion_rule": "private_secret_store_no_plaintext_export",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "SettingSites",
+      "legacy_column": "DollarPrice",
+      "legacy_type": "bigint",
+      "legacy_nullable": false,
+      "proposed_entity": "site_settings",
+      "proposed_field": "legacy_fx_rate",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "SettingSites",
+      "legacy_column": "BuyingGuide",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "site_settings",
+      "proposed_field": "buying_guide_html",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "SettingSites",
+      "legacy_column": "PurchaseRules",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "site_settings",
+      "proposed_field": "purchase_rules_html",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "SettingSites",
+      "legacy_column": "AboutMe",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "site_settings",
+      "proposed_field": "about_html",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "SettingSites",
+      "legacy_column": "SecurePaymentGuide",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "site_settings",
+      "proposed_field": "secure_payment_guide_html",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "SettingSites",
+      "legacy_column": "Faq",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "site_settings",
+      "proposed_field": "faq_html",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "SettingSites",
+      "legacy_column": "ContactUs",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "site_settings",
+      "proposed_field": "contact_html",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "SettingSites",
+      "legacy_column": "Cooperatewithus",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "site_settings",
+      "proposed_field": "cooperation_html",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "SettingSites",
+      "legacy_column": "TimeResetServer",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "site_settings",
+      "proposed_field": "server_timeout_legacy",
+      "conversion_rule": "preserve_source_value_semantics_require_review",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "SettingSites",
+      "legacy_column": "TimeResetClient",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "site_settings",
+      "proposed_field": "client_timeout_legacy",
+      "conversion_rule": "preserve_source_value_semantics_require_review",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "SettingSites",
+      "legacy_column": "TemplateName",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "site_settings",
+      "proposed_field": "template_legacy",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "SettingSites",
+      "legacy_column": "CountChoiceChair",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "site_settings",
+      "proposed_field": "max_seats_per_order",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "SettingSites",
+      "legacy_column": "AdminCellPhone",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "site_settings",
+      "proposed_field": "admin_phone",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "SettingSites",
+      "legacy_column": "SupportLink",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "site_settings",
+      "proposed_field": "support_link",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "SettingSites",
+      "legacy_column": "SiteSignature",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "site_settings",
+      "proposed_field": "footer_signature",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "SettingSites",
+      "legacy_column": "SiteSignatureLink",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "site_settings",
+      "proposed_field": "footer_signature_link",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "SettingSites",
+      "legacy_column": "CallSupport",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "site_settings",
+      "proposed_field": "support_contact",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "SettingSites",
+      "legacy_column": "CallSupportType",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "site_settings",
+      "proposed_field": "support_contact_type",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "SettingSites",
+      "legacy_column": "WhatsAppSupportSalesLink",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "site_settings",
+      "proposed_field": "sales_support_link",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "SettingSites",
+      "legacy_column": "WhatsAppSupportSalesDescription",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "site_settings",
+      "proposed_field": "sales_support_description",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "SettingSites",
+      "legacy_column": "WhatsAppFollowUpLink",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "site_settings",
+      "proposed_field": "tracking_support_link",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "SettingSites",
+      "legacy_column": "WhatsAppFollowUpDescription",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "site_settings",
+      "proposed_field": "tracking_support_description",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "SlideShows",
+      "legacy_column": "ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "slides",
+      "proposed_field": "legacy_id",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "SlideShows",
+      "legacy_column": "ImageName",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "slides",
+      "proposed_field": "asset_reference",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "SlideShows",
+      "legacy_column": "Order_ForShow",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "slides",
+      "proposed_field": "display_order",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "SlideShows",
+      "legacy_column": "IsShow",
+      "legacy_type": "bit",
+      "legacy_nullable": false,
+      "proposed_entity": "slides",
+      "proposed_field": "is_visible",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "SlideShows",
+      "legacy_column": "DateInsert",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": true,
+      "proposed_entity": "slides",
+      "proposed_field": "created_local",
+      "conversion_rule": "preserve_source_text_parse_solar_calendar_no_implicit_UTC",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "UserAccessBarnames",
+      "legacy_column": "ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "event_permissions",
+      "proposed_field": "legacy_id",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "UserAccessBarnames",
+      "legacy_column": "User_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "event_permissions",
+      "proposed_field": "user_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "UserAccessBarnames",
+      "legacy_column": "Barname_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "event_permissions",
+      "proposed_field": "event_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "UserAccessBarnames",
+      "legacy_column": "Role_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "event_permissions",
+      "proposed_field": "role_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "UserLists",
+      "legacy_column": "ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "users",
+      "proposed_field": "legacy_id",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "UserLists",
+      "legacy_column": "FullName",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "users",
+      "proposed_field": "full_name",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "UserLists",
+      "legacy_column": "CountryCode",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "users",
+      "proposed_field": "country_code",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "UserLists",
+      "legacy_column": "Mobile",
+      "legacy_type": "bigint",
+      "legacy_nullable": false,
+      "proposed_entity": "users",
+      "proposed_field": "phone_normalization_input",
+      "conversion_rule": "country_aware_text_normalization_quarantine_invalid_or_colliding_accounts_no_merge",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "UserLists",
+      "legacy_column": "Password",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "users",
+      "proposed_field": "reset_required_without_digest_import",
+      "conversion_rule": "do_not_import_MD5_as_active_password_require_verified_account_recovery",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "UserLists",
+      "legacy_column": "CodeNumber",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "users",
+      "proposed_field": "retired_recovery_code",
+      "conversion_rule": "do_not_activate_legacy_security_challenges_keep_original_backup",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "UserLists",
+      "legacy_column": "IsActive",
+      "legacy_type": "bit",
+      "legacy_nullable": false,
+      "proposed_entity": "users",
+      "proposed_field": "is_active",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "UserLists",
+      "legacy_column": "Image",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "users",
+      "proposed_field": "avatar_reference",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "UserLists",
+      "legacy_column": "DateInsert",
+      "legacy_type": "nvarchar",
+      "legacy_nullable": false,
+      "proposed_entity": "users",
+      "proposed_field": "created_local",
+      "conversion_rule": "preserve_source_text_parse_solar_calendar_no_implicit_UTC",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "UserRoleAccessLevels",
+      "legacy_column": "ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "user_permission_overrides",
+      "proposed_field": "legacy_id",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "UserRoleAccessLevels",
+      "legacy_column": "RoleAccessLevel_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "user_permission_overrides",
+      "proposed_field": "permission_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "UserRoleAccessLevels",
+      "legacy_column": "User_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "user_permission_overrides",
+      "proposed_field": "user_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "UserRoleAccessLevels",
+      "legacy_column": "Role_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "user_permission_overrides",
+      "proposed_field": "role_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "UserRoles",
+      "legacy_column": "ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "user_roles",
+      "proposed_field": "legacy_id",
+      "conversion_rule": "preserve_exact_value_and_legacy_identity",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "UserRoles",
+      "legacy_column": "Role_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "user_roles",
+      "proposed_field": "role_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "UserRoles",
+      "legacy_column": "User_ID",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "user_roles",
+      "proposed_field": "user_legacy_id",
+      "conversion_rule": "resolve_through_explicit_legacy_identity_map_no_missing_reference_guess",
+      "status": "proposed_not_implemented"
+    },
+    {
+      "legacy_table": "UserRoles",
+      "legacy_column": "TestNewField",
+      "legacy_type": "int",
+      "legacy_nullable": false,
+      "proposed_entity": "user_roles",
+      "proposed_field": "preserved_legacy_extension",
+      "conversion_rule": "preserve_source_value_semantics_require_review",
+      "status": "proposed_not_implemented"
+    }
+  ],
+  "import_gate": "closed_pending_implementation_and_quarantine_review"
+}

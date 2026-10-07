@@ -3,19 +3,26 @@ from sqlalchemy.orm import Session
 from datetime import datetime
 from ..database import get_db
 from ..models import FactorList, RunTurn
+from ..security import require, permitted_event_ids
 from ..schemas import TicketCheckRequest, TicketCheckResponse
 
 router = APIRouter(prefix="/checker", tags=["سامانه کنترل بلیت گیت (Ticket Checker)"])
 
 @router.post("/verify", response_model=TicketCheckResponse, summary="استعلام و اعتبارسنجی بلیت در گیت ورودی")
-def verify_ticket(req: TicketCheckRequest, db: Session = Depends(get_db)):
+def verify_ticket(req: TicketCheckRequest, db: Session = Depends(get_db), user=Depends(require('tickets.check'))):
     clean_code = req.code.strip().upper()
     now_str = datetime.now().strftime("%H:%M:%S")
 
-    factor = db.query(FactorList).filter(
-        (FactorList.factor_number.ilike(clean_code)) |
-        (FactorList.tracking_code.ilike(clean_code)) |
-        (FactorList.qr_payload.ilike(f"%{clean_code}%"))
+    if not clean_code:
+        raise HTTPException(422, 'کد بلیت خالی است.')
+    ids = permitted_event_ids(db, user, 'tickets.check')
+    query = db.query(FactorList).join(RunTurn)
+    if ids is not None:
+        query = query.filter(RunTurn.barname_id.in_(ids))
+    factor = query.filter(
+        (FactorList.factor_number == clean_code) |
+        (FactorList.tracking_code == clean_code) |
+        (FactorList.qr_payload == req.code.strip())
     ).first()
 
     if not factor:

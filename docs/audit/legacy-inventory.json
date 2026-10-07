@@ -1,0 +1,2346 @@
+{
+  "scope": "source and deployed-view inspection; not runtime equivalence",
+  "hosting_archive_entries": 5245,
+  "source_projects": [],
+  "view_count": 134,
+  "views": [
+    {
+      "legacy_view": "checker.gishow.ir/Views/EasyTicket/Index.cshtml",
+      "section": "EasyTicket",
+      "sha256": "4de27fbf715775f9f6c5b6e8735be1e825737042b5159de4e476313fcb022bb4",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "checker.gishow.ir/Views/Shared/_Layout.cshtml",
+      "section": "Shared",
+      "sha256": "9b58f63bc31e7a40b60d0efb8759ea356be20f7e72fdb84c563ca228b401bb70",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "checker.gishow.ir/Views/_ViewStart.cshtml",
+      "section": "Views",
+      "sha256": "966865947db10ce3376bce48a7427daf6998ad159bb7708b8bd47c7bcf5ce795",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/Actresses/Create.cshtml",
+      "section": "Actresses",
+      "sha256": "268781c93277bb65aaf23cb0902c3aabb95310c5437c9ecd3dbe106d06f9a6ba",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname_ID",
+        "Image",
+        "Name"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/Actresses/Delete.cshtml",
+      "section": "Actresses",
+      "sha256": "c53ce7c035f26be49f8cd9ab78ad6dddfbdf52c6647a4744bfed542bd3cbe622",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname",
+        "Barname_ID",
+        "Image",
+        "Name"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/Actresses/Edit.cshtml",
+      "section": "Actresses",
+      "sha256": "3254da9a83e8cb7591bdb722e429e767c7082164c533633695f98da2b61605ba",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname_ID",
+        "ID",
+        "Image",
+        "Name"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/Actresses/Index.cshtml",
+      "section": "Actresses",
+      "sha256": "fa667ee55cb9a34fecc2ea37a55773bdaf86511adaa16f16b5152c38b749975a",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname",
+        "Image",
+        "Name"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/AdminPartialView/AdminLoginUser.cshtml",
+      "section": "AdminPartialView",
+      "sha256": "77af50a1846aafb2339e69d012f8a50bf7112af6fbdb2a5851d1ea8f6cf25428",
+      "current_candidate": "src/components/Header.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "ISAdminSite",
+        "ISPurchase",
+        "ISTicketChecker",
+        "ISTransitionProgram",
+        "User_Image",
+        "User_Name"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/AdminSettingSite/Index.cshtml",
+      "section": "AdminSettingSite",
+      "sha256": "c7af3d31ce91212cfe69208f503e0caa8dbac8aded745dca544079fb0368c349",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "AboutMe",
+        "BuyingGuide",
+        "CallSupport",
+        "ContactUs",
+        "Cooperatewithus",
+        "CountChoiceChair",
+        "DollarPrice",
+        "Faq",
+        "KavehnegarMerchent",
+        "PurchaseRules",
+        "SecurePaymentGuide",
+        "SiteSignature",
+        "SiteSignatureLink",
+        "SupportLink",
+        "TemplateName",
+        "TimeResetClient",
+        "TimeResetServer",
+        "WhatsAppFollowUpDescription",
+        "WhatsAppFollowUpLink",
+        "WhatsAppSupportSalesDescription",
+        "WhatsAppSupportSalesLink"
+      ],
+      "ajax_routes": [
+        "/AdminSite/AdminSettingSite/AboutMe",
+        "/AdminSite/AdminSettingSite/BuyingGuide",
+        "/AdminSite/AdminSettingSite/CallSupport",
+        "/AdminSite/AdminSettingSite/ContactUs",
+        "/AdminSite/AdminSettingSite/Cooperatewithus",
+        "/AdminSite/AdminSettingSite/CountChoiceChair",
+        "/AdminSite/AdminSettingSite/DollarPrice",
+        "/AdminSite/AdminSettingSite/EasyTicketReport",
+        "/AdminSite/AdminSettingSite/Faq",
+        "/AdminSite/AdminSettingSite/Kavehnegar",
+        "/AdminSite/AdminSettingSite/LogoSiteSave",
+        "/AdminSite/AdminSettingSite/PurchaseRules",
+        "/AdminSite/AdminSettingSite/ReportDwonload",
+        "/AdminSite/AdminSettingSite/SecurePaymentGuide",
+        "/AdminSite/AdminSettingSite/SiteSignature",
+        "/AdminSite/AdminSettingSite/SupportLink",
+        "/AdminSite/AdminSettingSite/TemplateName",
+        "/AdminSite/AdminSettingSite/TimeResetSet",
+        "/AdminSite/AdminSettingSite/WhatsAppFollowUpLink",
+        "/AdminSite/AdminSettingSite/WhatsAppSupportSalesLink"
+      ]
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/AdminSite/ActiveSite.cshtml",
+      "section": "AdminSite",
+      "sha256": "21a19f45615cf36d5ac6ac462f003106d2d6c764dc953cdd66462ad7df1505ab",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "ResultActice",
+        "TextActive"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/AdminSite/Index.cshtml",
+      "section": "AdminSite",
+      "sha256": "982ada07171d11cf6539148345e8047e427b3e052cd7a3575fceff07d85e1aa0",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "BarnameData",
+        "CountAllBarname",
+        "CountAllChairsForSale",
+        "CountBarnameActive",
+        "CountBarnameNoActive",
+        "CountChairsReady",
+        "CountChairsSale",
+        "CountCustomer",
+        "CountCustomerActive",
+        "CountCustomerNoActive",
+        "SumSaleDay",
+        "SumSaleDayVaghei",
+        "SumSaleDayVirtual",
+        "SumSaleWeek",
+        "SumSaleWeekVaghei",
+        "SumSaleWeekVirtual"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/BankTerminals/Create.cshtml",
+      "section": "BankTerminals",
+      "sha256": "4fde9ef3e8a7c1d526b5cc25bd9c6f99a68a421bb72ef630da5de0da6a24ba97",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Bank_Name_EN",
+        "Bank_Name_FA",
+        "IsActive",
+        "Merchant_ID",
+        "Payment_URL",
+        "ReturnURL",
+        "Service_URL",
+        "Terminal_ID",
+        "Transaction_Key"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/BankTerminals/Delete.cshtml",
+      "section": "BankTerminals",
+      "sha256": "e27f1ed52b95b3cb080d2d51b2a879c68cc37bff67e7054e3ed380ae7c46b347",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Bank_Name_EN",
+        "Bank_Name_FA",
+        "DateInsert",
+        "IsActive",
+        "Merchant_ID",
+        "Payment_URL",
+        "ReturnURL",
+        "Service_URL",
+        "Terminal_ID",
+        "Transaction_Key"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/BankTerminals/Edit.cshtml",
+      "section": "BankTerminals",
+      "sha256": "6589c8b8601858ce381a83f45b1131d232012c1d836ff39dba9d889b38251b13",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Bank_Name_EN",
+        "Bank_Name_FA",
+        "DateInsert",
+        "ID",
+        "IsActive",
+        "IsShow",
+        "Merchant_ID",
+        "Payment_URL",
+        "ReturnURL",
+        "Service_URL",
+        "Terminal_ID",
+        "Transaction_Key"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/BankTerminals/Index.cshtml",
+      "section": "BankTerminals",
+      "sha256": "86bd08c680219fed7d085424b210e49e904baba50fba300fd2aeb2ff171dc6dd",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Bank_Name_FA",
+        "DateInsert",
+        "IsActive",
+        "Merchant_ID",
+        "ReturnURL",
+        "Terminal_ID",
+        "Transaction_Key"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/Barname/Create.cshtml",
+      "section": "Barname",
+      "sha256": "dc6c8ed9b229f815505952d397e6b43dec2b934f25cd3644718f9a8c793c9d5f",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "DateStartBuyTickets",
+        "DateStartInform",
+        "DirectorName",
+        "EventLocation",
+        "IsActive",
+        "Name",
+        "Order_ForShow",
+        "PriceChairInSales",
+        "PriceChairInShow",
+        "RunPeriod",
+        "RunTime",
+        "TicketDescription",
+        "User_ID"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/Barname/Delete.cshtml",
+      "section": "Barname",
+      "sha256": "0185cf9f7a9a042bd25e6ebdb16683c0dbbd0c7aa8e7d5bb076fb1f4f4ff559a",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "DateStartBuyTickets",
+        "DateStartInform",
+        "DirectorName",
+        "IsActive",
+        "Name",
+        "RunPeriod",
+        "RunTime",
+        "UserAccessBarname"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/Barname/Details.cshtml",
+      "section": "Barname",
+      "sha256": "973a4e8ec87ed55dab8c3f16291765adaac9cbda5945ef3f78debff8dcb89ba9",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "AboutBarname",
+        "ID",
+        "Name"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/Barname/Edit.cshtml",
+      "section": "Barname",
+      "sha256": "17f0b347b727f05d7ef3cab2ea3cb1cc474d35a07e80cdb7faf165abd29cb7e5",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "AboutBarname",
+        "DateInsert",
+        "DateStartBuyTickets",
+        "DateStartInform",
+        "DirectorName",
+        "EventLocation",
+        "ID",
+        "IsActive",
+        "LanguageID",
+        "Name",
+        "Order_ForShow",
+        "PriceChairInSales",
+        "PriceChairInShow",
+        "RunPeriod",
+        "RunTime",
+        "TicketDescription",
+        "User_ID"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/Barname/Index.cshtml",
+      "section": "Barname",
+      "sha256": "8797042e1facc89b810f887aa1c49ecf0056bcd0c55e2d30c835c60885a28fe3",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "DateStartBuyTickets",
+        "DateStartInform",
+        "DirectorName",
+        "IsActive",
+        "Name",
+        "Order_ForShow",
+        "PriceChairInSales",
+        "PriceChairInShow",
+        "RunPeriod",
+        "RunTime"
+      ],
+      "ajax_routes": [
+        "/AdminSite/Barname/DeleteUserAccess",
+        "/AdminSite/Barname/GetUserAccess",
+        "/AdminSite/Barname/InsertUserAccess"
+      ]
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/ChairForBarname/ChairsManage.cshtml",
+      "section": "ChairForBarname",
+      "sha256": "7d4df9ef4d1a36598f9acbb0a52ecdf6a9dd28bcc60f4ca2409a178af6be16f3",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "ListGroupPrice"
+      ],
+      "ajax_routes": [
+        "/AdminSite/ChairForBarname/CheckUserForVirtualTicket",
+        "/AdminSite/ChairForBarname/CountStatusChair",
+        "/AdminSite/ChairForBarname/DeleteAllChair",
+        "/AdminSite/ChairForBarname/GetChairFromSalon",
+        "/AdminSite/ChairForBarname/GetChairList",
+        "/AdminSite/ChairForBarname/GetFilterChairList",
+        "/AdminSite/ChairForBarname/ListChairForVirtualTicket",
+        "/AdminSite/ChairForBarname/SetNewPriceChair",
+        "/AdminSite/ChairForBarname/SetNewUserVirtualTicket",
+        "/AdminSite/ChairForBarname/SetStatusChair",
+        "/AdminSite/ChairForBarname/SetUserVirtualTicket"
+      ]
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/ChairForBarname/Index.cshtml",
+      "section": "ChairForBarname",
+      "sha256": "19342bb7c744bcb879bf197fac43aff8ff6db0c93eeb52676a8d78005457a2d9",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Count",
+        "First",
+        "Where"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/ChairInParts/AddNewRowChair.cshtml",
+      "section": "ChairInParts",
+      "sha256": "8207cb8e189302ccefd8029fc50f52d70dc92ec1675fb233cc32532778dfbf5b",
+      "current_candidate": "src/components/SalonPlanBuilderModal.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "BasePrice",
+        "CountChair",
+        "PartOfSalon_ID",
+        "RowNumber",
+        "RowTitel",
+        "Salon_ID",
+        "StartChairNumber"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/ChairInParts/Index.cshtml",
+      "section": "ChairInParts",
+      "sha256": "f3221e90d01a53cbabd691bbe9ac3ea9a129e39f5d323a0050bfe2d5f14a26eb",
+      "current_candidate": "src/components/SalonPlanBuilderModal.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Name",
+        "Salon"
+      ],
+      "ajax_routes": [
+        "/ChairInParts/ChangeChairID",
+        "/ChairInParts/CountStatusChair",
+        "/ChairInParts/DeleteAllChair",
+        "/ChairInParts/DeleteRowChair",
+        "/ChairInParts/GetChairList",
+        "/ChairInParts/RebuildChairsNumber",
+        "/ChairInParts/SetStatusChair"
+      ]
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/FactorLists/Delete.cshtml",
+      "section": "FactorLists",
+      "sha256": "08a0017765d571542abde2496abe0f901d8589df7197f07b55e41ba936c1bac9",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Bank_Name",
+        "Barname_Name",
+        "Chairs_Count",
+        "Data_Insert",
+        "ID",
+        "Payment_Status",
+        "Purchase_Name",
+        "RunTurn",
+        "Sum_Price",
+        "Tracking_Factor"
+      ],
+      "ajax_routes": [
+        "/AdminSite/FactorLists/CheckDeleteKey",
+        "/AdminSite/FactorLists/SendDeleteKey"
+      ]
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/FactorLists/Index.cshtml",
+      "section": "FactorLists",
+      "sha256": "2edaa3550abba8ef7d565eedcb129f3659c68fc5d41e6cbd64a0543a914afc57",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [],
+      "ajax_routes": [
+        "/AdminSite/FactorLists/AcceptTemporaryReservation",
+        "/AdminSite/FactorLists/SendSMSBuys",
+        "/AdminSite/FactorLists/ShowFactorList",
+        "/AdminSite/FactorLists/ShowListChair"
+      ]
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/ImageBarnames/Create.cshtml",
+      "section": "ImageBarnames",
+      "sha256": "c0952f027c3aa4013e4b02489b2aca7add4573df17743809ba0a462ac54652e6",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [
+        "Barname_ID",
+        "ImageName"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/ImageBarnames/Delete.cshtml",
+      "section": "ImageBarnames",
+      "sha256": "e12fde052aa96d2bc0f2f74de86d2d4a8a1744d61174b7515732e944d3a2f385",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [
+        "Barname",
+        "Barname_ID",
+        "ImageName"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/ImageBarnames/Edit.cshtml",
+      "section": "ImageBarnames",
+      "sha256": "032f6d1426ddb021a009dfe828d137e512d88ff06900a3c2df198f4e5c0d1e4a",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [
+        "Barname_ID",
+        "ID",
+        "ImageName"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/ImageBarnames/Index.cshtml",
+      "section": "ImageBarnames",
+      "sha256": "3350fa4a512b8e51ceed31bebeefb88e0e868603e2bcac8981984d7824aa163a",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [
+        "Barname",
+        "ImageName"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/ImagesMadareks/Create.cshtml",
+      "section": "ImagesMadareks",
+      "sha256": "fd327ec4137e6e1af79b7dd0edb923709799f303973967e9c0bb909eb9fe04ea",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname_ID",
+        "ImageCaption",
+        "ImageName"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/ImagesMadareks/Delete.cshtml",
+      "section": "ImagesMadareks",
+      "sha256": "c4a6a614a62913c9c1b080e7c6a7c2e78dde60ddfa5f48e6cb6211385183ec4e",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname",
+        "Barname_ID",
+        "ImageCaption",
+        "ImageName"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/ImagesMadareks/Edit.cshtml",
+      "section": "ImagesMadareks",
+      "sha256": "886301490f667948798af33bd0463acbccff69b608fde0d30b71a76c48fdbb97",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname_ID",
+        "ID",
+        "ImageCaption",
+        "ImageName"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/ImagesMadareks/Index.cshtml",
+      "section": "ImagesMadareks",
+      "sha256": "771ff434740a822f231e24ba257ae4d1965b60b0afd45774595e69ce588a7808",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname",
+        "ImageCaption",
+        "ImageName"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/MaliManagment/Index.cshtml",
+      "section": "MaliManagment",
+      "sha256": "e2394667e5fc2cb4e6f9a6c3217edac58a9be388cd4ed76218a10b1b24813961",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Count",
+        "OrderBy"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/MarkdownLists/Create.cshtml",
+      "section": "MarkdownLists",
+      "sha256": "1fde5d12d61b0d2d76b075e8d8228e482a9eccebc482888c87a018b686ebe2e5",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname_ID",
+        "Condition_MinimumChair",
+        "IsActive",
+        "Markdown_Class",
+        "Markdown_Count",
+        "Markdown_Price_Unit",
+        "RunTurns_ID"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/MarkdownLists/Delete.cshtml",
+      "section": "MarkdownLists",
+      "sha256": "fee9596b6a6d51ce415a939d7b2f21e9f754c88d237da14e4b35fba8343be90d",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname",
+        "Barname_ID",
+        "Condition_MinimumChair",
+        "DateInsert",
+        "Markdown_Class",
+        "Markdown_Code",
+        "Markdown_Count",
+        "Markdown_Price_Unit",
+        "RunTurn"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/MarkdownLists/Edit.cshtml",
+      "section": "MarkdownLists",
+      "sha256": "0bcb8cfe228791a53dd98f8bd360851f378eb6b2778f0907c8e15bba40c1d35d",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname_ID",
+        "Condition_MinimumChair",
+        "DateInsert",
+        "FactorMarkdown",
+        "ID",
+        "IsActive",
+        "Markdown_Class",
+        "Markdown_Code",
+        "Markdown_Count",
+        "Markdown_Price_Unit",
+        "RunTurns_ID"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/MarkdownLists/Index.cshtml",
+      "section": "MarkdownLists",
+      "sha256": "777bd5c1b757a95eae0ffd9d248edc7ca730a5125499ec7c8cf7798b628362e6",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Condition_MinimumChair",
+        "DateInsert",
+        "IsActive",
+        "Markdown_Code",
+        "Markdown_Count",
+        "Markdown_Price_Unit"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/PartOfSalons/Create.cshtml",
+      "section": "PartOfSalons",
+      "sha256": "0320bd870c569f96fe93739697c0bc6ee0e1cb561329246ed0ff7ab98a7017d2",
+      "current_candidate": "src/components/SalonPlanBuilderModal.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "CountChairs",
+        "DirectionChair",
+        "Floor",
+        "Name",
+        "PartMapPointList",
+        "RowPart",
+        "Salon_ID",
+        "Side"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/PartOfSalons/Delete.cshtml",
+      "section": "PartOfSalons",
+      "sha256": "32ef7cec79bdaee17545213641c90e26643a226498675be5ce872b6a370c425c",
+      "current_candidate": "src/components/SalonPlanBuilderModal.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "CountChairs",
+        "DirectionChair",
+        "Floor",
+        "Name",
+        "RowPart",
+        "Salon",
+        "Salon_ID",
+        "Side"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/PartOfSalons/Edit.cshtml",
+      "section": "PartOfSalons",
+      "sha256": "76a878844bd4cd659e741acfa6bc111ed78ad7f3feb95c52b31d72a5b6741043",
+      "current_candidate": "src/components/SalonPlanBuilderModal.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "CountChairs",
+        "DateInsert",
+        "DirectionChair",
+        "Floor",
+        "ID",
+        "Name",
+        "PartMapPointList",
+        "RowPart",
+        "Salon",
+        "Salon_ID",
+        "Side"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/PartOfSalons/Index.cshtml",
+      "section": "PartOfSalons",
+      "sha256": "9c2b2ab61c1ef5bb55d943c3721ad8fb8390edc9f710fa579d04b5506f05e4f5",
+      "current_candidate": "src/components/SalonPlanBuilderModal.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Count",
+        "CountChairs",
+        "DirectionChair",
+        "First",
+        "Floor",
+        "Name",
+        "RowPart",
+        "Salon",
+        "Side",
+        "Where"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/RunTurns/Create.cshtml",
+      "section": "RunTurns",
+      "sha256": "94736f1038c51a972a24a86d938183cbe4d3110f70f5822682cd04685051ca67",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "ArtistDiscounts",
+        "Barname_ID",
+        "DateRun",
+        "EventLocation",
+        "IsShow",
+        "MessageTemporaryReservation",
+        "QuickbuyDiscount",
+        "Salon_ID",
+        "StartPrice",
+        "StudentDiscounts",
+        "TemporaryReservation",
+        "TimeRun"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/RunTurns/Delete.cshtml",
+      "section": "RunTurns",
+      "sha256": "5ad93543c8608731d2989fbe71146e195bc8251407cb0bed33283c0fd12f69b4",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname",
+        "Barname_ID",
+        "DateRun",
+        "TimeRun"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/RunTurns/Edit.cshtml",
+      "section": "RunTurns",
+      "sha256": "4842530de9385ade00646262cf32fb28e485a6db8f3de02d8cd2ec27a1004e83",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "ArtistDiscounts",
+        "Barname_ID",
+        "DateRun",
+        "EventLocation",
+        "ID",
+        "IsShow",
+        "MessageTemporaryReservation",
+        "QuickbuyDiscount",
+        "Salon_ID",
+        "StartPrice",
+        "StudentDiscounts",
+        "TemporaryReservation",
+        "TimeRun"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/RunTurns/Index.cshtml",
+      "section": "RunTurns",
+      "sha256": "01faf3e0d9e6ddcc0a7fe633238a7d1509eb29c3da0d9dc3bbeba68f24cfcbc3",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "BarnameName",
+        "RunTurns",
+        "SalonName"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/Salons/Create.cshtml",
+      "section": "Salons",
+      "sha256": "6899071eea4f41b07814c58ac81c87c4c1cf7c2c3dee4dbf9857ad3cf6460a83",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Address",
+        "IsActive",
+        "IsPlanShow",
+        "Name",
+        "PlanImageName"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/Salons/Delete.cshtml",
+      "section": "Salons",
+      "sha256": "93fa8e2fd64fc3f8780ce529b4e85336f6c9dcb13a6b89150ecf84376c26f4fc",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Address",
+        "Name"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/Salons/Edit.cshtml",
+      "section": "Salons",
+      "sha256": "eed77773bc34b8821be7456639d845d5eb10432f8d61b54bf0cfb1412bd437c3",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Address",
+        "DateInsert",
+        "ID",
+        "IsActive",
+        "IsPlanShow",
+        "Name",
+        "PlanImageName"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/Salons/Index.cshtml",
+      "section": "Salons",
+      "sha256": "0296120be0889b97fabfe2a7960fa55531d6e7a3a49d516383c6178801886ce1",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Address",
+        "DateInsert",
+        "IsActive",
+        "IsPlanShow",
+        "Name"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/Salons/SalonPlan.cshtml",
+      "section": "Salons",
+      "sha256": "0c7b13df86bd8d1e5e540e7f581a35b7e9b4051f4f67113904bfc0d5ea39cd82",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Address",
+        "DateInsert",
+        "ID",
+        "IsActive",
+        "Name",
+        "PlanImageName",
+        "PlanPointList"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/Shared/_Layout.cshtml",
+      "section": "Shared",
+      "sha256": "9b58f63bc31e7a40b60d0efb8759ea356be20f7e72fdb84c563ca228b401bb70",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/Shared/_LayoutAdmin.cshtml",
+      "section": "Shared",
+      "sha256": "54e95f13dee78ac2658ad32bd1d406901ceb5222f388ba63e8956aae5c86f6c6",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/Shared/_LayoutAminNew.cshtml",
+      "section": "Shared",
+      "sha256": "4a89b04527a50d8332c055a1cf05460c641615856b73c59bb128e1ac54965365",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/SlideShow/Create.cshtml",
+      "section": "SlideShow",
+      "sha256": "851875b8726036dd778b978e5290efad1b6f19c9c3d8a16e2197904bcbae7c5b",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [
+        "Barname_ID",
+        "ImageName",
+        "IsShow",
+        "Order_ForShow"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/SlideShow/Delete.cshtml",
+      "section": "SlideShow",
+      "sha256": "89f914c125c33d3f800a44169bd27e0f23245335c2737407b3a40828a6ccfc59",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [
+        "ImageName"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/SlideShow/Edit.cshtml",
+      "section": "SlideShow",
+      "sha256": "cb5637bc7a847d479d916f1ca6996e644ad74b93f2fa8c58873285d063fd46c6",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [
+        "DateInsert",
+        "ID",
+        "ImageName",
+        "IsShow",
+        "Order_ForShow"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/SlideShow/Index.cshtml",
+      "section": "SlideShow",
+      "sha256": "b9963274cf59275119c5ffdd1d92495bc339e5ce16b429e06e0f367329fac786",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [
+        "DateInsert",
+        "ImageName",
+        "IsShow",
+        "Order_ForShow"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/UserLists/Index.cshtml",
+      "section": "UserLists",
+      "sha256": "e71b397b2bbda91242de2f3cb13bad848118faae5b8e4cc341a3b518a6b6fdd4",
+      "current_candidate": "src/components/AdminDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [],
+      "ajax_routes": [
+        "/AdminSite/UserLists/DeleteBarnameAccess",
+        "/AdminSite/UserLists/GetAccessBarname",
+        "/AdminSite/UserLists/GetAccessLevel",
+        "/AdminSite/UserLists/GetListUser",
+        "/AdminSite/UserLists/GetRolesList",
+        "/AdminSite/UserLists/InsertBarnameAccess",
+        "/AdminSite/UserLists/SaveEditUserData",
+        "/AdminSite/UserLists/SendSMSBuys",
+        "/AdminSite/UserLists/SendSMSUserPass",
+        "/AdminSite/UserLists/SetAccessLevel",
+        "/AdminSite/UserLists/SetRolesList",
+        "/AdminSite/UserLists/ShowListBuy"
+      ]
+    },
+    {
+      "legacy_view": "httpdocs/Areas/AdminSite/Views/_ViewStart.cshtml",
+      "section": "Views",
+      "sha256": "dc891ee8c92a6f13550780287ddbdfce619f6c21f14f1118a3bb378d927c8520",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TicketChecker/Views/Shared/_LayoutAminNew.cshtml",
+      "section": "Shared",
+      "sha256": "12b13a2ea2ca51ef42d169c36e14fcd7b0fe3de467066047aaa8a3ccc2624575",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TicketChecker/Views/TicketChecker/Index.cshtml",
+      "section": "TicketChecker",
+      "sha256": "ce329a4d4939a0b74cb8019979a62bfce02dffea7cd1c4fd3b00ea5d29d8787b",
+      "current_candidate": "src/components/TicketChecker.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/Actresses/Create.cshtml",
+      "section": "Actresses",
+      "sha256": "c0de2a4b9cf49ab45fd81d5db9891bdcf18e6adc5d127ef428c453470e65a0b4",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname_ID",
+        "Image",
+        "Name"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/Actresses/Delete.cshtml",
+      "section": "Actresses",
+      "sha256": "10675317fd2a39cad4918e228dcaa14e8d84b36d613885cf4cde3614bee1a342",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname",
+        "Barname_ID",
+        "Image",
+        "Name"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/Actresses/Edit.cshtml",
+      "section": "Actresses",
+      "sha256": "2b0c1ca23a75b52b8f0a78627bb7d6eca2044127c7ec61f3dfcfbf9dbcbf9f02",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname_ID",
+        "ID",
+        "Image",
+        "Name"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/Actresses/Index.cshtml",
+      "section": "Actresses",
+      "sha256": "c835cf842ea54c5c600b63a29f567f97f5825b5310c0bdaef41d80b345c37e41",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname",
+        "Image",
+        "Name"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/Barname/Create.cshtml",
+      "section": "Barname",
+      "sha256": "d044ec6bb29d9bc7dc32d60ac241719a07b8e1c82282db4ef5259f1e9d75257f",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "DateStartBuyTickets",
+        "DateStartInform",
+        "DirectorName",
+        "EventLocation",
+        "IsActive",
+        "Name",
+        "Order_ForShow",
+        "RunPeriod",
+        "RunTime",
+        "Salon_ID",
+        "TicketDescription"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/Barname/Delete.cshtml",
+      "section": "Barname",
+      "sha256": "a4ed893a6945862ce07f6cce239d880a8d3b0269981e90b329bd81aed248269e",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "DateStartBuyTickets",
+        "DateStartInform",
+        "DirectorName",
+        "IsActive",
+        "Name",
+        "RunPeriod",
+        "RunTime",
+        "UserAccessBarname"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/Barname/Details.cshtml",
+      "section": "Barname",
+      "sha256": "9d60cf445043e326cfdc981a33da41c58f9171c84d18d6e8fac894aa08370722",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "AboutBarname",
+        "CapacityChair",
+        "DateStartBuyTickets",
+        "DateStartInform",
+        "DirectorName",
+        "ID",
+        "Name",
+        "RunPeriod",
+        "RunTime",
+        "Salon"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/Barname/Edit.cshtml",
+      "section": "Barname",
+      "sha256": "c8d7d59473216e562738451bf02b1a61ef5b32ca6f166f1cae47898570ab6d20",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "AboutBarname",
+        "DateInsert",
+        "DateStartBuyTickets",
+        "DateStartInform",
+        "DirectorName",
+        "EventLocation",
+        "ID",
+        "IsActive",
+        "Name",
+        "Order_ForShow",
+        "RunPeriod",
+        "RunTime",
+        "Salon_ID",
+        "TicketDescription",
+        "User_ID"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/Barname/Index.cshtml",
+      "section": "Barname",
+      "sha256": "478990724a909243746228fbc20b56a7af8f61e79ba14400901060bcc2a6aeb2",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "CapacityChair",
+        "DateStartBuyTickets",
+        "DateStartInform",
+        "DirectorName",
+        "IsActive",
+        "Name",
+        "RunPeriod",
+        "RunTime",
+        "Salon"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/ChairForBarname/ChairsManage.cshtml",
+      "section": "ChairForBarname",
+      "sha256": "ae22d9912591c51f337394fce0a016e8d0f099619fc9971c3c799e4f01884a2b",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "ListGroupPrice"
+      ],
+      "ajax_routes": [
+        "/TransitionProgram/ChairForBarname/CheckUserForVirtualTicket",
+        "/TransitionProgram/ChairForBarname/CountStatusChair",
+        "/TransitionProgram/ChairForBarname/DeleteAllChair",
+        "/TransitionProgram/ChairForBarname/GetChairFromSalon",
+        "/TransitionProgram/ChairForBarname/GetChairList",
+        "/TransitionProgram/ChairForBarname/GetFilterChairList",
+        "/TransitionProgram/ChairForBarname/ListChairForVirtualTicket",
+        "/TransitionProgram/ChairForBarname/SetNewPriceChair",
+        "/TransitionProgram/ChairForBarname/SetNewUserVirtualTicket",
+        "/TransitionProgram/ChairForBarname/SetStatusChair",
+        "/TransitionProgram/ChairForBarname/SetUserVirtualTicket"
+      ]
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/ChairForBarname/Index.cshtml",
+      "section": "ChairForBarname",
+      "sha256": "17210888154fd88792172ab13e7df2a1e750b4f6b1bb5bc43d02992e4a423ce8",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Count",
+        "First",
+        "Where"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/FactorLists/Delete.cshtml",
+      "section": "FactorLists",
+      "sha256": "72ad9d00349e1ad53233c486f3cc0335bff616c687ac998cc6db178ee2c57a0b",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Bank_Name",
+        "Barname_Name",
+        "Chairs_Count",
+        "Data_Insert",
+        "Payment_Status",
+        "Purchase_Name",
+        "RunTurn",
+        "Sum_Price",
+        "Tracking_Factor"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/FactorLists/Index.cshtml",
+      "section": "FactorLists",
+      "sha256": "ed8d149e3aec875b5a6f6b955192c7f5ca55acf16221c7417f0d620a69e81f62",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Bank_Name",
+        "Barname_Name",
+        "Chairs_Count",
+        "Data_Insert",
+        "Payment_Status",
+        "Purchase_Name",
+        "RunTurn",
+        "Sum_Price",
+        "Tracking_Factor"
+      ],
+      "ajax_routes": [
+        "/AdminSite/FactorLists/SendSMSBuys",
+        "/TransitionProgram/FactorLists/ShowListChair"
+      ]
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/ImageBarnames/Create.cshtml",
+      "section": "ImageBarnames",
+      "sha256": "d3bcc56fe5883b6f59f2806a56cabc44adb0347fee2f40515dd38e749d33d7f9",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname_ID",
+        "ImageName"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/ImageBarnames/Delete.cshtml",
+      "section": "ImageBarnames",
+      "sha256": "88eb670404752f40b16b7dba26b184c0fc0c44d2959f74bff386c8f8d50828bc",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname",
+        "Barname_ID",
+        "ImageName"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/ImageBarnames/Edit.cshtml",
+      "section": "ImageBarnames",
+      "sha256": "0528435b010888093791835a4f5848720810965735bcde782628c697c310d227",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname_ID",
+        "ID",
+        "ImageName"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/ImageBarnames/Index.cshtml",
+      "section": "ImageBarnames",
+      "sha256": "5d90a021c76921e4168854d2b1d5657acf3b4266ba67ea3d12bc7b6812eee874",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname",
+        "ImageName"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/ImagesMadareks/Create.cshtml",
+      "section": "ImagesMadareks",
+      "sha256": "6e3a3f70c69e9cd72528598b62b65f2115a280352b5dcbb69fa5d27c8255a824",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname_ID",
+        "ImageCaption",
+        "ImageName"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/ImagesMadareks/Delete.cshtml",
+      "section": "ImagesMadareks",
+      "sha256": "81a7d93267384e7574ee522841884921e58894ce350d7766d2e26deba79b7069",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname",
+        "Barname_ID",
+        "ImageCaption",
+        "ImageName"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/ImagesMadareks/Edit.cshtml",
+      "section": "ImagesMadareks",
+      "sha256": "7096070211f8a05f025229e88b900029326dc45f45cd3130f74e8e3e06f5e99f",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname_ID",
+        "ID",
+        "ImageCaption",
+        "ImageName"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/ImagesMadareks/Index.cshtml",
+      "section": "ImagesMadareks",
+      "sha256": "6d8e40ec2be50a15c81f38933476292608457df3b5407627018132be0073bd7d",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname",
+        "ImageCaption",
+        "ImageName"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/MarkdownLists/Create.cshtml",
+      "section": "MarkdownLists",
+      "sha256": "aa6339a1f93b6441dbf271399403b4daa25cb4d8cd6e9403536740ecc6c692c3",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname_ID",
+        "Condition_MinimumChair",
+        "IsActive",
+        "Markdown_Class",
+        "Markdown_Count",
+        "Markdown_Price_Unit"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/MarkdownLists/Delete.cshtml",
+      "section": "MarkdownLists",
+      "sha256": "519d949c7eb23108fe9a3db2603e24cf6ea254f0026306dd196cd11ee916940c",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname",
+        "Barname_ID",
+        "Condition_MinimumChair",
+        "DateInsert",
+        "Markdown_Class",
+        "Markdown_Code",
+        "Markdown_Count",
+        "Markdown_Price_Unit",
+        "RunTurn"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/MarkdownLists/Edit.cshtml",
+      "section": "MarkdownLists",
+      "sha256": "396670189a3df17e66365bfdf7a4258a0b6bee4416935be2e484675f62d8aef4",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname_ID",
+        "Condition_MinimumChair",
+        "DateInsert",
+        "FactorMarkdown",
+        "ID",
+        "IsActive",
+        "Markdown_Class",
+        "Markdown_Code",
+        "Markdown_Count",
+        "Markdown_Price_Unit",
+        "RunTurns_ID"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/MarkdownLists/Index.cshtml",
+      "section": "MarkdownLists",
+      "sha256": "f0244e79a64d3d6107acc3257447c6f14aa1c9b52d0d57153655d80dc47697f5",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Condition_MinimumChair",
+        "DateInsert",
+        "IsActive",
+        "Markdown_Code",
+        "Markdown_Count",
+        "Markdown_Price_Unit"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/RunTurns/Create.cshtml",
+      "section": "RunTurns",
+      "sha256": "12578bacc154e3811ebaf4fa1db86d0340a1b7554079e19f44a7049a59752e5d",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "ArtistDiscounts",
+        "Barname_ID",
+        "DateRun",
+        "IsShow",
+        "QuickbuyDiscount",
+        "Salon_ID",
+        "StartPrice",
+        "StudentDiscounts",
+        "TimeRun"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/RunTurns/Delete.cshtml",
+      "section": "RunTurns",
+      "sha256": "5840d74a23a173ff10fcdd35dc257316023b32be451747a771fb0d4968f39c89",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname",
+        "Barname_ID",
+        "DateRun",
+        "TimeRun"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/RunTurns/Edit.cshtml",
+      "section": "RunTurns",
+      "sha256": "7c10e478c5608c294aa4e1509358e4d31d22101e0807ecd2713a8e43bc9f6857",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "ArtistDiscounts",
+        "Barname",
+        "Barname_ID",
+        "DateRun",
+        "ID",
+        "IsShow",
+        "QuickbuyDiscount",
+        "Salon_ID",
+        "StartPrice",
+        "StudentDiscounts",
+        "TimeRun"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/RunTurns/Index.cshtml",
+      "section": "RunTurns",
+      "sha256": "a4e5ea62a22f8bbc06f4b9331a29a14688c6c171d5f097d143780201dc64de35",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "BarnameName",
+        "RunTurns",
+        "SalonName"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/Shared/_LayoutAdmin.cshtml",
+      "section": "Shared",
+      "sha256": "a3b42b4267f9dc6be54265f6bcf1a077425a4681d03414d98553153efcdba82a",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/Shared/_LayoutAminNew.cshtml",
+      "section": "Shared",
+      "sha256": "299410935c48ddea174428eb11b3114943c42515e165b7a742bab33bc604e1ce",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/TransitionProgram/ActiveSite.cshtml",
+      "section": "TransitionProgram",
+      "sha256": "26d7ae99bf91ac6946599495754b467490e4031fcb27c5ab0f2580a00edcbc7f",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "ResultActice",
+        "TextActive"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/TransitionProgram/Index.cshtml",
+      "section": "TransitionProgram",
+      "sha256": "f33a2801bc9f60c19fee67f9201a8814be23c6d4f91269ae1115ef8ee6fa58eb",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "BarnameData",
+        "CountAllBarname",
+        "CountAllChairsForSale",
+        "CountBarnameActive",
+        "CountBarnameNoActive",
+        "CountChairsReady",
+        "CountChairsSale",
+        "CountCustomer",
+        "CountCustomerActive",
+        "CountCustomerNoActive",
+        "SumSaleDay",
+        "SumSaleDayVaghei",
+        "SumSaleDayVirtual",
+        "SumSaleWeek",
+        "SumSaleWeekVaghei",
+        "SumSaleWeekVirtual"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Areas/TransitionProgram/Views/UserLists/Index.cshtml",
+      "section": "UserLists",
+      "sha256": "c8ab25755f5f0f5a1b594a500503abe3e1fe5e8429c39b7478fb8adfd06d0f03",
+      "current_candidate": "src/components/ProducerDashboard.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "DateInsert",
+        "FullName",
+        "Image",
+        "Mobile"
+      ],
+      "ajax_routes": [
+        "/TransitionProgram/UserLists/SendSMSBuys",
+        "/TransitionProgram/UserLists/SendSMSUserPass",
+        "/TransitionProgram/UserLists/ShowListBuy"
+      ]
+    },
+    {
+      "legacy_view": "httpdocs/Views/Installation/Index.cshtml",
+      "section": "Installation",
+      "sha256": "53d6f1a0d28286f10ced20f315e458da812c8788d7f2d2aef972d19c97411437",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [
+        "AdminSite_Mobile",
+        "AdminSite_Name",
+        "ConnectionType",
+        "DB_Name",
+        "DB_Password",
+        "DB_ServerName",
+        "DB_UserName"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Views/PartialView/AboutBarname.cshtml",
+      "section": "PartialView",
+      "sha256": "3442f76dd3807ecbbfb2f3d811aa974470fdaf3463e7abba0b93fd285e99e706",
+      "current_candidate": "src/App.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "AboutBarname"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Views/PartialView/EventLocation.cshtml",
+      "section": "PartialView",
+      "sha256": "aac557394dd825ceda0860330b7e9282de227f3c91a8effa1dc8102a0ac12354",
+      "current_candidate": "src/App.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "EventLocation"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Views/PartialView/HeaderBarnameByImage.cshtml",
+      "section": "PartialView",
+      "sha256": "7c9522548d97376e2545177ea16bbb1573e1df631a3551ce5404a3751a7f97fe",
+      "current_candidate": "src/App.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Actresses",
+        "DirectorName",
+        "ImagesBarname",
+        "Name",
+        "RunPeriod",
+        "RunTime"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Views/PartialView/HeaderBarnameByRunTurn.cshtml",
+      "section": "PartialView",
+      "sha256": "bd748e87f2c8bb481e16abab25903d3aa3d435327ad214ebdf2ef77746674c97",
+      "current_candidate": "src/App.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname_Name",
+        "CountChairForBuy",
+        "CountRunTime",
+        "DateRun",
+        "DirectorName",
+        "FirstImageBarname",
+        "RunPeriod",
+        "Salon_Name",
+        "TimeRun"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Views/PartialView/ListActiveBarname.cshtml",
+      "section": "PartialView",
+      "sha256": "3371bf5ee03cacaa32c0a918e9445982941dd48c71e4c78fc7f95194022f4919",
+      "current_candidate": "src/App.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Views/PartialView/ListCountryCode.cshtml",
+      "section": "PartialView",
+      "sha256": "f1028b354e864e0eaa64ba2e3a939c91733052bacb8c5deab28292eeaa311f0a",
+      "current_candidate": "src/App.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Views/PartialView/LoginUser.cshtml",
+      "section": "PartialView",
+      "sha256": "7d5916f66a0cac324536f67543dbbfe45bac95af5b13df0c5f43ccf2ba3d1a3c",
+      "current_candidate": "src/App.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "User_Image",
+        "User_Name"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Views/PartialView/SelectLanguage.cshtml",
+      "section": "PartialView",
+      "sha256": "b896a6e61040777cf7d51281158f51057ec9aa96d2f127548e129d8e750d94cb",
+      "current_candidate": "src/App.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [],
+      "ajax_routes": [
+        "/Home/ChangeLanguage"
+      ]
+    },
+    {
+      "legacy_view": "httpdocs/Views/PartialView/SlideShow.cshtml",
+      "section": "PartialView",
+      "sha256": "0732e9e0555e860fcf0536071371e75f00527da60c02ba8936f9ba179f101768",
+      "current_candidate": "src/App.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Count"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Views/Shared/EditorTemplates/Html.cshtml",
+      "section": "EditorTemplates",
+      "sha256": "e0ebe37a86c217ceb30057ee43dee24f06826ab188073a064f064f6f7b3e4569",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Views/Shared/_LayoutInstallation.cshtml",
+      "section": "Shared",
+      "sha256": "07fe8e59a3a175c2bb506e0928896ccc6202170f34c0d06cfb76e3aace0462dd",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Views/Templates/Classic/Account/LoginUser.cshtml",
+      "section": "Account",
+      "sha256": "5dbd380455fac4d33b8d75560c600ac4fb83b518e40dcf2cfdd13e596a7af024",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [
+        "Mobile",
+        "Password"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Views/Templates/Classic/Account/RecoveryPassword.cshtml",
+      "section": "Account",
+      "sha256": "4282202406bf0966903fe2da7a7e8b482b1fb782ac6cd479331d08308376d276",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [
+        "Mobile"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Views/Templates/Classic/Account/RigesterUser.cshtml",
+      "section": "Account",
+      "sha256": "6029010a811bf26dd5fcf6a2df79b8c4694b2ab39606ef3a1ec2714e71f4e132",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [
+        "FullName",
+        "Mobile",
+        "Password",
+        "RePassword"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Views/Templates/Classic/Account/Role.cshtml",
+      "section": "Account",
+      "sha256": "7b02999798b75679b733426c7bc63e7badab5a07b8403415025b3daf271b414b",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [
+        "RoleName",
+        "RoleTitel"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Views/Templates/Classic/Home/AcceptFinalBuy.cshtml",
+      "section": "Home",
+      "sha256": "fd38ab067d9a0054f840a378c29aac6cb6a8460c87534e4ca69504928f971833",
+      "current_candidate": "src/App.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "BankTerminal",
+        "Barname_ID",
+        "ChairSelect",
+        "FactorMarkdown",
+        "MessageTemporaryReservation",
+        "Part_ID",
+        "Part_Name",
+        "RunTurn_ID",
+        "Salon_ID",
+        "SumPriceSelectChair",
+        "TemporaryReservation",
+        "UserCellPhone",
+        "UserName",
+        "UserToken",
+        "WhatsAppSupportSalesDescription",
+        "WhatsAppSupportSalesLink"
+      ],
+      "ajax_routes": [
+        "/Home/DeleteMarkdownFromFactor",
+        "/Home/GoToBank",
+        "/Home/GoToTemporaryReservation",
+        "/Home/MarkdownCode"
+      ]
+    },
+    {
+      "legacy_view": "httpdocs/Views/Templates/Classic/Home/Index.cshtml",
+      "section": "Home",
+      "sha256": "789a3aa5828083f3420dfb903e20e1ce7ff38407c4b3d204eedea16b7544e1b5",
+      "current_candidate": "src/App.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Views/Templates/Classic/Home/PaymentReceipt.cshtml",
+      "section": "Home",
+      "sha256": "0a7c54dcba7f01e3f7daa963b8c7f31378bb67845a335b2e11abf72f92dc9e20",
+      "current_candidate": "src/App.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname_ID",
+        "Barname_Name",
+        "CountChair",
+        "Factor_ID",
+        "Part_ID",
+        "Purchase_Mobile",
+        "Purchase_Name",
+        "Receipt_LargText",
+        "Receipt_LargText2",
+        "Receipt_SmalText",
+        "RunTurn_ID",
+        "Salon_ID",
+        "SumCost",
+        "TrackingFactor"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Views/Templates/Classic/Home/SelectChairForBuy.cshtml",
+      "section": "Home",
+      "sha256": "2d3dc6a0a6ed9e15a279a76e711ebe01c4a683da2ad13e2b6e24222c032ae256",
+      "current_candidate": "src/App.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname_ID",
+        "CountSelectChairList",
+        "ListGroupPrice",
+        "Part_ID",
+        "Part_Name",
+        "RunTurn_ID",
+        "Salon_ID",
+        "SelectChairListInServer",
+        "SumPriceSelectChairList",
+        "TimeReset",
+        "strPriceInShow"
+      ],
+      "ajax_routes": [
+        "/Home/CheckSingleChairInFinalBay",
+        "/Home/GetChairList",
+        "/Home/SetStatusChair"
+      ]
+    },
+    {
+      "legacy_view": "httpdocs/Views/Templates/Classic/Home/SelectPartForBuy.cshtml",
+      "section": "Home",
+      "sha256": "17d5ac12f6ed1cac18d4325363fb7bc9430c6ded22cea2f15f71e6f0b5dad187",
+      "current_candidate": "src/App.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Barname_ID",
+        "PartOfSalon",
+        "RunTurn_ID",
+        "SalonIsPlanShow",
+        "SalonPlanImageName"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Views/Templates/Classic/Home/SelectRunTurns.cshtml",
+      "section": "Home",
+      "sha256": "a2b8be23dc26049fe7eba0ec20064d674b07160e9d62ef3b99d7f4bcea6302eb",
+      "current_candidate": "src/App.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "First"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Views/Templates/Classic/Home/ShowTicket.cshtml",
+      "section": "Home",
+      "sha256": "153e6457e845503459b20b64418604cc19db9c8c6c1269c41f697060b5a31316",
+      "current_candidate": "src/App.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Count",
+        "First"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Views/Templates/Classic/More/AboutMe.cshtml",
+      "section": "More",
+      "sha256": "36ef73ec44c345d8894b295da6fe347b72e45c5b528346d20591672acfb67ea1",
+      "current_candidate": "src/components/InfoModal.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "AboutMe"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Views/Templates/Classic/More/BuyingGuide.cshtml",
+      "section": "More",
+      "sha256": "52bb6452fb4aa54335c9a5b3bc136180e1d6d5595662d8ab57bf1cb8c3970eb5",
+      "current_candidate": "src/components/InfoModal.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "BuyingGuide"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Views/Templates/Classic/More/ContactUs.cshtml",
+      "section": "More",
+      "sha256": "0b89453c5cf91553544bb564c91554d3ef1624e4f6aa56bfde8deeff2cad2914",
+      "current_candidate": "src/components/InfoModal.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "ContactUs"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Views/Templates/Classic/More/Cooperatewithus.cshtml",
+      "section": "More",
+      "sha256": "4a6d6e94b594f7306a4d871e216532ce62261a212819336547dcece42658d0b7",
+      "current_candidate": "src/components/InfoModal.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Cooperatewithus"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Views/Templates/Classic/More/Faq.cshtml",
+      "section": "More",
+      "sha256": "21f8577ccf52813f3400f529478e09d40ccb311f0d6b29dec59c806b6227af8d",
+      "current_candidate": "src/components/InfoModal.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "Faq"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Views/Templates/Classic/More/PurchaseRules.cshtml",
+      "section": "More",
+      "sha256": "2bdc6719965c8f101e1f50717a6ad6c33583d8d37d92ca8a9a8b0535d923d8e5",
+      "current_candidate": "src/components/InfoModal.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "PurchaseRules"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Views/Templates/Classic/More/SecurePaymentGuide.cshtml",
+      "section": "More",
+      "sha256": "a32e8512d6c2619cad57d44268e36db470184d62d37a38ab3740276d34d061ab",
+      "current_candidate": "src/components/InfoModal.tsx",
+      "candidate_exists": true,
+      "mapping_status": "candidate_only",
+      "model_fields": [
+        "SecurePaymentGuide"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Views/Templates/Classic/Purchase/Index.cshtml",
+      "section": "Purchase",
+      "sha256": "f06634fe203fdd627be85f4029f4b31ab887464ed67514b9152f4e42da81bcd1",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [],
+      "ajax_routes": [
+        "/Purchase/CancelTemporaryReservation"
+      ]
+    },
+    {
+      "legacy_view": "httpdocs/Views/Templates/Classic/Purchase/ShowTicketForPDF.cshtml",
+      "section": "Purchase",
+      "sha256": "18aa230648af08e12301bc971dd0b18a4c50e84ed98e86d70eaa922eeaaeeded",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Views/Templates/Classic/Purchase/ShowTicketPurchase.cshtml",
+      "section": "Purchase",
+      "sha256": "27770aac748d27e36b5388b05e3eb47d5c2d3a5515e3e7076cf054a449e6a7f9",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [
+        "First"
+      ],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Views/Templates/Classic/Shared/_LayoutDefault.cshtml",
+      "section": "Shared",
+      "sha256": "97a6e5c8aeda05011b2939001a4380d872e9a27a7d7fcd45c460a90d6638fd5f",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [],
+      "ajax_routes": [
+        "/Home/CheckTrackingCode"
+      ]
+    },
+    {
+      "legacy_view": "httpdocs/Views/Templates/Classic/Shared/_LayoutLogin.cshtml",
+      "section": "Shared",
+      "sha256": "32b8a1ab0cccc5b66deceaa59668931c550ea8fa87a331472b87bca0f8fb422a",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [],
+      "ajax_routes": []
+    },
+    {
+      "legacy_view": "httpdocs/Views/Templates/Classic/Shared/_LayoutPurchase.cshtml",
+      "section": "Shared",
+      "sha256": "173ef972bbf13efe296b04dc4c172dc72afc8498cd652de4d00cb780d2df6c67",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [],
+      "ajax_routes": [
+        "/Purchase/SaveEditUserData"
+      ]
+    },
+    {
+      "legacy_view": "httpdocs/Views/_ViewStart.cshtml",
+      "section": "Views",
+      "sha256": "2f81981099305ba02bcf703868ac3d803fd414ad72b1750bd2a388a51f06611b",
+      "current_candidate": null,
+      "candidate_exists": false,
+      "mapping_status": "manual_review_required",
+      "model_fields": [],
+      "ajax_routes": []
+    }
+  ],
+  "current_models": [
+    {
+      "model": "Salon",
+      "table": "tbl_salons",
+      "columns": [
+        "id",
+        "name",
+        "city",
+        "address",
+        "capacity",
+        "created_at"
+      ]
+    },
+    {
+      "model": "PartOfSalon",
+      "table": "tbl_part_of_salons",
+      "columns": [
+        "id",
+        "salon_id",
+        "name",
+        "tier",
+        "rows",
+        "seats_per_row",
+        "default_price"
+      ]
+    },
+    {
+      "model": "ChairInPart",
+      "table": "tbl_chairs_in_part",
+      "columns": [
+        "id",
+        "part_id",
+        "row_number",
+        "seat_number"
+      ]
+    },
+    {
+      "model": "Barname",
+      "table": "tbl_barnames",
+      "columns": [
+        "id",
+        "salon_id",
+        "title",
+        "sub_title",
+        "category",
+        "city",
+        "date_range",
+        "duration_minutes",
+        "description",
+        "cast_json",
+        "min_price",
+        "max_price",
+        "banner_gradient",
+        "is_featured",
+        "is_active",
+        "created_at"
+      ]
+    },
+    {
+      "model": "RunTurn",
+      "table": "tbl_run_turns",
+      "columns": [
+        "id",
+        "barname_id",
+        "date",
+        "time",
+        "weekday",
+        "is_sold_out"
+      ]
+    },
+    {
+      "model": "ChairInBarname",
+      "table": "tbl_chair_in_barname",
+      "columns": [
+        "id",
+        "run_turn_id",
+        "chair_id",
+        "status",
+        "price",
+        "locked_until"
+      ]
+    },
+    {
+      "model": "MarkdownList",
+      "table": "tbl_markdown_lists",
+      "columns": [
+        "id",
+        "code",
+        "discount_percent",
+        "fixed_amount",
+        "description",
+        "is_active"
+      ]
+    },
+    {
+      "model": "FactorList",
+      "table": "tbl_factor_lists",
+      "columns": [
+        "id",
+        "factor_number",
+        "tracking_code",
+        "ref_id",
+        "run_turn_id",
+        "customer_name",
+        "customer_mobile",
+        "customer_national_code",
+        "subtotal",
+        "discount_amount",
+        "final_amount",
+        "payment_gateway",
+        "paid_at",
+        "qr_payload",
+        "is_checked_in",
+        "checked_in_at"
+      ]
+    },
+    {
+      "model": "UserList",
+      "table": "tbl_user_lists",
+      "columns": [
+        "id",
+        "full_name",
+        "mobile",
+        "national_code",
+        "password_hash",
+        "role",
+        "created_at"
+      ]
+    },
+    {
+      "model": "BankTerminal",
+      "table": "tbl_bank_terminals",
+      "columns": [
+        "id",
+        "bank_name",
+        "terminal_id",
+        "username",
+        "password",
+        "is_active"
+      ]
+    }
+  ],
+  "database_backups": [
+    {
+      "archive": "databases/gishowir_EasyTicket_3/backup_dbdump_2501200621.zip",
+      "entry": "backup_dbdump_2501200621",
+      "bytes": 9855488,
+      "sha256": "8ff0abb89bf13f5df135ee0c8456be1548b874b481ce26b359af9399e7a3b0fe",
+      "signature_hex": "54415045000003008c000e0100000000",
+      "sql_server_backup_signature": true,
+      "restored": true,
+      "schema_verified": true,
+      "schema_report": "legacy-database-schema.json"
+    }
+  ],
+  "limitations": [
+    "Candidate mappings do not imply functional parity.",
+    "Legacy controller source is not established by this inventory.",
+    "Legacy column conversion and business semantics require further verification.",
+    "No credentials, customer records or private hosting files are exported."
+  ]
+}

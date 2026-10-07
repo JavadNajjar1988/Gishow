@@ -48,10 +48,12 @@ def lock_seats_temporarily(req: SeatLockRequest, db: Session = Depends(get_db)):
     existing_locks = db.query(ChairInBarname).filter(
         ChairInBarname.run_turn_id == req.run_turn_id,
         ChairInBarname.id.in_(req.seat_ids),
-        ChairInBarname.status.in_(["sold", "reserved"])
+        ChairInBarname.status != "available"
     ).all()
 
     for item in existing_locks:
+        if item.status not in ("available", "reserved", "sold"):
+            raise HTTPException(409, detail="صندلی برای فروش عمومی آزاد نیست.")
         if item.status == "sold":
             raise HTTPException(status_code=400, detail=f"صندلی {item.id} قبلاً فروخته شده است.")
         if item.status == "reserved" and item.locked_until and item.locked_until > now:

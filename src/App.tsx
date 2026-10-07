@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Header } from './components/Header';
 import { HeroBanner } from './components/HeroBanner';
 import { EventCard } from './components/EventCard';
@@ -11,18 +11,21 @@ import { EventDetailsModal } from './components/EventDetailsModal';
 import { SeatMapModal } from './components/SeatMapModal';
 import { CheckoutModal } from './components/CheckoutModal';
 import { TicketSuccessModal } from './components/TicketSuccessModal';
-import { TicketChecker } from './components/TicketChecker';
-import { AdminDashboard } from './components/AdminDashboard';
-import { ProducerDashboard } from './components/ProducerDashboard';
-import { VirtualBoxOffice } from './components/VirtualBoxOffice';
+import {SecureWorkspace} from './components/SecureWorkspace';
+import {AccountPanel} from './components/AccountPanel';
+import {useAuth} from './auth/AuthContext';
+import {hasPermission} from './auth/api';
 import { Footer } from './components/Footer';
 import { InfoModal } from './components/InfoModal';
 
 import { MOCK_EVENTS, MOCK_SALONS, INITIAL_FACTORS, MOCK_DISCOUNT_CODES } from './data/mockData';
-import { ActiveAppMode, EventItem, RunTurn, Salon, Seat, FactorItem, TicketScanCheckResult, DiscountCode } from './types';
+import { ActiveAppMode, EventItem, RunTurn, Salon, Seat, FactorItem, DiscountCode } from './types';
 import { toPersianDigits } from './utils/formatters';
 
 export default function App() {
+  const {user, loading: authLoading, error: authError} = useAuth();
+  const [accountOpen, setAccountOpen] = useState(false);
+  const closeAccount = useCallback(() => setAccountOpen(false), []);
   // Theme state: defaults to 'light' per user's request
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     const saved = localStorage.getItem('gishow_theme');
@@ -162,55 +165,6 @@ export default function App() {
     setSuccessFactor(newFactor);
   };
 
-  // Ticket Checker Check-In Validation
-  const handleCheckInTicket = (code: string): TicketScanCheckResult => {
-    const now = new Date();
-    const timeStr = `${now.getHours()}:${now.getMinutes() < 10 ? '۰' : ''}${now.getMinutes()}`;
-    const cleanCode = code.trim().toUpperCase();
-
-    const found = factors.find(
-      (f) =>
-        f.factorNumber.toUpperCase() === cleanCode ||
-        f.trackingCode.toUpperCase() === cleanCode ||
-        f.qrPayload.toUpperCase().includes(cleanCode)
-    );
-
-    if (!found) {
-      return {
-        status: 'invalid',
-        message: 'بلیت یافت نشد یا شماره بلیت نامعتبر است!',
-        timestamp: timeStr,
-      };
-    }
-
-    if (found.isCheckedIn) {
-      return {
-        status: 'already_checked',
-        factor: found,
-        message: 'اخطار: این بلیت قبلاً در گیت پذیرش شده است!',
-        timestamp: timeStr,
-      };
-    }
-
-    // Mark as checked in
-    const updatedFactor = {
-      ...found,
-      isCheckedIn: true,
-      checkedInAt: `۱۴۰۵/۰۸/۱۸ - ${timeStr}`,
-    };
-
-    setFactors((prev) =>
-      prev.map((f) => (f.factorNumber === found.factorNumber ? updatedFactor : f))
-    );
-
-    return {
-      status: 'valid',
-      factor: updatedFactor,
-      message: 'بلیت معتبر است. ورود با موفقیت ثبت شد.',
-      timestamp: timeStr,
-    };
-  };
-
   // Add new event from admin
   const handleAddEvent = (newEvent: EventItem) => {
     setEvents((prev) => [newEvent, ...prev]);
@@ -235,8 +189,11 @@ export default function App() {
         selectedCity={selectedCity}
         onCityChange={setSelectedCity}
         onTicketTrackClick={() => setInfoModalType('track')}
+        onAccountClick={() => setAccountOpen(true)}
       />
 
+      {authError && <p dir="rtl" role="alert" className="p-4 text-rose-700">{authError}</p>}
+      {accountOpen && <AccountPanel onClose={closeAccount} />}
       {/* Main Body depending on mode */}
       <main className="flex-1">
         
@@ -334,71 +291,11 @@ export default function App() {
           </div>
         )}
 
-        {/* MODE 2: VIRTUAL BOX OFFICE (گیشه مجازی و صدور بلیت حضوری / POS) */}
-        {activeMode === 'box-office' && (
-          <VirtualBoxOffice
-            theme={theme}
-            events={events}
-            salons={salons}
-            onBackToPortal={() => setActiveMode('portal')}
-            onIssueTicket={(newFactor) => {
-              setFactors((prev) => [newFactor, ...prev]);
-            }}
-          />
-        )}
-
-        {/* MODE 3: TICKET CHECKER GATE (checker.gishow.ir) */}
-        {activeMode === 'checker' && (
-          <TicketChecker
-            theme={theme}
-            factors={factors}
-            onCheckInTicket={handleCheckInTicket}
-            onBackToPortal={() => setActiveMode('portal')}
-            initialCode={checkerInitialCode}
-          />
-        )}
-
-        {/* MODE 4: DEDICATED PRODUCER CONSOLE (کنسول تهیه‌کننده و مدیر برنامه) */}
-        {activeMode === 'producer' && (
-          <ProducerDashboard
-            theme={theme}
-            events={events}
-            salons={salons}
-            factors={factors}
-            discountCodes={discountCodes}
-            onAddDiscountCode={handleAddDiscountCode}
-            onUpdateDiscountCode={handleUpdateDiscountCode}
-            onDeleteDiscountCode={handleDeleteDiscountCode}
-            onBackToPortal={() => setActiveMode('portal')}
-            onUpdateEvent={(updated) => setEvents((prev) => prev.map((e) => (e.id === updated.id ? updated : e)))}
-            onIssueComplimentaryTicket={(newFactor) => {
-              setFactors((prev) => [newFactor, ...prev]);
-            }}
-          />
-        )}
-
-        {/* MODE 5: ADMIN DASHBOARD (AdminSite) */}
-        {activeMode === 'admin' && (
-          <AdminDashboard
-            theme={theme}
-            events={events}
-            factors={factors}
-            salons={salons}
-            discountCodes={discountCodes}
-            onAddDiscountCode={handleAddDiscountCode}
-            onUpdateDiscountCode={handleUpdateDiscountCode}
-            onDeleteDiscountCode={handleDeleteDiscountCode}
-            onBackToPortal={() => setActiveMode('portal')}
-            onAddEvent={handleAddEvent}
-            onAddSalon={(newSalon) => setSalons((prev) => [newSalon, ...prev])}
-            onUpdateSalon={(updated) => setSalons((prev) => prev.map((s) => (s.id === updated.id ? updated : s)))}
-            onDeleteSalon={(salonId) => setSalons((prev) => prev.filter((s) => s.id !== salonId))}
-            onDeleteEvent={(eventId) => setEvents((prev) => prev.filter((e) => e.id !== eventId))}
-            onUpdateEvent={(updated) => setEvents((prev) => prev.map((e) => (e.id === updated.id ? updated : e)))}
-            onToggleTheme={toggleTheme}
-            onOpenBoxOffice={() => setActiveMode('box-office')}
-            onOpenProducer={() => setActiveMode('producer')}
-          />
+        {activeMode === 'my-tickets' && <p className="p-8">پیگیری بلیت از بخش پیگیری انجام می‌شود.</p>}
+        {activeMode !== 'portal' && activeMode !== 'my-tickets' && (
+          (activeMode === 'admin' ? hasPermission(user, 'accounts.manage') || hasPermission(user, 'roles.manage') : activeMode === 'producer' ? ['events.read', 'reports.read', 'seats.manage'].some(p => hasPermission(user, p)) : hasPermission(user, activeMode === 'checker' ? 'tickets.check' : 'events.read'))
+            ? <SecureWorkspace mode={activeMode} onBack={() => setActiveMode('portal')} />
+            : <div dir="rtl" className="max-w-xl mx-auto p-8 space-y-4"><p>{authLoading ? 'در حال بررسی حساب…' : user ? 'دسترسی این بخش برای حساب شما فعال نیست.' : 'برای ادامه وارد حساب شوید.'}</p><button onClick={() => setAccountOpen(true)}>ورود به حساب</button><button className="mr-4" onClick={() => setActiveMode('portal')}>بازگشت به سایت</button></div>
         )}
 
       </main>

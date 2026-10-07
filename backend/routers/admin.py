@@ -6,15 +6,25 @@ from datetime import datetime
 from ..database import get_db
 from ..models import Barname, FactorList, Salon, RunTurn, BankTerminal, ChairInBarname
 from ..schemas import AdminMetrics, FactorOut
+from ..security import require, permitted_event_ids, authorize_event, user_view
+from ..models import UserList
 
 router = APIRouter(prefix="/admin", tags=["پنل مدیریت و تهیه‌کننده (Admin & Producer)"])
 
 @router.get("/metrics", response_model=AdminMetrics, summary="آمار و شاخص‌های کلیدی فروش")
-def get_admin_metrics(db: Session = Depends(get_db)):
-    total_rev = db.query(func.sum(FactorList.final_amount)).scalar() or 0.0
-    total_factors = db.query(FactorList).count()
-    active_events = db.query(Barname).filter(Barname.is_active == True).count()
-    active_salons = db.query(Salon).count()
+def get_admin_metrics(db: Session = Depends(get_db), user=Depends(require('reports.read'))):
+    ids = permitted_event_ids(db, user, 'reports.read')
+    factors = db.query(FactorList).join(RunTurn)
+    events = db.query(Barname)
+    salons = db.query(Salon)
+    if ids is not None:
+        factors = factors.filter(RunTurn.barname_id.in_(ids))
+        events = events.filter(Barname.id.in_(ids))
+        salons = salons.filter(Salon.id.in_(events.with_entities(Barname.salon_id)))
+    total_rev = factors.with_entities(func.sum(FactorList.final_amount)).scalar() or 0.0
+    total_factors = factors.count()
+    active_events = events.filter(Barname.is_active == True).count()
+    active_salons = salons.count()
 
     return {
         "total_revenue": total_rev,
@@ -24,8 +34,12 @@ def get_admin_metrics(db: Session = Depends(get_db)):
     }
 
 @router.get("/factors", response_model=List[FactorOut], summary="لیست فاکتورها و تراکنش‌های بانکی")
-def get_all_factors(db: Session = Depends(get_db)):
-    factors = db.query(FactorList).order_by(FactorList.id.desc()).all()
+def get_all_factors(db: Session = Depends(get_db), user=Depends(require('reports.read'))):
+    ids = permitted_event_ids(db, user, 'reports.read')
+    query = db.query(FactorList).join(RunTurn)
+    if ids is not None:
+        query = query.filter(RunTurn.barname_id.in_(ids))
+    factors = query.order_by(FactorList.id.desc()).all()
     results = []
     for f in factors:
         results.append({
@@ -50,50 +64,30 @@ def get_all_factors(db: Session = Depends(get_db)):
         })
     return results
 
-@router.get("/mali", summary="مدیریت مالی و تسویه‌حساب با تهیه‌کنندگان (MaliManagment)")
-def get_mali_settlements(db: Session = Depends(get_db)):
-    """محاسبه درصد کمیسیون گیشو (۴.۵٪)، مالیات ارزش افزوده و سهم خالص تهیه‌کننده"""
-    events = db.query(Barname).all()
-    records = []
-    for evt in events:
-        factors = db.query(FactorList).join(RunTurn).filter(RunTurn.barname_id == evt.id).all()
-        gross = sum(f.final_amount for f in factors) or 150000000.0
-        commission = gross * 0.045
-        tax = commission * 0.09
-        net = gross - commission - tax
-        records.append({
-            "id": f"mali-{evt.id}",
-            "event_title": evt.title,
-            "producer_name": "موسسه فرهنگی هنری مجری برنامه",
-            "total_gross_sale": gross,
-            "commission_percent": 4.5,
-            "commission_amount": commission,
-            "tax_amount": tax,
-            "net_payable_to_producer": net,
-            "sheba_number": "IR680120000000001234567890",
-            "status": "settled" if gross > 200000000 else "processing"
-        })
-    return records
+@router.get("/mali")
+def get_mali_settlements(user=Depends(require('reports.read'))):
+    raise HTTPException(501, 'محاسبه و تسویه واقعی در گام مالی پیاده می‌شود.')
 
-@router.get("/terminals", summary="لیست پایانه‌ها و درگاه‌های شاپرک (BankTerminals)")
-def get_bank_terminals(db: Session = Depends(get_db)):
-    terminals = db.query(BankTerminal).all()
-    if not terminals:
-        return [
-            {"id": 1, "bank_name": "به‌پرداخت ملت", "terminal_id": "7481920", "merchant_id": "9823411", "is_active": True, "is_default": True},
-            {"id": 2, "bank_name": "تجارت الکترونیک پارسیان", "terminal_id": "4920158", "merchant_id": "8271043", "is_active": True, "is_default": False},
-            {"id": 3, "bank_name": "زرین‌پال", "terminal_id": "zarin_merchant_live", "merchant_id": "98410294-8192", "is_active": True, "is_default": False}
-        ]
-    return terminals
+@router.get("/terminals")
+def get_bank_terminals(db: Session = Depends(get_db), user=Depends(require('terminals.read'))):
+    return [{'id': t.id, 'bank_name': t.bank_name, 'terminal_id': t.terminal_id, 'is_active': t.is_active}
+            for t in db.query(BankTerminal).all()]
 
 @router.post("/chair-block", summary="بلاک کردن صندلی برای ارگان‌ها (ChairForBarname)")
 def block_chairs_for_organizers(
     run_turn_id: int = Body(...),
     chair_ids: List[int] = Body(...),
     action: str = Body(default="block"), # 'block' or 'unblock'
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    user=Depends(require('seats.manage'))
 ):
-    status_to_set = "sold" if action == "block" else "available"
+    sans = db.get(RunTurn, run_turn_id)
+    if not sans:
+        raise HTTPException(404, 'سانس یافت نشد.')
+    authorize_event(db, user, 'seats.manage', sans.barname_id)
+    if action not in ('block', 'unblock'):
+        raise HTTPException(422, 'عملیات معتبر نیست.')
+    status_to_set = "blocked" if action == "block" else "available"
     updated_count = 0
     for cid in chair_ids:
         status_row = db.query(ChairInBarname).filter(
@@ -101,43 +95,30 @@ def block_chairs_for_organizers(
             ChairInBarname.chair_id == cid
         ).first()
         if status_row:
+            expected = 'available' if action == 'block' else 'blocked'
+            if status_row.status != expected:
+                db.rollback()
+                raise HTTPException(409, 'وضعیت صندلی اجازه این عملیات را نمی‌دهد.')
             status_row.status = status_to_set
             updated_count += 1
     db.commit()
     return {"status": "success", "updated_chairs": updated_count, "action": action}
 
-@router.get("/users", summary="لیست کاربران و نقش‌ها (UserLists)")
-def get_admin_users(db: Session = Depends(get_db)):
-    from ..models import UserList
-    users = db.query(UserList).all()
-    if not users:
-        return [
-            {"id": 1, "full_name": "مهندس حسینی (مدیر سیستم)", "mobile": "09152454612", "national_code": "0921457812", "role": "super_admin", "is_active": True},
-            {"id": 2, "full_name": "موسسه آوای باران (تهیه‌کننده)", "mobile": "09121112233", "national_code": "0019284756", "role": "producer", "is_active": True},
-            {"id": 3, "full_name": "اپراتور گیت ورودی ۱", "mobile": "09358889900", "national_code": "0943827164", "role": "gate_checker", "is_active": True},
-            {"id": 4, "full_name": "علیرضا رادمنش", "mobile": "09123456789", "national_code": "0082736451", "role": "customer", "is_active": True}
-        ]
-    return users
+@router.get("/users")
+def get_admin_users(db: Session = Depends(get_db), user=Depends(require('accounts.manage'))):
+    return [user_view(db, account) for account in db.query(UserList).order_by(UserList.id).all()]
 
-@router.post("/users", summary="ایجاد کاربر جدید با نقش مشخص")
-def create_admin_user(
-    full_name: str = Body(...),
-    mobile: str = Body(...),
-    national_code: Optional[str] = Body(None),
-    role: str = Body(default="customer"),
-    db: Session = Depends(get_db)
-):
-    from ..models import UserList
-    new_user = UserList(
-        full_name=full_name,
-        mobile=mobile,
-        national_code=national_code,
-        role=role
-    )
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return {"status": "success", "user_id": new_user.id, "message": "کاربر با موفقیت ایجاد گردید."}
+@router.post("/users")
+def create_admin_user(user=Depends(require('accounts.manage'))):
+    raise HTTPException(410, 'حساب از مسیر ثبت‌نام ساخته شود؛ تخصیص نقش از بخش دسترسی انجام شود.')
+
+@router.get("/events")
+def authorized_events(db: Session = Depends(get_db), user=Depends(require('events.read'))):
+    ids = permitted_event_ids(db, user, 'events.read')
+    query = db.query(Barname)
+    if ids is not None:
+        query = query.filter(Barname.id.in_(ids))
+    return [{'id': e.id, 'title': e.title, 'is_active': e.is_active} for e in query.all()]
 
 @router.post("/salons", summary="تعریف سالن و جایگاه‌های جدید (Salons/Create)")
 def create_salon(
@@ -145,7 +126,8 @@ def create_salon(
     city: str = Body(...),
     address: Optional[str] = Body(None),
     capacity: int = Body(default=0),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    user=Depends(require('salons.manage'))
 ):
     new_salon = Salon(
         name=name,

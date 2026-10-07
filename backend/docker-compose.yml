@@ -1,29 +1,39 @@
-version: '3.8'
-
 services:
   db:
-    image: postgres:15-alpine
-    container_name: gishow_postgres
-    restart: always
+    image: postgres:16-alpine
     environment:
       POSTGRES_USER: gishow_user
-      POSTGRES_PASSWORD: gishow_password
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
       POSTGRES_DB: gishow_db
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gishow_user -d gishow_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  migrate:
+    build: .
+    command: ["python", "-m", "alembic", "-c", "backend/alembic.ini", "upgrade", "head"]
+    environment: &api_environment
+      DATABASE_URL: postgresql+psycopg://gishow_user:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@db:5432/gishow_db
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+    depends_on:
+      db:
+        condition: service_healthy
   api:
     build: .
-    container_name: gishow_fastapi
-    restart: always
     ports:
-      - "8000:8000"
-    environment:
-      DATABASE_URL: postgresql://gishow_user:gishow_password@db:5432/gishow_db
+      - "127.0.0.1:${API_PORT:-8000}:8000"
+    environment: *api_environment
     depends_on:
-      - db
-
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health')"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
 volumes:
   postgres_data:

@@ -1,5 +1,7 @@
 import React from 'react';
 import { Ticket, ShieldCheck, LayoutDashboard, Search, Sparkles, Sun, Moon, Store, Crown } from 'lucide-react';
+import {useAuth} from '../auth/AuthContext';
+import {hasPermission} from '../auth/api';
 import { ActiveAppMode } from '../types';
 
 interface HeaderProps {
@@ -12,6 +14,7 @@ interface HeaderProps {
   selectedCity: string;
   onCityChange: (city: string) => void;
   onTicketTrackClick: () => void;
+  onAccountClick: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -21,9 +24,11 @@ export const Header: React.FC<HeaderProps> = ({
   onModeChange,
   searchQuery,
   onSearchChange,
-  onTicketTrackClick
+  onTicketTrackClick,
+  onAccountClick
 }) => {
   const isDark = theme === 'dark';
+  const {user} = useAuth();
 
   return (
     <header className={`sticky top-0 z-40 transition-colors duration-200 border-b ${
@@ -111,6 +116,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <span className="hidden sm:inline">خرید بلیت</span>
               </button>
 
+              {hasPermission(user, 'events.read') && (
               <button
                 onClick={() => onModeChange('box-office')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
@@ -123,7 +129,9 @@ export const Header: React.FC<HeaderProps> = ({
                 <Store className="w-3.5 h-3.5" />
                 <span>گیشه مجازی</span>
               </button>
+              )}
 
+              {hasPermission(user, 'tickets.check') && (
               <button
                 onClick={() => onModeChange('checker')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
@@ -136,7 +144,9 @@ export const Header: React.FC<HeaderProps> = ({
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span>چکِر گیت</span>
               </button>
+              )}
 
+              {(hasPermission(user, 'events.read') || hasPermission(user, 'reports.read') || hasPermission(user, 'seats.manage')) && (
               <button
                 onClick={() => onModeChange('producer')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
@@ -149,7 +159,9 @@ export const Header: React.FC<HeaderProps> = ({
                 <Crown className="w-3.5 h-3.5" />
                 <span>پنل تهیه‌کننده</span>
               </button>
+              )}
 
+              {(hasPermission(user, 'accounts.manage') || hasPermission(user, 'roles.manage')) && (
               <button
                 onClick={() => onModeChange('admin')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
@@ -162,8 +174,10 @@ export const Header: React.FC<HeaderProps> = ({
                 <LayoutDashboard className="w-3.5 h-3.5" />
                 <span>مدیریت</span>
               </button>
+              )}
             </div>
 
+            <button onClick={onAccountClick} className="text-xs px-3 py-2 rounded-xl border font-bold">{user ? 'حساب من' : 'ورود و ثبت‌نام'}</button>
             {/* Ticket Track Button */}
             <button
               onClick={onTicketTrackClick}

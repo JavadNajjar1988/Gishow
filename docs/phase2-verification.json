@@ -1,0 +1,12 @@
+{
+  "schema": "0002_accounts",
+  "sqlite_tests_passed": 15,
+  "postgres_account_tests_passed": 13,
+  "typescript_check": "passed",
+  "frontend_build": "passed",
+  "browser_login_logout": "passed",
+  "live_admin_session_and_permission_api": "passed",
+  "legacy_data_imported": false,
+  "recovery_delivery": "personal_one_time_codes",
+  "sms_connected": false
+}

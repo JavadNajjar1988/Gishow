@@ -1,0 +1,47 @@
+"""Fixed metadata/aggregate queries; never export personal records or credential values."""
+
+
+def build_queries(schema):
+    queries = {
+        "money_reconciliation": "SELECT COUNT_BIG(*) AS factors_with_seats,SUM(CASE WHEN s.price_sum=f.SumCost_Amount THEN 1 ELSE 0 END) AS exact_subtotal_match,SUM(CASE WHEN s.price_sum=f.SumCost_Amount*10 AND f.SumCost_Amount>0 THEN 1 ELSE 0 END) AS seat_sum_ten_times_factor,SUM(CASE WHEN s.price_sum*10=f.SumCost_Amount AND s.price_sum>0 THEN 1 ELSE 0 END) AS factor_ten_times_seat_sum FROM dbo.FactorLists f JOIN (SELECT Factor_ID,SUM(PriceChair) AS price_sum FROM dbo.ChairInBarnames WHERE Factor_ID>0 GROUP BY Factor_ID) s ON s.Factor_ID=f.ID",
+        "phone_validation": "SELECT COUNT_BIG(*) AS total,SUM(CASE WHEN CountryCode=98 AND ((LEN(CONVERT(varchar(30),Mobile))=10 AND CONVERT(varchar(30),Mobile) LIKE '9%') OR (LEN(CONVERT(varchar(30),Mobile))=12 AND CONVERT(varchar(30),Mobile) LIKE '989%')) THEN 1 ELSE 0 END) AS valid_iranian_shape FROM dbo.UserLists",
+        "currency_settings": "SELECT PriceChairInShow AS display_currency,PriceChairInSales AS sales_currency,COUNT_BIG(*) AS count FROM dbo.Barnames GROUP BY PriceChairInShow,PriceChairInSales",
+        "factor_clock_match": "SELECT COUNT_BIG(*) AS total,SUM(CASE WHEN TRY_CONVERT(bigint,REPLACE(REPLACE(REPLACE(DateInsert,'/',''),':',''),' ',''))=DataInsertInt THEN 1 ELSE 0 END) AS text_matches_compact_number FROM dbo.FactorLists",
+        "orphan_seat_states": "SELECT c.ChairsStatus AS status,c.Payment_Finishid AS paid,c.Checker_Accept AS checked_in,COUNT_BIG(*) AS count FROM dbo.ChairInBarnames c LEFT JOIN dbo.FactorLists f ON f.ID=c.Factor_ID WHERE c.Factor_ID>0 AND f.ID IS NULL GROUP BY c.ChairsStatus,c.Payment_Finishid,c.Checker_Accept",
+        "orphan_factor_states": "SELECT f.Payment_Finishid AS paid,f.DeleteFactor AS deleted,COUNT_BIG(*) AS count FROM dbo.FactorLists f LEFT JOIN dbo.RunTurns r ON r.ID=f.RunTurns_ID WHERE r.ID IS NULL GROUP BY f.Payment_Finishid,f.DeleteFactor",
+        "virtual_seat_states": "SELECT c.Payment_Finishid AS seat_paid,c.Checker_Accept AS checked_in,CASE WHEN f.ID IS NULL THEN 0 ELSE 1 END AS has_factor,f.Payment_Finishid AS factor_paid,COUNT_BIG(*) AS count FROM dbo.ChairInBarnames c LEFT JOIN dbo.FactorLists f ON f.ID=c.Factor_ID WHERE c.ChairsStatus='SoldVirtualChair' GROUP BY c.Payment_Finishid,c.Checker_Accept,CASE WHEN f.ID IS NULL THEN 0 ELSE 1 END,f.Payment_Finishid",
+        "seat_statuses": "SELECT ChairsStatus AS status,COUNT_BIG(*) AS count,SUM(CASE WHEN Payment_Finishid=1 THEN 1 ELSE 0 END) AS paid,SUM(CASE WHEN Checker_Accept=1 THEN 1 ELSE 0 END) AS checked_in FROM dbo.ChairInBarnames GROUP BY ChairsStatus ORDER BY ChairsStatus",
+        "base_seat_statuses": "SELECT ChairsStatus AS status,COUNT_BIG(*) AS count FROM dbo.ChairInParts GROUP BY ChairsStatus ORDER BY ChairsStatus",
+        "payment_states": "SELECT Payment_Finishid AS paid,DeleteFactor AS deleted,AppStatus_Code AS gateway_code,COUNT_BIG(*) AS count FROM dbo.FactorLists GROUP BY Payment_Finishid,DeleteFactor,AppStatus_Code ORDER BY Payment_Finishid,DeleteFactor,AppStatus_Code",
+        "amounts": "SELECT 'seat' AS source,MIN(PriceChair) AS min_amount,MAX(PriceChair) AS max_amount,SUM(CASE WHEN PriceChair<0 THEN 1 ELSE 0 END) AS negative_count FROM dbo.ChairInBarnames UNION ALL SELECT 'factor',MIN(SumCost_Amount),MAX(SumCost_Amount),SUM(CASE WHEN SumCost_Amount<0 THEN 1 ELSE 0 END) FROM dbo.FactorLists UNION ALL SELECT 'discount',MIN(SumFactorMarkdown),MAX(SumFactorMarkdown),SUM(CASE WHEN SumFactorMarkdown<0 THEN 1 ELSE 0 END) FROM dbo.FactorLists",
+        "password_formats": "SELECT LEN(Password) AS length,CASE WHEN Password IS NULL OR Password='' THEN 'empty' WHEN LEN(Password)=32 AND Password COLLATE Latin1_General_BIN2 NOT LIKE '%[^0-9a-fA-F]%' THEN 'hex32' WHEN LEN(Password)=40 AND Password COLLATE Latin1_General_BIN2 NOT LIKE '%[^0-9a-fA-F]%' THEN 'hex40' WHEN Password LIKE '$2%' THEN 'bcrypt_marker' ELSE 'other' END AS format,COUNT_BIG(*) AS count FROM dbo.UserLists GROUP BY LEN(Password),CASE WHEN Password IS NULL OR Password='' THEN 'empty' WHEN LEN(Password)=32 AND Password COLLATE Latin1_General_BIN2 NOT LIKE '%[^0-9a-fA-F]%' THEN 'hex32' WHEN LEN(Password)=40 AND Password COLLATE Latin1_General_BIN2 NOT LIKE '%[^0-9a-fA-F]%' THEN 'hex40' WHEN Password LIKE '$2%' THEN 'bcrypt_marker' ELSE 'other' END",
+        "mobile_formats": "SELECT LEN(CONVERT(varchar(30),Mobile)) AS digits,CountryCode AS country_code,COUNT_BIG(*) AS count FROM dbo.UserLists GROUP BY LEN(CONVERT(varchar(30),Mobile)),CountryCode",
+        "mobile_duplicates": "SELECT COUNT_BIG(*) AS duplicate_groups,COALESCE(SUM(n-1),0) AS extra_records FROM (SELECT COUNT_BIG(*) AS n FROM dbo.UserLists GROUP BY CountryCode,Mobile HAVING COUNT_BIG(*)>1) d",
+        "seat_factor_integrity": "SELECT SUM(CASE WHEN c.Factor_ID>0 AND f.ID IS NULL THEN 1 ELSE 0 END) AS missing_factor,SUM(CASE WHEN c.Payment_Finishid=1 AND (c.Factor_ID IS NULL OR c.Factor_ID=0) THEN 1 ELSE 0 END) AS paid_without_factor,SUM(CASE WHEN c.Payment_Finishid=1 AND f.Payment_Finishid=0 THEN 1 ELSE 0 END) AS paid_seat_unpaid_factor,SUM(CASE WHEN c.Checker_Accept=1 AND c.Payment_Finishid=0 THEN 1 ELSE 0 END) AS checked_unpaid FROM dbo.ChairInBarnames c LEFT JOIN dbo.FactorLists f ON f.ID=c.Factor_ID",
+        "seat_sans_integrity": "SELECT SUM(CASE WHEN r.ID IS NULL THEN 1 ELSE 0 END) AS missing_sans,SUM(CASE WHEN r.ID IS NOT NULL AND r.Salon_ID<>c.Salon_ID THEN 1 ELSE 0 END) AS different_salon,SUM(CASE WHEN r.ID IS NOT NULL AND r.Barname_ID<>c.Barname_ID THEN 1 ELSE 0 END) AS different_event FROM dbo.ChairInBarnames c LEFT JOIN dbo.RunTurns r ON r.ID=c.RunTurns_ID",
+        "factor_integrity": "SELECT SUM(CASE WHEN r.ID IS NULL THEN 1 ELSE 0 END) AS missing_sans,SUM(CASE WHEN s.ID IS NULL THEN 1 ELSE 0 END) AS missing_salon,SUM(CASE WHEN b.ID IS NULL THEN 1 ELSE 0 END) AS missing_event,SUM(CASE WHEN p.ID IS NULL THEN 1 ELSE 0 END) AS missing_part FROM dbo.FactorLists f LEFT JOIN dbo.RunTurns r ON r.ID=f.RunTurns_ID LEFT JOIN dbo.Salons s ON s.ID=f.Salon_ID LEFT JOIN dbo.Barnames b ON b.ID=f.Barname_ID LEFT JOIN dbo.PartOfSalons p ON p.ID=f.Part_ID",
+        "discount_factor_integrity": "SELECT COUNT_BIG(*) AS missing_factor FROM dbo.FactorMarkdowns d LEFT JOIN dbo.FactorLists f ON f.ID=d.Factor_ID WHERE f.ID IS NULL",
+        "seat_identity_duplicates": "SELECT COUNT_BIG(*) AS duplicate_groups,COALESCE(SUM(n-1),0) AS extra_records FROM (SELECT COUNT_BIG(*) AS n FROM dbo.ChairInBarnames GROUP BY RunTurns_ID,Salon_ID,PartOfSalon_ID,RowNumber,ChairNumber HAVING COUNT_BIG(*)>1) d",
+        "barcode_duplicates": "SELECT COUNT_BIG(*) AS duplicate_groups,COALESCE(SUM(n-1),0) AS extra_records FROM (SELECT COUNT_BIG(*) AS n FROM dbo.ChairInBarnames WHERE Barcode_Data IS NOT NULL AND Barcode_Data<>'' GROUP BY Barcode_Data HAVING COUNT_BIG(*)>1) d",
+        "role_membership_duplicates": "SELECT COUNT_BIG(*) AS duplicate_groups,COALESCE(SUM(n-1),0) AS extra_records FROM (SELECT COUNT_BIG(*) AS n FROM dbo.UserRoles GROUP BY User_ID,Role_ID HAVING COUNT_BIG(*)>1) d",
+        "event_access_duplicates": "SELECT COUNT_BIG(*) AS duplicate_groups,COALESCE(SUM(n-1),0) AS extra_records FROM (SELECT COUNT_BIG(*) AS n FROM dbo.UserAccessBarnames GROUP BY User_ID,Barname_ID,Role_ID HAVING COUNT_BIG(*)>1) d",
+        "discount_types": "SELECT Markdown_Class AS kind,Markdown_Price_Unit AS value,Condition_MinimumChair AS minimum_seats,COUNT_BIG(*) AS count FROM dbo.MarkdownLists GROUP BY Markdown_Class,Markdown_Price_Unit,Condition_MinimumChair",
+        "clock_number_formats": "SELECT 'seat_reserve' AS source,LEN(CONVERT(varchar(30),TimeReserve)) AS digits,COUNT_BIG(*) AS count FROM dbo.ChairInBarnames GROUP BY LEN(CONVERT(varchar(30),TimeReserve)) UNION ALL SELECT 'factor_insert',LEN(CONVERT(varchar(30),DataInsertInt)),COUNT_BIG(*) FROM dbo.FactorLists GROUP BY LEN(CONVERT(varchar(30),DataInsertInt))",
+    }
+    date_queries = []
+    for c in schema["columns"]:
+        name = c["column_name"]
+        if c["data_type"] != "nvarchar" or not (name.lower().startswith("date") or name in ("RealTransaction_DateTime", "TimeRun")):
+            continue
+        table = c["table_name"]
+        ident = "[" + name.replace("]", "]]") + "]"
+        date_queries.append(f"SELECT '{table}.{name}' AS source,COUNT_BIG(*) AS total,SUM(CASE WHEN {ident} IS NULL OR {ident}='' THEN 1 ELSE 0 END) AS empty_count,MIN(LEN({ident})) AS min_length,MAX(LEN({ident})) AS max_length,SUM(CASE WHEN {ident} LIKE '[0-9][0-9][0-9][0-9]/[0-9][0-9]/[0-9][0-9]%' THEN 1 ELSE 0 END) AS slash_date_count,SUM(CASE WHEN LEFT({ident},2)='13' OR LEFT({ident},2)='14' THEN 1 ELSE 0 END) AS solar_year_prefix_count,SUM(CASE WHEN {ident} LIKE '[0-9][0-9]:[0-9][0-9]%' THEN 1 ELSE 0 END) AS clock_prefix_count FROM dbo.[{table}]")
+    queries["date_formats"] = " UNION ALL ".join(date_queries)
+    # Verify every declared FK by aggregate count, independent of its enforcement history.
+    fk_queries = []
+    for f in schema["foreign_keys"]:
+        def q(name):
+            return "[" + name.replace("]", "]]") + "]"
+        fk_queries.append(f"SELECT '{f['constraint_name']}' AS constraint_name,COUNT_BIG(*) AS missing_references FROM dbo.{q(f['from_table'])} a LEFT JOIN dbo.{q(f['to_table'])} b ON a.{q(f['from_column'])}=b.{q(f['to_column'])} WHERE a.{q(f['from_column'])} IS NOT NULL AND b.{q(f['to_column'])} IS NULL")
+    queries["foreign_key_integrity"] = " UNION ALL ".join(fk_queries)
+    return queries
