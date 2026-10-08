@@ -24,6 +24,9 @@ export interface RunTurn {
   tierPrices?: Record<string, number>;
 }
 
+export interface LayoutRect {x:number;y:number;width:number;height:number}
+export interface PlanFixture extends LayoutRect {id:string;kind:'aisle'|'door';label:string}
+export interface FloorPlan {stage:LayoutRect;fixtures:PlanFixture[]}
 export interface PartOfSalon {
   id: string;
   salonId: string;
@@ -37,6 +40,8 @@ export interface PartOfSalon {
   isAccessible?: boolean;
   doorAccess?: string;
   color?: string;
+  placement?: LayoutRect;
+  aisleAfter?: number[];
 }
 
 export interface Salon {
@@ -52,6 +57,7 @@ export interface Salon {
   isActive?: boolean;
   version?: number;
   moneyUnit?: string;
+  floorPlan?: FloorPlan;
 }
 
 export type SeatStatus = 'available' | 'selected' | 'reserved' | 'sold';
@@ -235,6 +241,7 @@ export interface UserAccount {
 
 // Phase 3 Backend Request Payloads & Response Schemas
 export interface CreateSalonPayload {
+  floorPlan?: FloorPlan;
   name: string;
   city: string;
   address?: string;
@@ -254,6 +261,8 @@ export interface CreateSalonPayload {
     shape?: string;
     isAccessible?: boolean;
     doorAccess?: string;
+    placement?: LayoutRect;
+    aisleAfter?: number[];
   }>;
 }
 

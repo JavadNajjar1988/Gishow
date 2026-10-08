@@ -2,7 +2,7 @@
 import json
 import hashlib
 from datetime import datetime, timezone, timedelta
-from typing import Literal
+from typing import Literal, Annotated
 from fastapi import APIRouter, Depends, HTTPException, Response, UploadFile, File, Form
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 from sqlalchemy import update
@@ -30,6 +30,35 @@ def find(db, model, id):
 class Input(BaseModel):
     model_config = ConfigDict(extra='forbid', str_strip_whitespace=True)
 
+class LayoutRect(Input):
+    x: float = Field(ge=0, le=100, allow_inf_nan=False)
+    y: float = Field(ge=0, le=100, allow_inf_nan=False)
+    width: float = Field(ge=2, le=100, allow_inf_nan=False)
+    height: float = Field(ge=2, le=100, allow_inf_nan=False)
+
+    @model_validator(mode='after')
+    def bounds(self):
+        if self.x + self.width > 100 or self.y + self.height > 100:
+            raise ValueError('محدوده عنصر از کادر سالن بیرون است.')
+        return self
+
+class PlanFixture(LayoutRect):
+    id: str = Field(min_length=1, max_length=80)
+    kind: Literal['aisle', 'door']
+    label: str = Field(min_length=1, max_length=100)
+
+class FloorPlan(Input):
+    stage: LayoutRect
+    fixtures: list[PlanFixture] = Field(default_factory=list, max_length=30)
+
+    @model_validator(mode='after')
+    def unique_ids(self):
+        if len({f.id for f in self.fixtures}) != len(self.fixtures):
+            raise ValueError('شناسه عناصر چیدمان تکراری است.')
+        if any(f.id == 'stage' or f.id.startswith('part:') for f in self.fixtures):
+            raise ValueError('شناسه عنصر چیدمان معتبر نیست.')
+        return self
+
 class PlanPart(Input):
     id: int | None = Field(None, gt=0)
     name: str = Field(min_length=1, max_length=100)
@@ -40,6 +69,14 @@ class PlanPart(Input):
     shape: Literal['straight', 'arc', 'angled_left', 'angled_right'] = 'straight'
     is_accessible: bool = False
     door_access: str = Field('', max_length=200)
+    placement: LayoutRect | None = None
+    aisle_after: list[Annotated[int, Field(strict=True, ge=1, le=99)]] = Field(default_factory=list, max_length=20)
+
+    @model_validator(mode='after')
+    def aisles(self):
+        if len(set(self.aisle_after)) != len(self.aisle_after) or any(type(n) is not int or n < 1 or n >= self.seats_per_row for n in self.aisle_after):
+            raise ValueError('راهرو باید بین شماره‌های معتبر صندلی باشد.')
+        return self
 
 class SalonInput(Input):
     name: str = Field(min_length=1, max_length=200)
@@ -51,6 +88,7 @@ class SalonInput(Input):
     aisles_count: int = Field(2, ge=0, le=20, strict=True)
     version: int = Field(0, ge=0, strict=True)
     parts: list[PlanPart] = Field(min_length=1, max_length=30)
+    floor_plan: FloorPlan | None = None
 
     @model_validator(mode='after')
     def unique_parts(self):
@@ -61,6 +99,8 @@ class SalonInput(Input):
             raise ValueError('شناسه جایگاه‌ها تکراری است.')
         if sum(p.rows * p.seats_per_row for p in self.parts) > 20000:
             raise ValueError('ظرفیت پلان بیش از حد مجاز است.')
+        if self.floor_plan and any(p.placement is None for p in self.parts):
+            raise ValueError('در چیدمان اختصاصی، محل همه جایگاه‌ها لازم است.')
         return self
 
 class EventInput(Input):
@@ -141,7 +181,8 @@ def save_salon(db, salon, body):
         stored.rows, stored.seats_per_row = part.rows, part.seats_per_row
         stored.default_price = part.amount_irr
         stored.config_json = dump(dict(shape=part.shape, is_accessible=part.is_accessible,
-            door_access=part.door_access, sort_order=order))
+            door_access=part.door_access, sort_order=order,
+            placement=part.placement.model_dump() if part.placement else None, aisle_after=part.aisle_after))
         db.flush()
         old_chairs = {(c.row_number,c.seat_number): c for c in stored.chairs}
         wanted = {(r,n) for r in range(1,part.rows+1) for n in range(1,part.seats_per_row+1)}
@@ -153,7 +194,8 @@ def save_salon(db, salon, body):
     salon.name, salon.city, salon.address = body.name, body.city, body.address
     salon.capacity = sum(p.rows*p.seats_per_row for p in body.parts)
     salon.config_json = dump(dict(is_active=body.is_active, layout_template=body.layout_template,
-        stage_position=body.stage_position, aisles_count=body.aisles_count, money_unit='IRR'))
+        stage_position=body.stage_position, aisles_count=body.aisles_count, money_unit='IRR',
+        floor_plan=body.floor_plan.model_dump() if body.floor_plan else None))
     db.commit()
     db.expire_all()
     return salon_view(find(db, Salon, salon.id))

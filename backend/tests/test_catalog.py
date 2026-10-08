@@ -7,6 +7,35 @@ from backend.tests.test_accounts import site, register, promote, grant_event
 SALONS = '/api/admin/catalog/salons'
 EVENTS = '/api/admin/catalog/events'
 
+def test_floor_plan_roundtrip_public_inventory_and_bounds(site):
+    client,factory,_=admin(site)
+    body=salon_body()
+    body['floor_plan']={'stage':dict(x=25,y=3,width=50,height=10),'fixtures':[dict(id='entry',kind='door',label='درب شرقی',x=85,y=40,width=10,height=8)]}
+    body['parts'][0].update(placement=dict(x=10,y=25,width=70,height=50),aisle_after=[1])
+    result=client.post(SALONS,json=body)
+    assert result.status_code==201,result.text
+    salon=result.json();original=[s['id'] for s in salon['parts'][0]['seats']]
+    event=create_event(client,salon['id'],True)
+    turn=client.post(f"{EVENTS}/{event['id']}/run-turns",json=turn_body(salon)).json()
+    body['version']=salon['version'];body['parts'][0]['id']=salon['parts'][0]['id']
+    body['parts'][0]['placement']['x']=20
+    result=client.patch(f"{SALONS}/{salon['id']}",json=body)
+    assert result.status_code==200,result.text
+    assert [s['id'] for s in result.json()['parts'][0]['seats']]==original
+    public=client.get(f"/api/catalog/run-turns/{turn['id']}/salon").json()
+    assert public['floor_plan']==body['floor_plan']
+    assert public['parts'][0]['placement']['x']==20
+    assert public['parts'][0]['aisle_after']==[1]
+    body['version']=result.json()['version'];body['parts'][0]['placement']['x']=50
+    assert client.patch(f"{SALONS}/{salon['id']}",json=body).status_code==422
+    assert client.get(f"{SALONS}/{salon['id']}/plan").json()['version']==body['version']
+    body['parts'][0]['placement']['x']=20
+    for invalid in ([3],[1,1],[1.5]):
+        body['parts'][0]['aisle_after']=invalid
+        assert client.patch(f"{SALONS}/{salon['id']}",json=body).status_code==422
+    body['parts'][0]['aisle_after']=[1];body['floor_plan']['fixtures'][0]['id']='stage'
+    assert client.patch(f"{SALONS}/{salon['id']}",json=body).status_code==422
+
 def salon_body(name='سالن آزمایشی'):
     return dict(name=name,city='تهران',address='نشانی آزمایشی',parts=[dict(name='همکف',rows=2,seats_per_row=3,amount_irr=1200000)])
 
