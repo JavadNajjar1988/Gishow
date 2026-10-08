@@ -207,7 +207,7 @@ export default function App() {
   const isDark = theme === 'dark';
 
   return (
-    <div className={`min-h-screen flex flex-col font-sans transition-colors duration-200 selection:bg-amber-500 selection:text-slate-950 ${
+    <div data-site-theme={theme} className={`min-h-screen flex flex-col font-sans transition-colors duration-200 selection:bg-amber-500 selection:text-slate-950 ${
       isDark ? 'bg-slate-950 text-slate-100' : 'bg-slate-50/70 text-slate-900'
     }`}>
       

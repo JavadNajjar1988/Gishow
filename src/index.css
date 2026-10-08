@@ -43,3 +43,23 @@
     display: block !important;
   }
 }
+
+/* Shared controls for every server-backed workspace and buyer flow. */
+[data-site-theme] { --site-panel:#fff; --site-soft:#f8fafc; --site-border:#e2e8f0; --site-text:#0f172a; --site-muted:#64748b; --site-hover:#f1f5f9; }
+[data-site-theme="dark"] { --site-panel:#0f172a; --site-soft:#020617; --site-border:#334155; --site-text:#f1f5f9; --site-muted:#94a3b8; --site-hover:#1e293b; }
+.site-surface { background:var(--site-panel); color:var(--site-text); border:1px solid var(--site-border); border-radius:24px; box-shadow:0 12px 36px rgb(15 23 42 / .08); }
+.site-inset { background:var(--site-soft); color:var(--site-text); border:1px solid var(--site-border); border-radius:16px; }
+.site-input { background:var(--site-soft); color:var(--site-text); border:1px solid var(--site-border); border-radius:12px; padding:12px; max-width:100%; }
+.site-input:focus-visible { outline:2px solid #f59e0b; outline-offset:2px; }
+.site-primary,.site-secondary { display:inline-flex; align-items:center; justify-content:center; gap:8px; border-radius:12px; padding:10px 16px; font-weight:700; font-size:13px; cursor:pointer; transition:background .15s,box-shadow .15s; }
+.site-primary { background:linear-gradient(110deg,#f59e0b,#ea580c); color:#fff; box-shadow:0 4px 16px rgb(245 158 11 / .18); border:1px solid transparent; }
+.site-secondary { background:var(--site-panel); color:var(--site-text); border:1px solid var(--site-border); }
+.site-secondary:hover:not(:disabled) { background:var(--site-hover); }
+.site-primary:disabled,.site-secondary:disabled { opacity:.45; cursor:default; box-shadow:none; }
+.site-primary:focus-visible,.site-secondary:focus-visible { outline:2px solid #f59e0b; outline-offset:3px; }
+.site-muted { color:var(--site-muted); }
+.site-notice { background:rgb(245 158 11 / .10); color:var(--site-text); border:1px solid rgb(245 158 11 / .35); border-radius:16px; padding:14px; font-size:13px; line-height:1.9; }
+.site-error { background:rgb(244 63 94 / .10); color:#be123c; border:1px solid rgb(244 63 94 / .30); border-radius:14px; padding:12px; }
+[data-site-theme="dark"] .site-error { color:#fda4af; }
+.site-success { color:#047857; background:rgb(16 185 129 / .10); border:1px solid rgb(16 185 129 / .3); border-radius:14px; padding:12px; }
+[data-site-theme="dark"] .site-success { color:#6ee7b7; }

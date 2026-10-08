@@ -45,7 +45,8 @@ def order_view(db,row):
     reservation=db.get(SaleReservation,row.reservation_id)
     status='expired' if row.status in ('pending','payment_pending') and reservation.expires_at<=utcnow() else row.status
     return dict(id=row.id,reservation_id=row.reservation_id,status=status,amount_irr=row.amount_irr,
-        items=json.loads(row.items_json),expires_at=reservation.expires_at.isoformat()+'Z',
+        subtotal_irr=row.subtotal_irr,discount_amount_irr=row.discount_amount_irr,discount_code=row.discount_code,
+        customer_name=row.customer_name,items=json.loads(row.items_json),expires_at=reservation.expires_at.isoformat()+'Z',
         ref_id=row.ref_id,gateway_mode=row.gateway_mode,paid_at=row.paid_at.isoformat()+'Z' if row.paid_at else None,
         tickets=[dict(id=t.id,seat_id=t.seat_id) for t in db.query(SaleTicket).filter_by(order_id=row.id).all()])
 

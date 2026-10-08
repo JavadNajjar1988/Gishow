@@ -39,18 +39,18 @@ export function AccountPanel({onClose}: {onClose: () => void}) {
     try { await work(); } catch (e) { setError((e as Error).message); }
     finally { setBusy(false); }
   }
-  const input = 'w-full rounded-xl border border-slate-300 bg-white text-slate-900 p-3';
-  const button = 'rounded-xl bg-slate-900 text-white px-4 py-2 disabled:opacity-50';
+  const input = 'site-input w-full';
+  const button = 'site-primary';
   const authenticated = async (data: {user: Account; recovery_codes?: string[]}) => {
     setUser(data.user); setName(data.user.full_name); setNationalCode(data.user.national_code || '');
     setPassword(''); setCurrentPassword(''); setCodes(data.recovery_codes || []);
     setMessage('وارد حساب شدید.');
   };
   return <div className="fixed inset-0 z-50 bg-black/50 overflow-y-auto p-4" dir="rtl">
-    <section role="dialog" aria-modal="true" aria-labelledby="account-title" className="mx-auto my-8 max-w-lg rounded-2xl bg-white text-slate-900 p-6 space-y-5">
-      <div className="flex justify-between items-center"><h2 id="account-title" className="text-xl font-bold">{user ? 'حساب کاربری' : mode === 'register' ? 'ثبت‌نام' : mode === 'recover' ? 'بازیابی گذرواژه' : 'ورود به حساب'}</h2><button ref={closeButton} onClick={onClose} aria-label="بستن حساب کاربری">بستن</button></div>
-      {error && <p role="alert" className="text-rose-700">{error}</p>}
-      {message && <p role="status" className="text-emerald-700">{message}</p>}
+    <section role="dialog" aria-modal="true" aria-labelledby="account-title" className={`site-surface mx-auto my-8 p-5 sm:p-7 space-y-5 ${showOrders&&user?'max-w-4xl':'max-w-lg'}`}>
+      <div className="flex justify-between items-center"><h2 id="account-title" className="text-xl font-bold">{user ? showOrders?'سفارش‌ها و بلیت‌های من':'حساب کاربری' : mode === 'register' ? 'ثبت‌نام' : mode === 'recover' ? 'بازیابی گذرواژه' : 'ورود به حساب'}</h2><button ref={closeButton} onClick={onClose} aria-label="بستن حساب کاربری">بستن</button></div>
+      {error && <p role="alert" className="site-error">{error}</p>}
+      {message && <p role="status" className="site-success">{message}</p>}
       {codes.length > 0 && <div className="rounded-xl bg-amber-50 border border-amber-300 p-4 space-y-3">
         <p>این پنج کد فقط همین‌بار نمایش داده می‌شوند. هر کد برای یک‌بار بازیابی حساب است؛ آن‌ها را در جای امن نگه دارید.</p>
         <ul dir="ltr" className="font-mono text-xs break-all space-y-2">{codes.map(c => <li key={c}>{c}</li>)}</ul>
@@ -65,13 +65,13 @@ export function AccountPanel({onClose}: {onClose: () => void}) {
           <label className="block">شماره همراه<input className={input} dir="ltr" value={mobile} onChange={e => setMobile(e.target.value)} required type="tel" autoComplete="tel" /></label>
           {mode === 'recover' && <label className="block">کد بازیابی یک‌بارمصرف<input className={input} dir="ltr" value={code} onChange={e => setCode(e.target.value.trim())} required minLength={32} maxLength={32} autoComplete="off" /></label>}
           <label className="block">{mode === 'recover' ? 'گذرواژه تازه' : 'گذرواژه'}<input className={input} type="password" dir="ltr" value={password} onChange={e => setPassword(e.target.value)} required minLength={mode === 'login' ? 1 : 12} maxLength={128} autoComplete={mode === 'login' ? 'current-password' : 'new-password'} /></label>
-          {mode !== 'login' && <p className="text-sm text-slate-600">گذرواژه دست‌کم دوازده نویسه داشته باشد.</p>}
+          {mode !== 'login' && <p className="text-sm site-muted">گذرواژه دست‌کم دوازده نویسه داشته باشد.</p>}
           <button className={button} disabled={busy}>{busy ? 'در حال بررسی…' : mode === 'register' ? 'ساخت حساب' : mode === 'recover' ? 'تغییر گذرواژه' : 'ورود'}</button>
         </form>
         <div className="flex flex-wrap gap-4 text-sm">{mode !== 'login' && <button onClick={() => {setMode('login'); setError('');}}>ورود</button>}{mode !== 'register' && <button onClick={() => {setMode('register'); setError('');}}>ثبت‌نام</button>}{mode !== 'recover' && <button onClick={() => {setMode('recover'); setError('');}}>گذرواژه را فراموش کرده‌ام</button>}</div>
-        {mode === 'recover' && <p className="text-sm text-slate-600">یکی از کدهایی را وارد کنید که هنگام ثبت‌نام یا نوسازی دریافت کرده‌اید. کد بازیابی از طریق پیامک ارسال نمی‌شود.</p>}
+        {mode === 'recover' && <p className="text-sm site-muted">یکی از کدهایی را وارد کنید که هنگام ثبت‌نام یا نوسازی دریافت کرده‌اید. کد بازیابی از طریق پیامک ارسال نمی‌شود.</p>}
       </> : <>
-        <button className={button} onClick={()=>setShowOrders(!showOrders)}>سفارش‌های من</button>{showOrders&&<MyOrders/>}
+        <nav className="flex flex-wrap gap-2"><button className="site-secondary" onClick={()=>setShowOrders(false)}>مشخصات حساب</button><button className="site-secondary" onClick={()=>setShowOrders(true)}>سفارش‌های من</button></nav>{showOrders&&<MyOrders/>}<div hidden={showOrders} className="space-y-5">
         <p>شماره همراه شما: <bdi>{user.mobile}</bdi></p>
         <form className="space-y-3" onSubmit={e => {e.preventDefault(); void action(async () => { setUser(await api<Account>('/auth/me', 'PATCH', {full_name:name, national_code:nationalCode || null, current_password:currentPassword})); setCurrentPassword(''); setMessage('اطلاعات حساب ذخیره شد.'); });}}>
           <label className="block">نام و نام خانوادگی<input className={input} value={name} onChange={e => setName(e.target.value)} required minLength={2} maxLength={150} /></label>
@@ -88,7 +88,7 @@ export function AccountPanel({onClose}: {onClose: () => void}) {
           <button className={button} disabled={busy} onClick={() => void action(async () => {await logout(); setCodes([]); setCurrentPassword('');})}>خروج</button>
           <button className={button} disabled={busy} onClick={() => void action(async () => {await api('/auth/logout-all', 'POST'); setCodes([]); await refresh();})}>خروج از همه دستگاه‌ها</button>
         </div>
-        <p className="text-sm text-slate-600">برای تغییر گذرواژه یا نوسازی کدها، گذرواژه فعلی را در فرم بالا وارد کنید. تغییر شماره همراه تا اتصال تأیید شماره در دسترس نیست.</p>
+        <p className="text-sm site-muted">برای تغییر گذرواژه یا نوسازی کدها، گذرواژه فعلی را در فرم بالا وارد کنید. تغییر شماره همراه تا اتصال تأیید شماره در دسترس نیست.</p></div>
       </>}
     </section>
   </div>;

@@ -1,8 +1,10 @@
+import os
+from sqlalchemy import update
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from datetime import datetime
 from ..database import get_db
-from ..models import FactorList, RunTurn
+from ..models import FactorList, RunTurn, SaleTicket, SaleOrder, SaleReservation
 from ..security import require, permitted_event_ids
 from ..schemas import TicketCheckRequest, TicketCheckResponse
 
@@ -16,6 +18,22 @@ def verify_ticket(req: TicketCheckRequest, db: Session = Depends(get_db), user=D
     if not clean_code:
         raise HTTPException(422, 'کد بلیت خالی است.')
     ids = permitted_event_ids(db, user, 'tickets.check')
+    if req.code.strip().startswith('GISHOW:TICKET:'):
+        ticket_id=req.code.strip()[len('GISHOW:TICKET:'):]
+        query=db.query(SaleTicket,SaleOrder).join(SaleOrder,SaleOrder.id==SaleTicket.order_id).join(SaleReservation,SaleReservation.id==SaleOrder.reservation_id).join(RunTurn,RunTurn.id==SaleReservation.run_turn_id).filter(SaleTicket.id==ticket_id,SaleOrder.status=='paid')
+        if ids is not None:query=query.filter(RunTurn.barname_id.in_(ids))
+        if os.getenv('ZARINPAL_MODE','sandbox')=='live':query=query.filter(SaleOrder.gateway_mode=='live')
+        result=query.first()
+        invalid=dict(status='invalid',message='بلیت معتبر در محدوده دسترسی شما یافت نشد.',timestamp=now_str,factor=None)
+        if not result:return invalid
+        ticket,order=result
+        accepted=db.execute(update(SaleTicket).where(SaleTicket.id==ticket.id,SaleTicket.checked_in_at.is_(None)).values(checked_in_at=datetime.utcnow(),checked_by=user.id))
+        if accepted.rowcount!=1:
+            db.rollback()
+            return dict(status='already_checked',message='این بلیت قبلاً پذیرش شده است.',timestamp=now_str,factor=None)
+        db.commit()
+        test=' بلیت آزمایشی است و پرداخت واقعی ندارد.' if order.gateway_mode=='sandbox' else ''
+        return dict(status='valid',message='ورود صاحب این صندلی تأیید شد.'+test,timestamp=now_str,factor=None)
     query = db.query(FactorList).join(RunTurn)
     if ids is not None:
         query = query.filter(RunTurn.barname_id.in_(ids))

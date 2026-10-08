@@ -1,0 +1,32 @@
+import React,{useEffect,useState} from 'react';
+import {Tag,Plus} from 'lucide-react';
+import {api} from '../auth/api';
+import {EventItem} from '../types';
+import {serverId,moneyIRR} from '../services/apiServices';
+import {formatPrice,toPersianDigits} from '../utils/formatters';
+import {PersianDateTimeField} from './PersianDateTimeField';
+interface Discount{id:string;code:string;event_id:number|null;run_turn_id:number|null;percent:number|null;fixed_amount_irr:number|null;min_seats:number;max_uses:number;claimed_uses:number;starts_at:string;ends_at:string;is_active:boolean}
+const date=(value:string)=>new Intl.DateTimeFormat('fa-IR',{timeZone:'Asia/Tehran',dateStyle:'short',timeStyle:'short'}).format(new Date(value));
+export function DiscountWorkspace({events,globalManage}:{events:EventItem[];globalManage:boolean}){
+ const [list,setList]=useState<Discount[]>([]),[error,setError]=useState(''),[busy,setBusy]=useState(false),[loading,setLoading]=useState(true),[message,setMessage]=useState('');
+ const [code,setCode]=useState(''),[event,setEvent]=useState(globalManage?'':events[0]?.id||''),[turn,setTurn]=useState(''),[kind,setKind]=useState('percent'),[amount,setAmount]=useState(10),[minimum,setMinimum]=useState(1),[maximum,setMaximum]=useState(100),[start,setStart]=useState(''),[end,setEnd]=useState('');
+ const selected=events.find(e=>e.id===event);
+ async function load(){setLoading(true);try{setList(await api<Discount[]>('/admin/discounts'));}catch(e){setError((e as Error).message);}finally{setLoading(false);}}
+ useEffect(()=>{void load();},[]);
+ async function work(fn:()=>Promise<unknown>){setBusy(true);setError('');setMessage('');try{await fn();setMessage('تغییر تخفیف در سرور ثبت شد.');await load();}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
+ return <section className="space-y-5"><div className="site-surface p-5"><h2 className="font-bold text-xl flex gap-2 items-center"><Tag size={22}/>کدهای تخفیف</h2><p className="site-muted mt-2 text-sm">مبلغ و محدودیت استفاده هنگام ثبت سفارش بررسی می‌شود. سفارش ثبت‌شده مبلغ ثابت دارد؛ غیرفعال‌کردن کد مبلغ آن را تغییر نمی‌دهد.</p></div>
+ {error&&<p role="alert" className="site-error">{error}</p>}{message&&<p role="status" className="site-success">{message}</p>}
+ <form className="site-surface p-5 space-y-4" onSubmit={e=>{e.preventDefault();if(busy)return;void work(async()=>{await api('/admin/discounts','POST',{code:code.trim().toUpperCase(),event_id:event?serverId(event):null,run_turn_id:turn?serverId(turn):null,percent:kind==='percent'?amount:null,fixed_amount_irr:kind==='fixed'?moneyIRR(amount):null,min_seats:minimum,max_uses:maximum,starts_at:start,ends_at:end});setCode('');});}}><h3 className="font-bold flex gap-2 items-center"><Plus size={18}/>تخفیف تازه</h3><fieldset disabled={busy} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+ <label>کد تخفیف<input className="site-input w-full mt-1" dir="ltr" required pattern="[A-Za-z0-9_-]{3,40}" maxLength={40} value={code} onChange={e=>setCode(e.target.value)}/><span className="text-xs site-muted">سه تا چهل حرف لاتین، عدد، خط تیره یا زیرخط</span></label>
+ <label>محدوده برنامه<select className="site-input w-full mt-1" required={!globalManage} value={event} onChange={e=>{setEvent(e.target.value);setTurn('');}}>{globalManage?<option value="">همه برنامه‌ها</option>:<option value="">انتخاب برنامه</option>}{events.map(e=><option key={e.id} value={e.id}>{e.title}</option>)}</select></label>
+ <label>محدوده سانس<select className="site-input w-full mt-1" value={turn} disabled={!event} onChange={e=>setTurn(e.target.value)}><option value="">همه سانس‌های برنامه</option>{selected?.runTurns.map(t=><option key={t.id} value={t.id}>{t.date}، {t.time}</option>)}</select></label>
+ <label>نوع تخفیف<select className="site-input w-full mt-1" value={kind} onChange={e=>{setKind(e.target.value);setAmount(e.target.value==='percent'?10:10000);}}><option value="percent">درصد از مبلغ سفارش</option><option value="fixed">مبلغ ثابت سفارش</option></select></label>
+ <label>{kind==='percent'?'درصد تخفیف':'مبلغ تخفیف، تومان'}<input className="site-input w-full mt-1" type="number" min={1} max={kind==='percent'?99:900719925474099} step={1} required value={amount} onChange={e=>setAmount(Number(e.target.value))}/></label>
+ <label>حداقل تعداد صندلی<input className="site-input w-full mt-1" type="number" required min={1} max={10} value={minimum} onChange={e=>setMinimum(Number(e.target.value))}/></label>
+ <label>سقف تعداد سفارش<input className="site-input w-full mt-1" type="number" required min={1} max={1000000} value={maximum} onChange={e=>setMaximum(Number(e.target.value))}/></label>
+ <PersianDateTimeField label="شروع اعتبار تخفیف" required onChange={setStart}/><PersianDateTimeField label="پایان اعتبار تخفیف" required onChange={setEnd}/>
+ </fieldset><button disabled={busy} className="site-primary">ثبت کد تخفیف</button></form>
+ <div className="flex justify-between items-center"><h3 className="font-bold">کدهای ثبت‌شده</h3><button className="site-secondary" disabled={busy||loading} onClick={()=>void load()}>دریافت دوباره</button></div>{loading&&<p role="status">در حال دریافت کدها…</p>}{!loading&&!error&&!list.length&&<div className="site-inset p-8 text-center site-muted">کد تخفیفی ثبت نشده است.</div>}
+ <div className="grid md:grid-cols-2 gap-4">{list.map(d=><article key={d.id} className="site-surface p-5 space-y-3"><div className="flex justify-between gap-3"><code dir="ltr" className="text-lg font-bold">{d.code}</code><span className="text-sm site-muted">{d.is_active?'فعال':'غیرفعال'}</span></div><p>{d.percent?`${toPersianDigits(d.percent)} درصد تخفیف`:formatPrice((d.fixed_amount_irr||0)/10)}</p><p className="site-muted text-sm">{d.event_id?events.find(e=>serverId(e.id)===d.event_id)?.title||'برنامه مجاز':'همه برنامه‌ها'}؛ {d.run_turn_id?'سانس مشخص':'همه سانس‌ها'}</p><p className="text-sm">حداقل {toPersianDigits(d.min_seats)} صندلی؛ ظرفیت اشغال‌شده {toPersianDigits(d.claimed_uses)} از {toPersianDigits(d.max_uses)} سفارش</p><p className="site-muted text-sm">از {date(d.starts_at)} تا {date(d.ends_at)}</p><button className="site-secondary" disabled={busy} onClick={()=>void work(()=>api(`/admin/discounts/${d.id}`,'PATCH',{is_active:!d.is_active}))}>{d.is_active?'غیرفعال‌کردن':'فعال‌کردن'}</button></article>)}</div><p className="site-muted text-xs">سفارش پرداخت‌شده و رزرو دارای سفارش معتبر، ظرفیت کد را اشغال می‌کنند. پس از لغو یا پایان مهلت رزرو، ظرفیت سفارش پرداخت‌نشده آزاد می‌شود.</p>
+ </section>;
+}
