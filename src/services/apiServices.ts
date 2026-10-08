@@ -14,19 +14,19 @@ export function moneyIRR(amount: number, unit: 'toman' | 'IRR' = 'toman'): numbe
 export function normalizeSalon(raw: any): Salon {
   return {id: String(raw.id), name: raw.name, city: raw.city, address: raw.address || '', capacity: raw.capacity,
     version: raw.version, moneyUnit: raw.money_unit, isActive: raw.is_active ?? true,
-    layoutTemplate: raw.layout_template, stagePosition: raw.stage_position, aislesCount: raw.aisles_count,
+    layoutTemplate: raw.layout_template, stagePosition: raw.stage_position, aislesCount: raw.aisles_count, floorPlan:raw.floor_plan,
     parts: (raw.parts || []).map((p: any) => ({id: String(p.id), salonId: String(raw.id), name: p.name,
       tier: p.tier, rows: p.rows, seatsPerRow: p.seats_per_row, price: p.amount_irr == null ? 0 : p.amount_irr / 10,
-      shape: p.shape, isAccessible: p.is_accessible, doorAccess: p.door_access}))};
+      shape: p.shape, isAccessible: p.is_accessible, doorAccess: p.door_access, placement:p.placement, aisleAfter:p.aisle_after}))};
 }
 function salonBody(payload: Partial<CreateSalonPayload>) {
   if (!payload.parts?.length) throw new Error('ذخیره سالن نیاز به پلان کامل دارد.');
   return {name: payload.name, city: payload.city, address: payload.address || '', is_active: payload.isActive ?? true,
     layout_template: payload.layoutTemplate || 'theater', stage_position: payload.stagePosition || 'top',
-    aisles_count: payload.aislesCount ?? 2, version: payload.version ?? 0,
+    aisles_count: payload.aislesCount ?? 2, version: payload.version ?? 0, floor_plan:payload.floorPlan ?? null,
     parts: payload.parts.map(p => ({id: p.id ?? null, name: p.name, tier: p.tier, rows: p.rows,
       seats_per_row: p.seatsPerRow, amount_irr: moneyIRR(p.price, 'IRR'), shape: p.shape || 'straight',
-      is_accessible: p.isAccessible ?? false, door_access: p.doorAccess || ''}))};
+      is_accessible: p.isAccessible ?? false, door_access: p.doorAccess || '', placement:p.placement ?? null, aisle_after:p.aisleAfter ?? []}))};
 }
 export const salonApi = {
   async getSalons(): Promise<Salon[]> {return (await api<any[]>('/admin/catalog/salons')).map(normalizeSalon);},

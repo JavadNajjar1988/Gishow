@@ -1,4 +1,6 @@
 import React, { useState, useRef } from 'react';
+import {VenueLayoutEditor} from './VenueLayoutEditor';
+import {FloorPlan} from '../types';
 import { Salon, PartOfSalon } from '../types';
 import { toPersianDigits, formatPrice } from '../utils/formatters';
 import { salonApi, moneyIRR, serverId } from '../services/apiServices';
@@ -94,9 +96,10 @@ export const SalonPlanBuilderModal: React.FC<SalonPlanBuilderModalProps> = ({
   const [stagePosition, setStagePosition] = useState<'top' | 'center' | 'thrust' | 'bottom'>(
     (initialSalon?.stagePosition as any) || 'top'
   );
-  const [aislesCount, setAislesCount] = useState<number>(initialSalon?.aislesCount || 2);
+  const [aislesCount, setAislesCount] = useState<number>(initialSalon?.aislesCount ?? 2);
   const [isActive, setIsActive] = useState<boolean>(initialSalon?.isActive !== undefined ? initialSalon.isActive : true);
 
+  const [floorPlan,setFloorPlan]=useState<FloorPlan|undefined>(initialSalon?.floorPlan);
   // Sections (Parts)
   const [parts, setParts] = useState<PartOfSalon[]>(() => {
     if (initialSalon && initialSalon.parts && initialSalon.parts.length > 0) {
@@ -118,8 +121,6 @@ export const SalonPlanBuilderModal: React.FC<SalonPlanBuilderModalProps> = ({
   });
 
   const [activePartIndex, setActivePartIndex] = useState<number>(0);
-  const [canvasViewMode, setCanvasViewMode] = useState<'macro_plan' | 'chairs_detail'>('macro_plan');
-  const [hoveredCanvasSection, setHoveredCanvasSection] = useState<number | null>(null);
 
   // Saving & Feedback state
   const [isSaving, setIsSaving] = useState(false);
@@ -143,6 +144,7 @@ export const SalonPlanBuilderModal: React.FC<SalonPlanBuilderModalProps> = ({
     const tpl = TEMPLATES.find((t) => t.id === tplId);
     if (!tpl) return;
     setLayoutTemplate(tpl.id as any);
+    setFloorPlan(undefined);
     setParts(
       tpl.parts.map((p, idx) => ({
         id: `part-${initialSalon?.id || 'new'}-${idx}`,
@@ -165,7 +167,7 @@ export const SalonPlanBuilderModal: React.FC<SalonPlanBuilderModalProps> = ({
   // Add new Section
   const handleAddNewSection = () => {
     const newPart: PartOfSalon = {
-      id: `part-${initialSalon?.id || 'new'}-${parts.length + 1}`,
+      id: `part-${crypto.randomUUID()}`,
       salonId: initialSalon?.id || 'temp',
       name: `جایگاه جدید ${parts.length + 1}`,
       tier: 'ground',
@@ -175,6 +177,7 @@ export const SalonPlanBuilderModal: React.FC<SalonPlanBuilderModalProps> = ({
       shape: 'straight',
       doorAccess: `درب ورودی ${parts.length + 1}`,
       isAccessible: false,
+      placement:floorPlan?{x:10,y:25,width:35,height:18}:undefined,
     };
     setParts([...parts, newPart]);
     setActivePartIndex(parts.length);
@@ -218,6 +221,8 @@ export const SalonPlanBuilderModal: React.FC<SalonPlanBuilderModalProps> = ({
   // Save Salon to Server API layer
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const invalid=dialogRef.current?.querySelector<HTMLInputElement>('input:invalid');
+    if(invalid){invalid.reportValidity();return;}
     if (!salonName.trim()) {
       alert('لطفاً نام سالن را وارد کنید.');
       return;
@@ -237,12 +242,12 @@ export const SalonPlanBuilderModal: React.FC<SalonPlanBuilderModalProps> = ({
     try {
       const payload = {
         name: salonName.trim(), city: salonCity.trim(), address: salonAddress.trim(),
-        layoutTemplate, stagePosition, aislesCount, isActive,
+        layoutTemplate, stagePosition, aislesCount, isActive, floorPlan,
         version: initialSalon?.version ?? 0,
         parts: parts.map(p => ({
           id: /^\d+$/.test(p.id) ? serverId(p.id) : undefined,
           name:p.name.trim(), tier:p.tier, rows:p.rows, seatsPerRow:p.seatsPerRow,
-          price:moneyIRR(p.price), shape:p.shape, isAccessible:p.isAccessible, doorAccess:p.doorAccess,
+          price:moneyIRR(p.price), shape:p.shape, isAccessible:p.isAccessible, doorAccess:p.doorAccess, placement:p.placement, aisleAfter:p.aisleAfter,
         })),
       };
       const saved = initialSalon
@@ -315,8 +320,8 @@ export const SalonPlanBuilderModal: React.FC<SalonPlanBuilderModalProps> = ({
   };
 
   return (
-    <div ref={dialogRef} role="dialog" aria-modal="true" aria-label="ویرایش سالن و پلان" className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
-      <div className={`max-w-6xl w-full border rounded-3xl p-5 sm:p-7 space-y-6 shadow-2xl my-4 flex flex-col max-h-[96vh] overflow-hidden ${
+    <div ref={dialogRef} role="dialog" aria-modal="true" aria-label="ویرایش سالن و پلان" dir="rtl" className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+      <div data-site-theme={theme} className={`max-w-6xl w-full border rounded-3xl p-5 sm:p-7 space-y-6 shadow-2xl my-4 flex flex-col max-h-[96vh] overflow-y-auto ${
         isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
       }`}>
         
@@ -372,6 +377,7 @@ export const SalonPlanBuilderModal: React.FC<SalonPlanBuilderModalProps> = ({
           </div>
         )}
 
+        <details open={!initialSalon} className="shrink-0"><summary className="cursor-pointer text-sm font-bold">مشخصات سالن و الگوهای چیدمان</summary><div className="mt-4 space-y-4">
         {/* Top Info Inputs & Template Selection */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 shrink-0">
           <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -465,9 +471,10 @@ export const SalonPlanBuilderModal: React.FC<SalonPlanBuilderModalProps> = ({
             </div>
 
             <div className="flex items-center gap-1.5">
-              <span className="text-[11px] font-bold text-slate-400">موقعیت سن / صحنه:</span>
+              <span className="text-[11px] font-bold text-slate-400">موقعیت صحنه در نمای خودکار:</span>
               <select
                 value={stagePosition}
+                disabled={!!floorPlan}
                 onChange={(e) => setStagePosition(e.target.value as any)}
                 className={`py-1 px-2.5 rounded-lg border text-xs font-bold ${
                   isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300'
@@ -481,9 +488,10 @@ export const SalonPlanBuilderModal: React.FC<SalonPlanBuilderModalProps> = ({
             </div>
 
             <div className="flex items-center gap-1.5">
-              <span className="text-[11px] font-bold text-slate-400">راهروهای اصلی:</span>
+              <span className="text-[11px] font-bold text-slate-400">راهروهای نمای خودکار:</span>
               <select
                 value={aislesCount}
+                disabled={!!floorPlan}
                 onChange={(e) => setAislesCount(Number(e.target.value))}
                 className={`py-1 px-2 rounded-lg border text-xs font-mono font-bold ${
                   isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300'
@@ -514,251 +522,23 @@ export const SalonPlanBuilderModal: React.FC<SalonPlanBuilderModalProps> = ({
           </div>
         </div>
 
+        </div></details>
         {/* Main Body: Canvas on Right/Left + Inspector on other side */}
-        <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-5 overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 shrink-0">
           
-          {/* LEFT/MAIN: Interactive 2D Architectural Plan Canvas */}
-          <div className="lg:col-span-7 flex flex-col min-h-0 border rounded-3xl overflow-hidden relative shadow-inner bg-slate-950 border-slate-800">
-            
-            {/* Canvas Toolbar */}
-            <div className="p-3 bg-slate-900/90 border-b border-slate-800 flex items-center justify-between gap-3 text-xs z-10">
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-slate-300 flex items-center gap-1.5 text-xs">
-                  <Compass className="w-4 h-4 text-emerald-400" />
-                  نقشه دوبعدی هندسه سالن (2D Floor Plan)
-                </span>
-                <span className="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-400">
-                  {toPersianDigits(parts.length)} بخش تعریف شده
-                </span>
-              </div>
-
-              <div className="flex items-center gap-1.5 bg-slate-950 p-1 rounded-xl border border-slate-800">
-                <button
-                  type="button"
-                  onClick={() => setCanvasViewMode('macro_plan')}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
-                    canvasViewMode === 'macro_plan'
-                      ? 'bg-emerald-500 text-slate-950 shadow-xs'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  بخش‌های کلی
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setCanvasViewMode('chairs_detail')}
-                  className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
-                    canvasViewMode === 'chairs_detail'
-                      ? 'bg-emerald-500 text-slate-950 shadow-xs'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  شبیه‌ساز صندلی‌ها
-                </button>
-              </div>
-            </div>
-
-            {/* Visual SVG Plan Viewport */}
-            <div className="flex-1 overflow-y-auto p-4 flex flex-col items-center justify-start space-y-4 relative select-none">
-              
-              {/* STAGE (سن اجرای زنده) */}
-              <div className="w-full max-w-md mx-auto pt-2">
-                <div className="relative py-3 px-8 rounded-2xl bg-gradient-to-b from-amber-500/20 to-amber-500/5 border-2 border-amber-500/40 text-center shadow-lg shadow-amber-500/10">
-                  <div className="text-amber-400 font-black text-xs tracking-wider flex items-center justify-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-                    سن اصلی اجرای برنامه / صحنه تالار (STAGE)
-                    <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-                  </div>
-                  <div className="text-[9px] text-amber-500/70 mt-0.5">
-                    خط دید مستقیم تماشاگران رو به صحنه
-                  </div>
-
-                  {/* Stage Lighting / Microphone Indicators */}
-                  <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 flex gap-3 text-[8px] text-amber-500/60 bg-slate-950 px-3 py-0.5 rounded-full border border-amber-500/30">
-                    🎤 میکروفن و مانیتور صدا
-                  </div>
-                </div>
-              </div>
-
-              {/* Sections Display */}
-              {canvasViewMode === 'macro_plan' ? (
-                /* MACRO PLAN: Interactive architectural layout blocks */
-                <div className="w-full max-w-lg space-y-3 pt-3">
-                  {parts.map((part, idx) => {
-                    const isSelected = activePartIndex === idx;
-                    const isHovered = hoveredCanvasSection === idx;
-                    const tierStyle = getTierColor(part.tier);
-
-                    // Visual shape representation
-                    let shapeBadge = 'مستقیم';
-                    let shapeRoundClass = 'rounded-2xl';
-                    if (part.shape === 'arc') {
-                      shapeBadge = 'هلالی قوسی';
-                      shapeRoundClass = 'rounded-[2rem] border-t-4';
-                    } else if (part.shape === 'angled_left') {
-                      shapeBadge = 'زاویه‌دار چپ';
-                      shapeRoundClass = 'rounded-2xl -skew-x-2';
-                    } else if (part.shape === 'angled_right') {
-                      shapeBadge = 'زاویه‌دار راست';
-                      shapeRoundClass = 'rounded-2xl skew-x-2';
-                    }
-
-                    return (
-                      <div
-                        key={part.id || idx}
-                        onClick={() => setActivePartIndex(idx)}
-                        onMouseEnter={() => setHoveredCanvasSection(idx)}
-                        onMouseLeave={() => setHoveredCanvasSection(null)}
-                        className={`p-3.5 transition-all cursor-pointer border-2 relative ${shapeRoundClass} ${
-                          isSelected
-                            ? 'bg-slate-900 border-emerald-400 shadow-xl shadow-emerald-500/15 ring-2 ring-emerald-500/30'
-                            : isHovered
-                            ? 'bg-slate-900/90 border-slate-600'
-                            : 'bg-slate-950/70 border-slate-800 hover:border-slate-700'
-                        }`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <span className={`w-3 h-3 rounded-full shrink-0`} style={{ backgroundColor: tierStyle.fill }} />
-                            <div>
-                              <div className="font-bold text-xs text-white flex items-center gap-2">
-                                <span>{part.name}</span>
-                                <span className={`text-[9px] px-1.5 py-0.5 rounded ${tierStyle.badge}`}>
-                                  {tierStyle.label}
-                                </span>
-                                {part.isAccessible && (
-                                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/30">
-                                    ♿ ویلچر
-                                  </span>
-                                )}
-                              </div>
-                              <span className="text-[10px] text-slate-400">
-                                هندسه: {shapeBadge} · {toPersianDigits(part.rows)} ردیف × {toPersianDigits(part.seatsPerRow)} صندلی
-                              </span>
-                            </div>
-                          </div>
-
-                          <div className="text-left">
-                            <div className="font-mono font-black text-amber-400 text-xs">
-                              {formatPrice(part.price)}
-                            </div>
-                            <div className="text-[10px] text-emerald-400 font-mono">
-                              ظرفیت {toPersianDigits(part.rows * part.seatsPerRow)} صندلی
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Visual Row lines mini bar */}
-                        <div className="mt-2.5 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[9px] text-slate-500">
-                          <div className="flex items-center gap-1 overflow-x-auto">
-                            {Array.from({ length: Math.min(part.rows, 8) }).map((_, r) => (
-                              <div
-                                key={r}
-                                className="h-1.5 rounded-full"
-                                style={{
-                                  width: `${Math.max(12, 30 - r * 1.5)}px`,
-                                  backgroundColor: tierStyle.fill,
-                                  opacity: 0.35 + (r / 10),
-                                }}
-                              />
-                            ))}
-                            {part.rows > 8 && <span className="text-[8px] text-slate-500">+{part.rows - 8}</span>}
-                          </div>
-                          <span className="text-[9px] font-mono text-slate-400">
-                            ردیف ۱ تا {toPersianDigits(part.rows)}
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                /* CHAIRS DETAIL VIEW: Realistic chair grid simulation */
-                <div className="w-full max-w-lg space-y-4 pt-2">
-                  <div className="text-[11px] text-slate-400 text-center">
-                    چیدمان صندلی‌های جایگاه فعال ({activePart.name}):
-                  </div>
-
-                  <div className="p-4 rounded-2xl bg-slate-900 border border-slate-800 space-y-2 max-h-[340px] overflow-y-auto">
-                    {Array.from({ length: Math.min(activePart.rows, 10) }).map((_, rIdx) => (
-                      <div key={rIdx} className="flex items-center justify-center gap-1.5 text-slate-400 text-[10px]">
-                        <span className="w-6 font-mono text-[9px] text-slate-500 text-right shrink-0">
-                          ر{toPersianDigits(rIdx + 1)}
-                        </span>
-                        <div className="flex items-center gap-1 overflow-x-auto py-0.5">
-                          {Array.from({ length: Math.min(activePart.seatsPerRow, 20) }).map((_, sIdx) => (
-                            <div
-                              key={sIdx}
-                              className="w-4 h-4 rounded-sm flex items-center justify-center font-mono text-[8px] font-bold border transition-transform hover:scale-125"
-                              style={{
-                                backgroundColor: `${getTierColor(activePart.tier).fill}22`,
-                                borderColor: getTierColor(activePart.tier).fill,
-                                color: getTierColor(activePart.tier).fill,
-                              }}
-                              title={`ردیف ${rIdx + 1} صندلی ${sIdx + 1}`}
-                            >
-                              {toPersianDigits(sIdx + 1)}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                    {activePart.rows > 10 && (
-                      <div className="text-center text-[10px] text-slate-500 pt-1">
-                        ... و {toPersianDigits(activePart.rows - 10)} ردیف دیگر با همین ساختار
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Sound & Light Booth at back */}
-              <div className="w-full max-w-xs mx-auto pt-2 pb-1">
-                <div className="py-1 px-4 rounded-xl bg-slate-900 border border-slate-800 text-slate-500 text-center text-[10px]">
-                  اتاق فرمان، نورپردازی و صدابرداری تالار (FOH Booth)
-                </div>
-              </div>
-
-            </div>
-
-            {/* Bottom Plan Summary Metrics */}
-            <div className="p-3 bg-slate-900/90 border-t border-slate-800 grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
-              <div className="bg-slate-950 p-2 rounded-xl border border-slate-800">
-                <div className="text-[10px] text-slate-400">ظرفیت کل سالن</div>
-                <div className="font-bold font-mono text-emerald-400 text-sm mt-0.5">
-                  {toPersianDigits(totalCapacity)} صندلی
-                </div>
-              </div>
-
-              <div className="bg-slate-950 p-2 rounded-xl border border-slate-800">
-                <div className="text-[10px] text-slate-400">تعداد جایگاه‌ها</div>
-                <div className="font-bold font-mono text-indigo-400 text-sm mt-0.5">
-                  {toPersianDigits(parts.length)} بخش
-                </div>
-              </div>
-
-              <div className="bg-slate-950 p-2 rounded-xl border border-slate-800">
-                <div className="text-[10px] text-slate-400">پتانسیل فروش هر سانس</div>
-                <div className="font-bold font-mono text-amber-400 text-xs mt-0.5 truncate">
-                  {formatPrice(potentialGrossRevenue)}
-                </div>
-              </div>
-
-              <div className="bg-slate-950 p-2 rounded-xl border border-slate-800">
-                <div className="text-[10px] text-slate-400">میانگین قیمت صندلی</div>
-                <div className="font-bold font-mono text-slate-300 text-xs mt-0.5">
-                  {formatPrice(totalCapacity > 0 ? Math.round(potentialGrossRevenue / totalCapacity) : 0)}
-                </div>
-              </div>
-            </div>
-
+          <div className="lg:col-span-7 min-h-0 overflow-y-auto site-surface p-4" data-site-theme={theme}>
+            <VenueLayoutEditor activePartId={activePart?.id} parts={parts} plan={floorPlan} onSelectPart={setActivePartIndex} onChange={(next,plan)=>{setParts(next);setFloorPlan(plan);setIsSavedOnServer(false);}}/>
           </div>
 
           {/* RIGHT: Inspector & Configuration Panel for Selected Section */}
-          <div className={`lg:col-span-5 flex flex-col min-h-0 border rounded-3xl p-4 sm:p-5 space-y-4 overflow-y-auto ${
+          <div className={`lg:col-span-5 flex flex-col border rounded-3xl p-4 sm:p-5 space-y-4 overflow-y-auto ${
             isDark ? 'bg-slate-950/60 border-slate-800' : 'bg-slate-50 border-slate-200'
           }`}>
             
+            <label className="text-xs">راهرو بعد از شماره صندلی، با فاصله جدا کنید
+              <input key={activePart.id} className="site-input w-full mt-2" dir="ltr" placeholder="5 10" defaultValue={(activePart.aisleAfter||[]).join(' ')} onChange={e=>{const nums=e.target.value.trim().split(/\s+/).filter(Boolean).map(Number);const valid=nums.length<=20&&new Set(nums).size===nums.length&&nums.every(n=>Number.isInteger(n)&&n>0&&n<activePart.seatsPerRow);e.target.setCustomValidity(valid?'':'شماره راهرو معتبر نیست؛ شماره‌ها باید یکتا و بین صندلی‌های جایگاه باشند.');if(valid)updatePartField('aisleAfter',nums.sort((a,b)=>a-b));}}/>
+              <span className="block mt-1">شماره‌ها باید بین یک و تعداد صندلی منهای یک باشند. بدون مقدار یعنی بدون فاصله راهرو بین صندلی‌ها.</span>
+            </label>
             <div className="flex items-center justify-between border-b pb-3 border-slate-200 dark:border-slate-800">
               <div className="flex items-center gap-2">
                 <Sliders className="w-4 h-4 text-emerald-500" />
@@ -980,7 +760,7 @@ export const SalonPlanBuilderModal: React.FC<SalonPlanBuilderModalProps> = ({
         </div>
 
         {/* Action Buttons Footer with Honest Server Status Banner */}
-        <div className="space-y-3 pt-3 border-t border-slate-200 dark:border-slate-800 shrink-0">
+        <div className={`space-y-3 py-3 border-t border-slate-200 dark:border-slate-800 shrink-0 sticky bottom-0 z-10 ${isDark?'bg-slate-900':'bg-white'}`}>
 
           {/* Honest Feedback Banner */}
           {saveFeedback && (
