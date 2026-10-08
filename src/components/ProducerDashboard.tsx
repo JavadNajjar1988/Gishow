@@ -38,6 +38,7 @@ import {
   CheckCheck,
 } from 'lucide-react';
 import { MOCK_DISCOUNT_CODES } from '../data/mockData';
+import { PWAInstallButton } from './PWAInstallButton';
 
 interface ProducerDashboardProps {
   theme: 'light' | 'dark';
@@ -385,6 +386,8 @@ export const ProducerDashboard: React.FC<ProducerDashboardProps> = ({
               </select>
               <ChevronDown className="w-4 h-4 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400" />
             </div>
+
+            <PWAInstallButton variant="header" />
 
             <button
               onClick={onBackToPortal}

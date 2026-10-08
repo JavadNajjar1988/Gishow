@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="50%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#020617" />
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b" />
+      <stop offset="50%" stop-color="#f43f5e" />
+      <stop offset="100%" stop-color="#d97706" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#f59e0b" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <!-- Background rounded squircle -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)" />
+
+  <!-- Outer ambient ring -->
+  <circle cx="256" cy="256" r="190" fill="none" stroke="#f59e0b" stroke-opacity="0.12" stroke-width="6" stroke-dasharray="16 12" />
+
+  <!-- Main ticket emblem container -->
+  <g transform="translate(116, 126)" filter="url(#glow)">
+    <!-- Ticket Body -->
+    <path d="M 30,0 
+             L 250,0 
+             A 30,30 0 0,1 280,30 
+             L 280,105 
+             A 25,25 0 0,0 280,155 
+             L 280,230 
+             A 30,30 0 0,1 250,260 
+             L 30,260 
+             A 30,30 0 0,1 0,230 
+             L 0,155 
+             A 25,25 0 0,0 0,105 
+             L 0,30 
+             A 30,30 0 0,1 30,0 Z" 
+          fill="url(#goldGrad)" />
+
+    <!-- Dashed separator line -->
+    <line x1="84" y1="20" x2="84" y2="240" stroke="#ffffff" stroke-opacity="0.45" stroke-width="4" stroke-dasharray="8 8" />
+
+    <!-- Crown Icon on the left stub -->
+    <g transform="translate(28, 105)">
+      <path d="M 4,36 L 4,12 L 14,24 L 24,4 L 34,24 L 44,12 L 44,36 Z" fill="#ffffff" fill-opacity="0.9" />
+      <circle cx="4" cy="10" r="3" fill="#ffffff" />
+      <circle cx="24" cy="2" r="3.5" fill="#ffffff" />
+      <circle cx="44" cy="10" r="3" fill="#ffffff" />
+      <rect x="4" y="38" width="40" height="4" rx="2" fill="#ffffff" fill-opacity="0.9" />
+    </g>
+
+    <!-- Persian Typography & Motif on Main Section -->
+    <g transform="translate(108, 65)">
+      <!-- Stylized Stage / Hall Arcs -->
+      <path d="M 20,40 Q 75,0 130,40" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-opacity="0.85" />
+      <path d="M 35,58 Q 75,25 115,58" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-opacity="0.65" />
+      <path d="M 50,76 Q 75,50 100,76" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-opacity="0.45" />
+
+      <!-- Center Star / Sparkle -->
+      <path d="M 75,85 L 78,97 L 90,100 L 78,103 L 75,115 L 72,103 L 60,100 L 72,97 Z" fill="#ffffff" />
+
+      <!-- Wordmark: LINDU -->
+      <text x="75" y="150" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="28" fill="#ffffff" text-anchor="middle" letter-spacing="4">LINDU</text>
+      <!-- Subtitle: TICKET -->
+      <text x="75" y="172" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="700" font-size="14" fill="#ffffff" fill-opacity="0.8" text-anchor="middle" letter-spacing="6">TICKET</text>
+    </g>
+  </g>
+</svg>

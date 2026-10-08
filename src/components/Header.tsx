@@ -1,6 +1,7 @@
 import React from 'react';
 import { Ticket, ShieldCheck, LayoutDashboard, Search, Sparkles, Sun, Moon, Store, Crown } from 'lucide-react';
 import { ActiveAppMode } from '../types';
+import { PWAInstallButton } from './PWAInstallButton';
 
 interface HeaderProps {
   theme: 'light' | 'dark';
@@ -163,6 +164,9 @@ export const Header: React.FC<HeaderProps> = ({
                 <span>مدیریت</span>
               </button>
             </div>
+
+            {/* PWA Install Button */}
+            <PWAInstallButton variant="header" />
 
             {/* Ticket Track Button */}
             <button

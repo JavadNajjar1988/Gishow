@@ -17,6 +17,7 @@ import { ProducerDashboard } from './components/ProducerDashboard';
 import { VirtualBoxOffice } from './components/VirtualBoxOffice';
 import { Footer } from './components/Footer';
 import { InfoModal } from './components/InfoModal';
+import { OfflineIndicator } from './components/OfflineIndicator';
 
 import { MOCK_EVENTS, MOCK_SALONS, INITIAL_FACTORS, MOCK_DISCOUNT_CODES } from './data/mockData';
 import { ActiveAppMode, EventItem, RunTurn, Salon, Seat, FactorItem, TicketScanCheckResult, DiscountCode } from './types';
@@ -472,6 +473,9 @@ export default function App() {
         onClose={() => setInfoModalType(null)}
         onTrackSubmit={handleTrackSubmit}
       />
+
+      {/* PWA Offline Connectivity Indicator */}
+      <OfflineIndicator />
 
     </div>
   );

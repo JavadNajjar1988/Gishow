@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ShieldCheck, CheckCircle2, AlertTriangle, XCircle, Search, QrCode, Users, Clock, ArrowRight } from 'lucide-react';
 import { FactorItem, TicketScanCheckResult } from '../types';
 import { toPersianDigits } from '../utils/formatters';
+import { PWAInstallButton } from './PWAInstallButton';
 
 interface TicketCheckerProps {
   theme: 'light' | 'dark';
@@ -69,17 +70,21 @@ export const TicketChecker: React.FC<TicketCheckerProps> = ({
           </p>
         </div>
 
-        <button
-          onClick={onBackToPortal}
-          className={`px-4 py-2.5 rounded-xl border text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer ${
-            isDark
-              ? 'border-slate-700 hover:bg-slate-800 text-slate-200'
-              : 'border-slate-300 hover:bg-slate-100 text-slate-800 bg-white'
-          }`}
-        >
-          <ArrowRight className="w-4 h-4" />
-          <span>بازگشت به سایت اصلی</span>
-        </button>
+        <div className="flex items-center gap-2">
+          <PWAInstallButton variant="header" />
+
+          <button
+            onClick={onBackToPortal}
+            className={`px-4 py-2.5 rounded-xl border text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer ${
+              isDark
+                ? 'border-slate-700 hover:bg-slate-800 text-slate-200'
+                : 'border-slate-300 hover:bg-slate-100 text-slate-800 bg-white'
+            }`}
+          >
+            <ArrowRight className="w-4 h-4" />
+            <span>بازگشت به سایت اصلی</span>
+          </button>
+        </div>
 
       </div>
 
