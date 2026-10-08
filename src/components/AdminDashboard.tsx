@@ -44,10 +44,13 @@ import {
   Send,
   Percent,
   Flame,
-  Copy
+  Copy,
+  Upload,
+  Image as ImageIcon
 } from 'lucide-react';
 import { ChairIcon } from './ChairIcon';
 import { SalonPlanBuilderModal } from './SalonPlanBuilderModal';
+import { salonApi, barnameApi, sansApi, fileUploadApi } from '../services/apiServices';
 import {
   EventItem,
   FactorItem,
@@ -241,19 +244,47 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     { id: 'p5', name: 'بالکن طبقه اول', tier: 'balcony', position: 'balcony', rows: 4, seatsPerRow: 16, startRow: 11, price: 380000 },
   ]);
 
+  // Salon Filter & Feedback
+  const [salonSearchQuery, setSalonSearchQuery] = useState('');
+  const [salonActionFeedback, setSalonActionFeedback] = useState<{ type: 'success' | 'warning' | 'error'; message: string } | null>(null);
+
   // New Event Form State (BarnameController / Barname/Create)
   const [newTitle, setNewTitle] = useState('');
+  const [newSubTitle, setNewSubTitle] = useState('');
   const [newCategory, setNewCategory] = useState<'concert' | 'theater' | 'comedy' | 'conference' | 'cinema'>('concert');
   const [newCity, setNewCity] = useState('مشهد');
   const [newSalonId, setNewSalonId] = useState(salons[0]?.id || '');
   const [newMinPrice, setNewMinPrice] = useState(350000);
+  const [currencyUnit, setCurrencyUnit] = useState<'toman' | 'rial'>('toman');
   const [newDateRange, setNewDateRange] = useState('۱۵ الی ۲۰ آذر ۱۴۰۵');
+  const [newDurationMinutes, setNewDurationMinutes] = useState(110);
   const [newDescription, setNewDescription] = useState('');
+  const [newRules, setNewRules] = useState('');
+  const [newCast, setNewCast] = useState('');
+  const [newLanguage, setNewLanguage] = useState<'fa' | 'en'>('fa');
+  const [newIsDraft, setNewIsDraft] = useState(false);
+  const [newIsFeatured, setNewIsFeatured] = useState(false);
+  const [newNotifyAt, setNewNotifyAt] = useState('');
+  const [newTicketNotice, setNewTicketNotice] = useState('');
+  const [newDisplayOrder, setNewDisplayOrder] = useState<number>(1);
+  const [localPosterPreview, setLocalPosterPreview] = useState<string | null>(null);
+  const [uploadedPosterUrl, setUploadedPosterUrl] = useState<string | null>(null);
+  const [isUploadingPoster, setIsUploadingPoster] = useState(false);
+  const [posterUploadFeedback, setPosterUploadFeedback] = useState<string | null>(null);
+  const [isSubmittingEvent, setIsSubmittingEvent] = useState(false);
+  const [eventActionFeedback, setEventActionFeedback] = useState<{ type: 'success' | 'warning' | 'error'; message: string } | null>(null);
 
   // New Sans Form State
+  const [newSansSalonId, setNewSansSalonId] = useState('');
   const [newSansDate, setNewSansDate] = useState('۱۴۰۵/۰۹/۲۰');
   const [newSansTime, setNewSansTime] = useState('۱۹:۰۰');
   const [newSansWeekday, setNewSansWeekday] = useState('پنج‌شنبه');
+  const [newSansSalesStart, setNewSansSalesStart] = useState('۱۴۰۵/۰۹/۰۱ - ۱۰:۰۰');
+  const [newSansSalesEnd, setNewSansSalesEnd] = useState('۱۴۰۵/۰۹/۲۰ - ۱۸:۰۰');
+  const [newSansDescription, setNewSansDescription] = useState('');
+  const [newSansVenueCoordinates, setNewSansVenueCoordinates] = useState('');
+  const [isSubmittingSans, setIsSubmittingSans] = useState(false);
+  const [sansActionFeedback, setSansActionFeedback] = useState<{ type: 'success' | 'warning' | 'error'; message: string } | null>(null);
 
   // States for Gishow original modules
   const [maliRecords, setMaliRecords] = useState<MaliRecord[]>(MOCK_MALI_RECORDS);
@@ -422,33 +453,119 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setNewSalonAddress('');
   };
 
-  // Create Event Handler
-  const handleCreateEvent = (e: React.FormEvent) => {
+  // Poster File Selection & Upload Handler
+  const handlePosterFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const localUrl = URL.createObjectURL(file);
+    setLocalPosterPreview(localUrl);
+    setIsUploadingPoster(true);
+    setPosterUploadFeedback(null);
+
+    try {
+      const res = await fileUploadApi.uploadPoster(file);
+      setUploadedPosterUrl(res.url);
+      setPosterUploadFeedback(`بارگذاری موفق در سرور: ${res.fileName}`);
+    } catch (err: any) {
+      setPosterUploadFeedback(`سرویس آپلود فایل سرور هنوز مستقر نشده است (${err.message}). پیش‌نمایش محلی برای بررسی آماده شد.`);
+    } finally {
+      setIsUploadingPoster(false);
+    }
+  };
+
+  // Reset Event Form
+  const resetEventForm = () => {
+    setNewTitle('');
+    setNewSubTitle('');
+    setNewCategory('concert');
+    setNewCity('مشهد');
+    setNewSalonId(salons[0]?.id || '');
+    setNewMinPrice(350000);
+    setCurrencyUnit('toman');
+    setNewDateRange('۱۵ الی ۲۰ آذر ۱۴۰۵');
+    setNewDurationMinutes(110);
+    setNewDescription('');
+    setNewRules('');
+    setNewCast('');
+    setNewLanguage('fa');
+    setNewIsDraft(false);
+    setNewIsFeatured(false);
+    setNewNotifyAt('');
+    setNewTicketNotice('');
+    setNewDisplayOrder(1);
+    setLocalPosterPreview(null);
+    setUploadedPosterUrl(null);
+    setPosterUploadFeedback(null);
+    setEventActionFeedback(null);
+  };
+
+  // Reset Sans Form
+  const resetSansForm = () => {
+    setNewSansSalonId('');
+    setNewSansDate('۱۴۰۵/۰۹/۲۰');
+    setNewSansTime('۱۹:۰۰');
+    setNewSansWeekday('پنج‌شنبه');
+    setNewSansSalesStart('۱۴۰۵/۰۹/۰۱ - ۱۰:۰۰');
+    setNewSansSalesEnd('۱۴۰۵/۰۹/۲۰ - ۱۸:۰۰');
+    setNewSansDescription('');
+    setNewSansVenueCoordinates('');
+    setSansActionFeedback(null);
+    setNewSansIsSoldOut(false);
+  };
+
+  // Create Event Handler connecting to server API
+  const handleCreateEvent = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newTitle) return;
+    if (!newTitle.trim()) return;
 
     const chosenSalon = salons.find((s) => s.id === newSalonId) || salons[0];
+    const priceInRials = currencyUnit === 'toman' ? Number(newMinPrice) * 10 : Number(newMinPrice);
+
+    setIsSubmittingEvent(true);
+    setEventActionFeedback(null);
+
+    const parsedRules = newRules.trim()
+      ? newRules.split('\n').map((r) => r.trim()).filter(Boolean)
+      : [
+          'حضور در سالن حداقل ۳۰ دقیقه پیش از شروع برنامه الزامی است.',
+          'ورود با لباس رسمی و رعایت شئونات اسلامی الزامی می‌باشد.',
+        ];
+
+    const parsedCast = newCast.trim()
+      ? newCast.split(',').map((c) => ({ name: c.trim(), role: 'عوامل اجرایی' }))
+      : [{ name: 'هنرمند اصلی', role: 'اجرا' }];
+
     const created: EventItem = {
       id: `event-${Date.now()}`,
-      title: newTitle,
+      title: newTitle.trim(),
+      subTitle: newSubTitle.trim() || undefined,
       category: newCategory,
-      city: newCity,
+      city: newCity.trim(),
       salonId: chosenSalon.id,
       salonName: chosenSalon.name,
       address: chosenSalon.address,
-      dateRange: newDateRange,
-      durationMinutes: 110,
-      description: newDescription || 'رویداد فرهنگی و هنری جدید ثبت شده در سامانه گیشو.',
-      cast: [{ name: 'هنرمند اصلی', role: 'اجرا' }],
-      minPrice: Number(newMinPrice),
-      maxPrice: Number(newMinPrice) * 2,
+      dateRange: newDateRange.trim(),
+      durationMinutes: Number(newDurationMinutes) || 90,
+      description: newDescription.trim() || 'رویداد فرهنگی و هنری جدید ثبت شده در سامانه گیشو.',
+      rules: parsedRules,
+      cast: parsedCast,
+      minPrice: currencyUnit === 'toman' ? Number(newMinPrice) : Math.round(Number(newMinPrice) / 10),
+      maxPrice: (currencyUnit === 'toman' ? Number(newMinPrice) : Math.round(Number(newMinPrice) / 10)) * 2,
       bannerGradient: 'from-amber-700 via-stone-900 to-slate-950',
       accentColor: 'text-amber-400',
-      isActive: true,
+      isActive: !newIsDraft,
+      isDraft: newIsDraft,
+      isFeatured: newIsFeatured,
+      notifyAt: newNotifyAt.trim() || undefined,
+      posterUrl: uploadedPosterUrl || localPosterPreview || undefined,
+      ticketNotice: newTicketNotice.trim() || undefined,
+      language: newLanguage,
       runTurns: [
         {
           id: `sans-${Date.now()}-1`,
           eventId: `event-${Date.now()}`,
+          salonId: chosenSalon.id,
           date: '۱۴۰۵/۰۹/۱۵',
           time: '۱۹:۰۰',
           weekday: 'پنج‌شنبه',
@@ -458,10 +575,42 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       ],
     };
 
-    onAddEvent(created);
-    setShowAddEventModal(false);
-    setNewTitle('');
-    setNewDescription('');
+    try {
+      await barnameApi.createBarname({
+        title: created.title,
+        subTitle: created.subTitle,
+        category: created.category,
+        city: created.city,
+        salonId: Number(chosenSalon.id) || 1,
+        dateRange: created.dateRange,
+        durationMinutes: created.durationMinutes,
+        description: created.description,
+        rules: created.rules,
+        cast: created.cast,
+        minPriceRial: priceInRials,
+        maxPriceRial: priceInRials * 2,
+        isFeatured: created.isFeatured,
+        isDraft: created.isDraft,
+        notifyAt: created.notifyAt,
+        posterUrl: created.posterUrl,
+        ticketNotice: created.ticketNotice,
+        language: created.language,
+      });
+
+      onAddEvent(created);
+      setShowAddEventModal(false);
+      resetEventForm();
+    } catch (err: any) {
+      const isRoutePending = err.status === 404 || err.code === 'NOT_FOUND' || err.message?.includes('یافت نشد');
+      setEventActionFeedback({
+        type: 'warning',
+        message: isRoutePending
+          ? 'اتصال ایجاد برنامه در سرور منتظر پیاده‌سازی مسیر پیشنهادی فاز ۳ است (POST /api/admin/events - ۴۰۴). برنامه در سرور ذخیره نشد.'
+          : `خطای سرور: ${err.message}. برنامه در سرور ذخیره نشد.`,
+      });
+    } finally {
+      setIsSubmittingEvent(false);
+    }
   };
 
   // Create User Handler
@@ -488,34 +637,69 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setNewUserNationalCode('');
   };
 
-  // Add Sans Handler
-  const handleAddSansToEvent = (e: React.FormEvent) => {
+  // Add Sans Handler with independent salon per sans and server API connection
+  const handleAddSansToEvent = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!showAddSansModal) return;
 
+    if (newSansSalesStart && newSansSalesEnd && newSansSalesEnd < newSansSalesStart) {
+      alert('خطا: پایان زمان فروش نمی‌تواند قبل از شروع زمان فروش باشد.');
+      return;
+    }
+
     const targetEvent = showAddSansModal;
-    const chosenSalon = salons.find((s) => s.id === targetEvent.salonId) || salons[0];
+    const chosenSalon = salons.find((s) => s.id === (newSansSalonId || targetEvent.salonId)) || salons[0];
+
     const newSans: RunTurn = {
       id: `sans-${Date.now()}`,
       eventId: targetEvent.id,
+      salonId: chosenSalon.id, // Every sans can have an independent salon!
       date: newSansDate,
       time: newSansTime,
       weekday: newSansWeekday,
+      salesStartAt: newSansSalesStart || undefined,
+      salesEndAt: newSansSalesEnd || undefined,
+      description: newSansDescription || undefined,
+      venueCoordinates: newSansVenueCoordinates || undefined,
       availableSeatsCount: newSansIsSoldOut ? 0 : chosenSalon.capacity,
       totalSeatsCount: chosenSalon.capacity,
       isSoldOut: newSansIsSoldOut,
     };
 
-    const updated = {
-      ...targetEvent,
-      runTurns: [...targetEvent.runTurns, newSans],
-    };
+    setIsSubmittingSans(true);
+    setSansActionFeedback(null);
 
-    if (onUpdateEvent) {
-      onUpdateEvent(updated);
+    try {
+      await sansApi.createSans({
+        barnameId: Number(targetEvent.id) || 1,
+        salonId: Number(chosenSalon.id) || 1,
+        dateShamsi: newSansDate,
+        time: newSansTime,
+        weekday: newSansWeekday,
+        salesStartAt: newSansSalesStart,
+        salesEndAt: newSansSalesEnd,
+        description: newSansDescription,
+        isSoldOut: newSansIsSoldOut,
+      });
+
+      const updated = {
+        ...targetEvent,
+        runTurns: [...targetEvent.runTurns, newSans],
+      };
+      if (onUpdateEvent) onUpdateEvent(updated);
+      setShowAddSansModal(null);
+      resetSansForm();
+    } catch (err: any) {
+      const isRoutePending = err.status === 404 || err.code === 'NOT_FOUND' || err.message?.includes('یافت نشد');
+      setSansActionFeedback({
+        type: 'warning',
+        message: isRoutePending
+          ? 'اتصال ایجاد سانس منتظر پیاده‌سازی مسیر پیشنهادی فاز ۳ است (POST /api/admin/events/{id}/sans - ۴۰۴). سانس در سرور ذخیره نشد.'
+          : `خطای سرور: ${err.message}. سانس در سرور ذخیره نشد.`,
+      });
+    } finally {
+      setIsSubmittingSans(false);
     }
-    setShowAddSansModal(null);
-    setNewSansIsSoldOut(false);
   };
 
   // Toggle Event Sold Out Status
@@ -912,18 +1096,65 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </p>
               </div>
 
-              <button
-                onClick={handleOpenCreateSalon}
-                className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer shadow-md"
-              >
-                <Plus className="w-4 h-4" />
-                <span>تعریف سالن و پلان جدید</span>
-              </button>
+              <div className="flex items-center gap-3">
+                <div className="relative">
+                  <Search className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                  <input
+                    type="text"
+                    value={salonSearchQuery}
+                    onChange={(e) => setSalonSearchQuery(e.target.value)}
+                    placeholder="جستجوی نام سالن، شهر یا آدرس..."
+                    className={`pr-9 pl-4 py-2 text-xs rounded-xl border ${
+                      isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200'
+                    }`}
+                  />
+                </div>
+
+                <button
+                  onClick={handleOpenCreateSalon}
+                  className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer shadow-md"
+                >
+                  <Plus className="w-4 h-4" />
+                  <span>تعریف سالن و پلان جدید</span>
+                </button>
+              </div>
             </div>
+
+            {/* Salon Action Server Feedback Banner */}
+            {salonActionFeedback && (
+              <div className={`p-4 rounded-2xl text-xs flex items-center justify-between gap-3 ${
+                salonActionFeedback.type === 'success'
+                  ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                  : 'bg-amber-500/10 text-amber-300 border border-amber-500/20'
+              }`}>
+                <div className="flex items-center gap-2">
+                  {salonActionFeedback.type === 'success' ? (
+                    <CheckCircle2 className="w-4 h-4 shrink-0" />
+                  ) : (
+                    <AlertTriangle className="w-4 h-4 shrink-0" />
+                  )}
+                  <span>{salonActionFeedback.message}</span>
+                </div>
+                <button
+                  onClick={() => setSalonActionFeedback(null)}
+                  className="text-slate-400 hover:text-white cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            )}
 
             {/* Salons Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {salons.map((salon) => (
+              {salons
+                .filter(
+                  (s) =>
+                    !salonSearchQuery.trim() ||
+                    s.name.toLowerCase().includes(salonSearchQuery.toLowerCase()) ||
+                    s.city.toLowerCase().includes(salonSearchQuery.toLowerCase()) ||
+                    s.address.toLowerCase().includes(salonSearchQuery.toLowerCase())
+                )
+                .map((salon) => (
                 <div
                   key={salon.id}
                   className={`p-6 rounded-3xl border space-y-5 transition-colors ${
@@ -932,7 +1163,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="text-base font-black">{salon.name}</h3>
+                      <h3 className="text-base font-black flex items-center gap-2">
+                        <span>{salon.name}</span>
+                        {salon.isActive === false && (
+                          <span className="text-[10px] bg-rose-500/10 text-rose-400 border border-rose-500/20 px-1.5 py-0.5 rounded">
+                            غیرفعال
+                          </span>
+                        )}
+                      </h3>
                       <span className="text-xs text-amber-500 font-bold">{salon.city}</span>
                     </div>
                     <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
@@ -981,9 +1219,27 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                     {onDeleteSalon && (
                       <button
-                        onClick={() => {
-                          if (confirm(`آیا از حذف سالن "${salon.name}" اطمینان دارید؟`)) {
-                            onDeleteSalon(salon.id);
+                        onClick={async () => {
+                          if (confirm(`آیا از حذف سالن "${salon.name}" اطمینان دارید؟ این عملیات در صورت وجود سانس متصل از سوی سرور رد خواهد شد.`)) {
+                            try {
+                              const numId = Number(salon.id);
+                              if (!isNaN(numId)) {
+                                await salonApi.deleteSalon(numId);
+                              }
+                              onDeleteSalon(salon.id);
+                              setSalonActionFeedback({
+                                type: 'success',
+                                message: `سالن «${salon.name}» با موفقیت از سرور حذف گردید.`,
+                              });
+                            } catch (err: any) {
+                              const isRoutePending = err.status === 404 || err.code === 'NOT_FOUND';
+                              setSalonActionFeedback({
+                                type: 'warning',
+                                message: isRoutePending
+                                  ? `رد حذف توسط سرور: مسیر حذف سالن هنوز در سرور مستقر نشده است (DELETE /api/admin/salons/${salon.id} با خطای ۴۰۴). سالن از سیستم حذف نگردید.`
+                                  : `رد حذف توسط سرور: ${err.message}. سالن از سیستم حذف نگردید.`,
+                              });
+                            }
                           }
                         }}
                         className="p-1.5 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
@@ -2875,38 +3131,77 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       ========================================================================= */}
       {showAddEventModal && (
         <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-          <div className={`max-w-lg w-full border rounded-3xl p-6 sm:p-8 space-y-5 shadow-2xl my-8 ${
+          <div className={`max-w-2xl w-full border rounded-3xl p-6 sm:p-8 space-y-5 shadow-2xl my-8 max-h-[92vh] overflow-y-auto ${
             isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
           }`}>
             <div className="flex justify-between items-center border-b pb-3 border-slate-200 dark:border-slate-800">
-              <h3 className="text-base font-bold flex items-center gap-2">
-                <Plus className="w-5 h-5 text-amber-500" />
-                تعریف رویداد، کنسرت یا تئاتر جدید
-              </h3>
+              <div>
+                <h3 className="text-base font-bold flex items-center gap-2">
+                  <Plus className="w-5 h-5 text-amber-500" />
+                  تعریف برنامه / رویداد فرهنگی و هنری جدید (Barname/Create)
+                </h3>
+                <p className="text-[11px] text-slate-400 mt-0.5">
+                  ثبت مشخصات شناسنامه‌ای، سالن برگزاری، بارگذاری پوستر، تعیین زبان و سیاست انتشار
+                </p>
+              </div>
               <button
-                onClick={() => setShowAddEventModal(false)}
+                onClick={() => {
+                  setShowAddEventModal(false);
+                  resetEventForm();
+                }}
                 className="p-1 rounded-lg text-slate-400 hover:text-white cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
+            {/* Server Action Feedback Banner */}
+            {eventActionFeedback && (
+              <div className={`p-3.5 rounded-2xl text-xs flex items-center gap-2.5 ${
+                eventActionFeedback.type === 'success'
+                  ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                  : 'bg-amber-500/10 text-amber-300 border border-amber-500/20'
+              }`}>
+                {eventActionFeedback.type === 'success' ? (
+                  <CheckCircle2 className="w-4 h-4 shrink-0" />
+                ) : (
+                  <AlertTriangle className="w-4 h-4 shrink-0" />
+                )}
+                <span className="leading-relaxed">{eventActionFeedback.message}</span>
+              </div>
+            )}
+
             <form onSubmit={handleCreateEvent} className="space-y-4 text-xs">
-              <div>
-                <label className="block mb-1 font-medium">عنوان برنامه:</label>
-                <input
-                  type="text"
-                  required
-                  value={newTitle}
-                  onChange={(e) => setNewTitle(e.target.value)}
-                  placeholder="مثال: کنسرت بزرگ همایون شجریان"
-                  className={`w-full p-2.5 rounded-xl border ${
-                    isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200'
-                  }`}
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block mb-1 font-medium">عنوان برنامه:</label>
+                  <input
+                    type="text"
+                    required
+                    value={newTitle}
+                    onChange={(e) => setNewTitle(e.target.value)}
+                    placeholder="مثال: کنسرت بزرگ همایون شجریان"
+                    className={`w-full p-2.5 rounded-xl border ${
+                      isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200'
+                    }`}
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1 font-medium">زیرعنوان یا شعار رویداد:</label>
+                  <input
+                    type="text"
+                    value={newSubTitle}
+                    onChange={(e) => setNewSubTitle(e.target.value)}
+                    placeholder="مثال: تور کنسرت پاییز در مشهد مقدس"
+                    className={`w-full p-2.5 rounded-xl border ${
+                      isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200'
+                    }`}
+                  />
+                </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
                   <label className="block mb-1 font-medium">دسته‌بندی:</label>
                   <select
@@ -2935,26 +3230,43 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     }`}
                   />
                 </div>
+
+                <div>
+                  <label className="block mb-1 font-medium">مدت زمان اجرا (دقیقه):</label>
+                  <input
+                    type="number"
+                    min="15"
+                    max="360"
+                    value={newDurationMinutes}
+                    onChange={(e) => setNewDurationMinutes(Number(e.target.value))}
+                    className={`w-full p-2.5 rounded-xl border font-mono ${
+                      isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200'
+                    }`}
+                  />
+                </div>
               </div>
 
-              <div>
-                <label className="block mb-1 font-medium">سالن اجرا:</label>
-                <select
-                  value={newSalonId}
-                  onChange={(e) => setNewSalonId(e.target.value)}
-                  className={`w-full p-2.5 rounded-xl border ${
-                    isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200'
-                  }`}
-                >
-                  {salons.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.name} ({s.city}) - ظرفیت {s.capacity} صندلی
-                    </option>
-                  ))}
-                </select>
-              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block mb-1 font-medium">سالن اصلی پیش‌فرض:</label>
+                  <select
+                    value={newSalonId}
+                    onChange={(e) => setNewSalonId(e.target.value)}
+                    className={`w-full p-2.5 rounded-xl border ${
+                      isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200'
+                    }`}
+                  >
+                    {salons.map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s.name} ({s.city}) - ظرفیت {s.capacity} صندلی
+                      </option>
+                    ))}
+                  </select>
+                  <span className="text-[10px] text-slate-400 mt-1 block">
+                    * توجه: هر سانس بعداً می‌تواند به سالن مستقل دیگری منتسب شود.
+                  </span>
+                </div>
 
-              <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block mb-1 font-medium">بازه تاریخ اجرا:</label>
                   <input
@@ -2967,19 +3279,155 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     }`}
                   />
                 </div>
+              </div>
 
+              {/* Price & Currency Unit Section */}
+              <div className={`p-3 rounded-2xl border space-y-2 ${
+                isDark ? 'bg-slate-950/60 border-slate-800' : 'bg-slate-50 border-slate-200'
+              }`}>
+                <div className="flex items-center justify-between">
+                  <label className="font-medium text-slate-300">قیمت‌پایه بلیت و واحد پولی:</label>
+                  <div className="flex items-center gap-1 bg-slate-900 p-1 rounded-xl border border-slate-800">
+                    <button
+                      type="button"
+                      onClick={() => setCurrencyUnit('toman')}
+                      className={`px-2 py-0.5 rounded-lg text-[10px] font-bold cursor-pointer ${
+                        currencyUnit === 'toman'
+                          ? 'bg-amber-500 text-slate-950'
+                          : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      تومان (نمایشی)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCurrencyUnit('rial')}
+                      className={`px-2 py-0.5 rounded-lg text-[10px] font-bold cursor-pointer ${
+                        currencyUnit === 'rial'
+                          ? 'bg-amber-500 text-slate-950'
+                          : 'text-slate-400 hover:text-white'
+                      }`}
+                    >
+                      ریال (قرارداد سرور)
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <input
+                      type="number"
+                      step={currencyUnit === 'toman' ? '50000' : '500000'}
+                      value={newMinPrice}
+                      onChange={(e) => setNewMinPrice(Number(e.target.value))}
+                      className={`w-full p-2.5 rounded-xl border font-mono font-bold ${
+                        isDark ? 'bg-slate-800 border-slate-700 text-amber-400' : 'bg-white border-slate-200 text-amber-600'
+                      }`}
+                    />
+                  </div>
+                  <div className="flex items-center text-[11px] text-slate-400">
+                    <span>
+                      معادل دقیق ارسالی به سرور:{' '}
+                      <strong className="text-white font-mono">
+                        {toPersianDigits(currencyUnit === 'toman' ? newMinPrice * 10 : newMinPrice)} ریال
+                      </strong>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Poster File Upload */}
+              <div className={`p-3.5 rounded-2xl border space-y-2.5 ${
+                isDark ? 'bg-slate-950/60 border-slate-800' : 'bg-slate-50 border-slate-200'
+              }`}>
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-xs flex items-center gap-1.5">
+                    <ImageIcon className="w-4 h-4 text-indigo-400" />
+                    تصویر پوستر برنامه (اتصال به سرویس فایل)
+                  </span>
+                  {isUploadingPoster && (
+                    <span className="text-[10px] text-amber-400 animate-pulse">در حال ارسال فایل به سرور...</span>
+                  )}
+                </div>
+
+                <div className="flex flex-wrap items-center gap-4">
+                  <label className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold cursor-pointer flex items-center gap-1.5 transition-colors">
+                    <Upload className="w-3.5 h-3.5" />
+                    <span>انتخاب فایل تصویر</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handlePosterFileSelect}
+                      className="hidden"
+                    />
+                  </label>
+
+                  {/* Distinction between Local Preview and Server Confirmed URL */}
+                  {localPosterPreview && (
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={localPosterPreview}
+                        alt="Local Preview"
+                        className="w-12 h-14 object-cover rounded-lg border border-slate-700"
+                      />
+                      <div className="text-[10px] space-y-0.5">
+                        <span className="block text-emerald-400 font-bold">✓ پیش‌نمایش محلی ایجاد شد</span>
+                        <span className="block text-slate-400 font-mono">
+                          {uploadedPosterUrl ? `آدرس تأییدشده سرور: ${uploadedPosterUrl}` : 'در انتظار پاسخ سرویس آپلود...'}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {posterUploadFeedback && (
+                  <p className="text-[11px] text-amber-400/90 leading-relaxed font-mono">
+                    {posterUploadFeedback}
+                  </p>
+                )}
+              </div>
+
+              {/* Cast and Rules */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block mb-1 font-medium">حداقل قیمت بلیت (تومان):</label>
+                  <label className="block mb-1 font-medium">عوامل و هنرمندان (با کاما جدا کنید):</label>
                   <input
-                    type="number"
-                    step="50000"
-                    value={newMinPrice}
-                    onChange={(e) => setNewMinPrice(Number(e.target.value))}
-                    className={`w-full p-2.5 rounded-xl border font-mono ${
+                    type="text"
+                    value={newCast}
+                    onChange={(e) => setNewCast(e.target.value)}
+                    placeholder="همایون شجریان، فردین خلعتبری..."
+                    className={`w-full p-2.5 rounded-xl border ${
                       isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200'
                     }`}
                   />
                 </div>
+
+                <div>
+                  <label className="block mb-1 font-medium">زبان رویداد:</label>
+                  <select
+                    value={newLanguage}
+                    onChange={(e) => setNewLanguage(e.target.value as any)}
+                    className={`w-full p-2.5 rounded-xl border ${
+                      isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200'
+                    }`}
+                  >
+                    <option value="fa">فارسی (FA)</option>
+                    <option value="en">انگلیسی (EN)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block mb-1 font-medium">قوانین و ضوابط حضور (هر بند در یک خط):</label>
+                <textarea
+                  rows={2}
+                  value={newRules}
+                  onChange={(e) => setNewRules(e.target.value)}
+                  placeholder="حضور ۳۰ دقیقه قبل از اجرا الزامی است&#10;رعایت حجاب و شئونات سالن الزامی است"
+                  className={`w-full p-2.5 rounded-xl border ${
+                    isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200'
+                  }`}
+                />
               </div>
 
               <div>
@@ -2995,19 +3443,97 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+              {/* Advanced Publishing, Notification & Ticket Notice Metadata */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label className="block mb-1 font-medium">زمان اطلاع‌رسانی و رونمایی:</label>
+                  <input
+                    type="text"
+                    value={newNotifyAt}
+                    onChange={(e) => setNewNotifyAt(e.target.value)}
+                    placeholder="مثال: ۱۴۰۵/۰۸/۰۱ - ساعت ۱۲"
+                    className={`w-full p-2.5 rounded-xl border ${
+                      isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200'
+                    }`}
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1 font-medium">توضیح و تبصره اختصاصی درج در بلیت:</label>
+                  <input
+                    type="text"
+                    value={newTicketNotice}
+                    onChange={(e) => setNewTicketNotice(e.target.value)}
+                    placeholder="مثال: غیرقابل استرداد، نیاز به کارت شناسایی"
+                    className={`w-full p-2.5 rounded-xl border ${
+                      isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200'
+                    }`}
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1 font-medium">ترتیب نمایش (اولویت):</label>
+                  <input
+                    type="number"
+                    min="1"
+                    max="999"
+                    value={newDisplayOrder}
+                    onChange={(e) => setNewDisplayOrder(Number(e.target.value))}
+                    className={`w-full p-2.5 rounded-xl border font-mono ${
+                      isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200'
+                    }`}
+                  />
+                </div>
+              </div>
+
+              {/* Toggles: Draft & Featured */}
+              <div className="flex flex-wrap items-center gap-6 pt-2 border-t border-slate-800">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={newIsFeatured}
+                    onChange={(e) => setNewIsFeatured(e.target.checked)}
+                    className="w-4 h-4 rounded text-amber-500 cursor-pointer"
+                  />
+                  <span>نمایش در بخش رویدادهای ویژه (بنر اصلی)</span>
+                </label>
+
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={newIsDraft}
+                    onChange={(e) => setNewIsDraft(e.target.checked)}
+                    className="w-4 h-4 rounded text-rose-500 cursor-pointer"
+                  />
+                  <span>ذخیره به‌صورت پیش‌نویس (عدم انتشار در سامانه خرید)</span>
+                </label>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-200 dark:border-slate-800">
                 <button
                   type="button"
-                  onClick={() => setShowAddEventModal(false)}
+                  onClick={() => {
+                    setShowAddEventModal(false);
+                    resetEventForm();
+                  }}
+                  disabled={isSubmittingEvent}
                   className="px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white cursor-pointer"
                 >
                   انصراف
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold cursor-pointer shadow-md"
+                  disabled={isSubmittingEvent}
+                  className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold cursor-pointer shadow-md flex items-center gap-2"
                 >
-                  ذخیره و انتشار رویداد
+                  {isSubmittingEvent ? (
+                    <>
+                      <div className="w-3.5 h-3.5 border-2 border-slate-950 border-t-transparent rounded-full animate-spin" />
+                      <span>در حال ارسال به سرور...</span>
+                    </>
+                  ) : (
+                    <span>ذخیره و انتشار رویداد</span>
+                  )}
                 </button>
               </div>
             </form>
@@ -3118,28 +3644,76 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
           MODAL 4: ADD SANS TO EVENT (RunTurns/Create)
       ========================================================================= */}
       {showAddSansModal && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className={`max-w-md w-full border rounded-3xl p-6 sm:p-8 space-y-5 shadow-2xl ${
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className={`max-w-lg w-full border rounded-3xl p-6 sm:p-8 space-y-5 shadow-2xl my-8 max-h-[92vh] overflow-y-auto ${
             isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
           }`}>
             <div className="flex justify-between items-center border-b pb-3 border-slate-200 dark:border-slate-800">
-              <h3 className="text-base font-bold flex items-center gap-2">
-                <Clock className="w-5 h-5 text-indigo-500" />
-                افزودن سانس به «{showAddSansModal.title}»
-              </h3>
+              <div>
+                <h3 className="text-base font-bold flex items-center gap-2">
+                  <Clock className="w-5 h-5 text-indigo-500" />
+                  افزودن سانس به «{showAddSansModal.title}»
+                </h3>
+                <p className="text-[11px] text-slate-400 mt-0.5">
+                  تنظیم زمان، سالن اختصاصی، پنجره فروش و ظرفیت صندلی‌های سانس
+                </p>
+              </div>
               <button
-                onClick={() => setShowAddSansModal(null)}
+                onClick={() => {
+                  setShowAddSansModal(null);
+                  resetSansForm();
+                }}
                 className="p-1 rounded-lg text-slate-400 hover:text-white cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
+            {/* Server Action Feedback Banner */}
+            {sansActionFeedback && (
+              <div className={`p-3 rounded-2xl text-xs flex items-center gap-2.5 ${
+                sansActionFeedback.type === 'success'
+                  ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                  : 'bg-amber-500/10 text-amber-300 border border-amber-500/20'
+              }`}>
+                {sansActionFeedback.type === 'success' ? (
+                  <CheckCircle2 className="w-4 h-4 shrink-0" />
+                ) : (
+                  <AlertTriangle className="w-4 h-4 shrink-0" />
+                )}
+                <span className="leading-relaxed">{sansActionFeedback.message}</span>
+              </div>
+            )}
+
             <form onSubmit={handleAddSansToEvent} className="space-y-4 text-xs">
+              {/* Independent Salon Selection for each sans */}
+              <div>
+                <label className="block mb-1 font-medium">سالن برگزاری این سانس (سالن مستقل):</label>
+                <select
+                  value={newSansSalonId || showAddSansModal.salonId}
+                  onChange={(e) => setNewSansSalonId(e.target.value)}
+                  className={`w-full p-2.5 rounded-xl border ${
+                    isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200'
+                  }`}
+                >
+                  {salons.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.name} ({s.city}) - ظرفیت {s.capacity} صندلی
+                    </option>
+                  ))}
+                </select>
+                {newSansSalonId && newSansSalonId !== showAddSansModal.salonId && (
+                  <p className="text-[11px] text-amber-400 mt-1 leading-relaxed bg-amber-500/10 p-2 rounded-lg border border-amber-500/20">
+                    توجه: سالن این سانس با سالن پیش‌فرض رویداد متفاوت است. چیدمان و پلان صندلی‌ها بر مبنای سالن انتخابی بارگذاری خواهد شد.
+                  </p>
+                )}
+              </div>
+
               <div>
                 <label className="block mb-1 font-medium">تاریخ شمسی اجرا:</label>
                 <input
                   type="text"
+                  required
                   value={newSansDate}
                   onChange={(e) => setNewSansDate(e.target.value)}
                   placeholder="۱۴۰۵/۰۹/۲۵"
@@ -3154,6 +3728,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <label className="block mb-1 font-medium">ساعت اجرا:</label>
                   <input
                     type="text"
+                    required
                     value={newSansTime}
                     onChange={(e) => setNewSansTime(e.target.value)}
                     placeholder="۱۹:۳۰"
@@ -3167,6 +3742,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   <label className="block mb-1 font-medium">روز هفته:</label>
                   <input
                     type="text"
+                    required
                     value={newSansWeekday}
                     onChange={(e) => setNewSansWeekday(e.target.value)}
                     placeholder="جمعه"
@@ -3177,19 +3753,130 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+              {/* Sales Period: Start and End */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block mb-1 font-medium">زمان شروع فروش بلیت:</label>
+                  <input
+                    type="text"
+                    value={newSansSalesStart}
+                    onChange={(e) => setNewSansSalesStart(e.target.value)}
+                    placeholder="۱۴۰۵/۰۹/۰۱ - ۱۰:۰۰"
+                    className={`w-full p-2.5 rounded-xl border font-mono ${
+                      isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200'
+                    }`}
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1 font-medium">زمان پایان فروش بلیت:</label>
+                  <input
+                    type="text"
+                    value={newSansSalesEnd}
+                    onChange={(e) => setNewSansSalesEnd(e.target.value)}
+                    placeholder="۱۴۰۵/۰۹/۲۵ - ۱۸:۰۰"
+                    className={`w-full p-2.5 rounded-xl border font-mono ${
+                      isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200'
+                    }`}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block mb-1 font-medium">توضیحات و یادداشت اختصاصی این سانس:</label>
+                <input
+                  type="text"
+                  value={newSansDescription}
+                  onChange={(e) => setNewSansDescription(e.target.value)}
+                  placeholder="مثال: سانس ویژه با حضور عوامل فیلم، یا سانس تمدیدی"
+                  className={`w-full p-2.5 rounded-xl border ${
+                    isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200'
+                  }`}
+                />
+              </div>
+
+              <div>
+                <label className="block mb-1 font-medium">مختصات یا مکان خاص این سانس (اختیاری):</label>
+                <input
+                  type="text"
+                  value={newSansVenueCoordinates}
+                  onChange={(e) => setNewSansVenueCoordinates(e.target.value)}
+                  placeholder="مثال: 36.2972, 59.6067 یا طبقه دوم، سالن شماره ۲"
+                  className={`w-full p-2.5 rounded-xl border font-mono ${
+                    isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200'
+                  }`}
+                />
+              </div>
+
+              {/* Per-Tier Pricing Display for Selected Salon */}
+              {(() => {
+                const activeSalonForSans = salons.find((s) => s.id === (newSansSalonId || showAddSansModal.salonId)) || salons[0];
+                return activeSalonForSans?.parts && activeSalonForSans.parts.length > 0 ? (
+                  <div className={`p-3 rounded-2xl border space-y-2 ${
+                    isDark ? 'bg-slate-950/60 border-slate-800' : 'bg-slate-50 border-slate-200'
+                  }`}>
+                    <label className="font-bold text-[11px] block">قیمت مصوب جایگاه‌های این سالن در این سانس:</label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {activeSalonForSans.parts.map((p) => (
+                        <div key={p.id} className={`p-2 rounded-xl border flex justify-between items-center text-[11px] ${
+                          isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
+                        }`}>
+                          <span className="font-medium">{p.name}:</span>
+                          <span className="font-mono font-bold text-amber-500">{formatPrice(p.price)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : null;
+              })()}
+
+              {/* Server Constraint Warning on Salon Switch */}
+              <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-2xl text-[11px] text-amber-300 leading-relaxed space-y-1">
+                <div className="font-bold flex items-center gap-1.5">
+                  <AlertTriangle className="w-3.5 h-3.5" />
+                  <span>محدودیت سرور در تغییر سالن سانس:</span>
+                </div>
+                <p>
+                  هر سانس به یک سالن مستقل متصل است. تغییر سالن نباید صندلی‌ها یا خریدهای قبلی را خاموش و بی‌اطلاع جایگزین کند؛ در صورت ثبت رزرو قبلی، سرور درخواست تغییر سالن را رد خواهد نمود.
+                </p>
+              </div>
+
+              {/* Sold Out Toggle */}
+              <label className="flex items-center gap-2 cursor-pointer pt-1">
+                <input
+                  type="checkbox"
+                  checked={newSansIsSoldOut}
+                  onChange={(e) => setNewSansIsSoldOut(e.target.checked)}
+                  className="w-4 h-4 rounded text-rose-500 cursor-pointer"
+                />
+                <span>شروع سانس در وضعیت سولد اوت (تکمیل ظرفیت)</span>
+              </label>
+
+              <div className="flex justify-end gap-2 pt-3 border-t border-slate-200 dark:border-slate-800">
                 <button
                   type="button"
-                  onClick={() => setShowAddSansModal(null)}
+                  onClick={() => {
+                    setShowAddSansModal(null);
+                    resetSansForm();
+                  }}
+                  disabled={isSubmittingSans}
                   className="px-4 py-2 rounded-xl text-xs font-bold text-slate-400 hover:text-white cursor-pointer"
                 >
                   انصراف
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold cursor-pointer"
+                  disabled={isSubmittingSans}
+                  className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold cursor-pointer flex items-center gap-2 shadow-md"
                 >
-                  افزودن سانس
+                  {isSubmittingSans ? (
+                    <>
+                      <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>در حال ثبت سانس در سرور...</span>
+                    </>
+                  ) : (
+                    <span>افزودن سانس</span>
+                  )}
                 </button>
               </div>
             </form>

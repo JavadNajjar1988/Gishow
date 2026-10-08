@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, CreditCard, ShieldCheck, Tag, AlertCircle, ArrowLeft, CheckCircle2 } from 'lucide-react';
-import { EventItem, RunTurn, Salon, Seat, FactorItem } from '../types';
+import { EventItem, RunTurn, Salon, Seat, FactorItem, DiscountCode } from '../types';
 import { MOCK_DISCOUNT_CODES } from '../data/mockData';
 import { formatPrice, generateFactorNumber, generateTrackingCode, generateRefId, toPersianDigits } from '../utils/formatters';
 

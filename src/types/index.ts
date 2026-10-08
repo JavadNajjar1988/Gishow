@@ -8,12 +8,18 @@ export interface CastMember {
 export interface RunTurn {
   id: string;
   eventId: string;
+  salonId?: string; // Every sans can have an independent salon
   date: string;
   time: string;
   weekday: string;
   availableSeatsCount: number;
   totalSeatsCount: number;
   isSoldOut?: boolean;
+  salesStartAt?: string;
+  salesEndAt?: string;
+  description?: string;
+  venueCoordinates?: string;
+  tierPrices?: Record<string, number>;
 }
 
 export interface PartOfSalon {
@@ -38,9 +44,10 @@ export interface Salon {
   address: string;
   capacity: number;
   parts: PartOfSalon[];
-  layoutTemplate?: 'arena' | 'theater' | 'blackbox' | 'custom';
-  stagePosition?: 'top' | 'center' | 'thrust';
+  layoutTemplate?: 'arena' | 'theater' | 'blackbox' | 'cinema' | 'custom';
+  stagePosition?: 'top' | 'center' | 'thrust' | 'bottom';
   aislesCount?: number;
+  isActive?: boolean;
 }
 
 export type SeatStatus = 'available' | 'selected' | 'reserved' | 'sold';
@@ -75,7 +82,12 @@ export interface EventItem {
   accentColor: string;
   isFeatured?: boolean;
   isActive: boolean;
+  isDraft?: boolean;
   isSoldOut?: boolean;
+  notifyAt?: string;
+  posterUrl?: string;
+  ticketNotice?: string;
+  language?: 'fa' | 'en';
   runTurns: RunTurn[];
 }
 
@@ -213,4 +225,85 @@ export interface UserAccount {
   registeredAt: string;
   ticketsCount: number;
   totalPurchasedAmount: number;
+}
+
+// Authentication & Session Contracts (Phase 3)
+export interface AuthUser {
+  id: number;
+  mobile: string;
+  fullName: string;
+  role: UserRole;
+  nationalCode?: string;
+  assignedEventIds?: number[]; // For producers with event-specific authorization
+}
+
+export interface AuthSession {
+  user: AuthUser;
+  expiresAt: string;
+}
+
+export interface LoginCredentials {
+  mobile: string;
+  password: string;
+}
+
+export interface RecoveryCredentials {
+  mobile: string;
+  personalRecoveryCode: string;
+  newPassword?: string;
+}
+
+// Phase 3 Backend Request Payloads & Response Schemas
+export interface CreateSalonPayload {
+  name: string;
+  city: string;
+  address?: string;
+  capacity?: number;
+  layoutTemplate?: string;
+  stagePosition?: string;
+  aislesCount?: number;
+  parts?: Array<{
+    name: string;
+    tier: string;
+    rows: number;
+    seatsPerRow: number;
+    price: number;
+    shape?: string;
+    isAccessible?: boolean;
+    doorAccess?: string;
+  }>;
+}
+
+export interface CreateBarnamePayload {
+  title: string;
+  subTitle?: string;
+  category: EventCategory;
+  city: string;
+  salonId: number;
+  dateRange: string;
+  durationMinutes: number;
+  description?: string;
+  rules?: string[];
+  cast?: Array<{ name: string; role: string }>;
+  minPriceRial: number;
+  maxPriceRial: number;
+  isFeatured?: boolean;
+  isDraft?: boolean;
+  notifyAt?: string;
+  posterUrl?: string;
+  ticketNotice?: string;
+  language?: 'fa' | 'en';
+}
+
+export interface CreateSansPayload {
+  barnameId: number;
+  salonId: number; // Every sans can have an independent salon
+  dateShamsi: string;
+  time: string;
+  weekday: string;
+  salesStartAt?: string;
+  salesEndAt?: string;
+  description?: string;
+  tierPricesRial?: Record<string, number>;
+  isSoldOut?: boolean;
 }

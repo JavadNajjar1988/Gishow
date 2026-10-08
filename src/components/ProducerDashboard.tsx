@@ -88,6 +88,7 @@ export const ProducerDashboard: React.FC<ProducerDashboardProps> = ({
 
   // Modals inside producer
   const [showAddSansModal, setShowAddSansModal] = useState(false);
+  const [newProducerSansSalonId, setNewProducerSansSalonId] = useState('');
   const [newSansDate, setNewSansDate] = useState('۱۴۰۵/۰۸/۲۵');
   const [newSansTime, setNewSansTime] = useState('۲۱:۰۰');
   const [newSansWeekday, setNewSansWeekday] = useState('پنج‌شنبه');
@@ -160,14 +161,17 @@ export const ProducerDashboard: React.FC<ProducerDashboardProps> = ({
     e.preventDefault();
     if (!activeEvent) return;
 
+    const chosenSalon = salons.find((s) => s.id === (newProducerSansSalonId || activeEvent.salonId)) || currentSalon;
+
     const newSans: RunTurn = {
       id: `sans-${Date.now()}`,
       eventId: activeEvent.id,
+      salonId: chosenSalon.id,
       date: newSansDate,
       time: newSansTime,
       weekday: newSansWeekday,
-      availableSeatsCount: newSansIsSoldOut ? 0 : currentSalon.capacity,
-      totalSeatsCount: currentSalon.capacity,
+      availableSeatsCount: newSansIsSoldOut ? 0 : chosenSalon.capacity,
+      totalSeatsCount: chosenSalon.capacity,
       isSoldOut: newSansIsSoldOut,
     };
 
@@ -181,6 +185,7 @@ export const ProducerDashboard: React.FC<ProducerDashboardProps> = ({
     }
     setShowAddSansModal(false);
     setNewSansIsSoldOut(false);
+    setNewProducerSansSalonId('');
   };
 
   // Toggle Sales Status Handler
@@ -1386,6 +1391,23 @@ export const ProducerDashboard: React.FC<ProducerDashboardProps> = ({
             </h3>
 
             <form onSubmit={handleCreateNewSans} className="space-y-4 text-xs">
+              <div>
+                <label className="block mb-1 font-bold text-slate-400">سالن برگزاری این سانس (سالن مستقل):</label>
+                <select
+                  value={newProducerSansSalonId || activeEvent.salonId}
+                  onChange={(e) => setNewProducerSansSalonId(e.target.value)}
+                  className={`w-full p-2.5 rounded-xl border ${
+                    isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200'
+                  }`}
+                >
+                  {salons.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.name} ({s.city}) - ظرفیت {s.capacity} صندلی
+                    </option>
+                  ))}
+                </select>
+              </div>
+
               <div>
                 <label className="block mb-1 font-bold text-slate-400">تاریخ اجرا (شمسی):</label>
                 <input

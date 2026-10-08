@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Header } from './components/Header';
 import { HeroBanner } from './components/HeroBanner';
 import { EventCard } from './components/EventCard';
@@ -18,6 +18,9 @@ import { VirtualBoxOffice } from './components/VirtualBoxOffice';
 import { Footer } from './components/Footer';
 import { InfoModal } from './components/InfoModal';
 import { OfflineIndicator } from './components/OfflineIndicator';
+import { AccountPanel } from './components/AccountPanel';
+import { barnameApi, salonApi } from './services/apiServices';
+import { AlertCircle, RotateCcw, Loader2, Sparkles, Layers, X } from 'lucide-react';
 
 import { MOCK_EVENTS, MOCK_SALONS, INITIAL_FACTORS, MOCK_DISCOUNT_CODES } from './data/mockData';
 import { ActiveAppMode, EventItem, RunTurn, Salon, Seat, FactorItem, TicketScanCheckResult, DiscountCode } from './types';
@@ -48,11 +51,54 @@ export default function App() {
 
   const [activeMode, setActiveMode] = useState<ActiveAppMode>('portal');
   
-  // Core Entities
-  const [events, setEvents] = useState<EventItem[]>(MOCK_EVENTS);
-  const [salons, setSalons] = useState<Salon[]>(MOCK_SALONS);
-  const [factors, setFactors] = useState<FactorItem[]>(INITIAL_FACTORS);
-  const [discountCodes, setDiscountCodes] = useState<DiscountCode[]>(MOCK_DISCOUNT_CODES);
+  // Core Entities with Server Data Hydration (No fake mock events injected if database is empty)
+  const [events, setEvents] = useState<EventItem[]>([]);
+  const [salons, setSalons] = useState<Salon[]>([]);
+  const [factors, setFactors] = useState<FactorItem[]>([]);
+  const [discountCodes, setDiscountCodes] = useState<DiscountCode[]>([]);
+
+  // Server Data Loading States (Requirement 5)
+  const [isLoadingServerData, setIsLoadingServerData] = useState<boolean>(true);
+  const [serverConnectionError, setServerConnectionError] = useState<string | null>(null);
+  const [isDesignPreviewActive, setIsDesignPreviewActive] = useState<boolean>(false);
+
+  // Active entities: strictly real server data by default; sample data only when explicitly toggled in preview
+  const activeEvents = isDesignPreviewActive ? MOCK_EVENTS : events;
+  const activeSalons = isDesignPreviewActive ? MOCK_SALONS : salons;
+  const activeFactors = isDesignPreviewActive ? INITIAL_FACTORS : factors;
+  const activeDiscountCodes = isDesignPreviewActive ? MOCK_DISCOUNT_CODES : discountCodes;
+
+  // Load real data from server API endpoints
+  const loadDataFromServer = useCallback(async () => {
+    setIsLoadingServerData(true);
+    setServerConnectionError(null);
+    try {
+      const [eventsResult, salonsResult] = await Promise.allSettled([
+        barnameApi.getEvents(),
+        salonApi.getSalons(),
+      ]);
+
+      if (eventsResult.status === 'fulfilled') {
+        setEvents(eventsResult.value || []);
+      } else {
+        setServerConnectionError(
+          eventsResult.reason?.message || 'عدم امکان برقراری ارتباط با وب‌سرویس برنامه‌ها'
+        );
+      }
+
+      if (salonsResult.status === 'fulfilled') {
+        setSalons(salonsResult.value || []);
+      }
+    } catch (err: any) {
+      setServerConnectionError(err.message || 'خطا در ارتباط با سرور');
+    } finally {
+      setIsLoadingServerData(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadDataFromServer();
+  }, [loadDataFromServer]);
 
   // Filters
   const [searchQuery, setSearchQuery] = useState('');
@@ -74,6 +120,7 @@ export default function App() {
   };
 
   // Modal States
+  const [showAccountModal, setShowAccountModal] = useState(false);
   const [eventForDetails, setEventForDetails] = useState<EventItem | null>(null);
   const [seatMapContext, setSeatMapContext] = useState<{
     event: EventItem;
@@ -112,7 +159,7 @@ export default function App() {
 
   // Filtered Events
   const filteredEvents = useMemo(() => {
-    return events.filter((e) => {
+    return activeEvents.filter((e) => {
       const isSoldOut = !!e.isSoldOut || (e.runTurns?.length > 0 && e.runTurns.every((t) => t.isSoldOut || t.availableSeatsCount === 0));
 
       const matchSearch = searchQuery.trim() === '' || 
@@ -129,16 +176,17 @@ export default function App() {
 
       return matchSearch && matchCategory && matchCity && matchSoldOut;
     });
-  }, [events, searchQuery, selectedCategory, selectedCity, soldOutFilter]);
+  }, [activeEvents, searchQuery, selectedCategory, selectedCity, soldOutFilter]);
 
   // Featured Event for Hero Banner
   const featuredEvent = useMemo(() => {
-    return events.find((e) => e.isFeatured) || events[0];
-  }, [events]);
+    return activeEvents.find((e) => e.isFeatured) || activeEvents[0];
+  }, [activeEvents]);
 
-  // Open Seat Map from details modal
+  // Open Seat Map from details modal (Requirement 5: Salon, address and plan derived from selected sans)
   const handleSelectSans = (event: EventItem, runTurn: RunTurn) => {
-    const salon = salons.find((s) => s.id === event.salonId) || salons[0];
+    const chosenSalonId = runTurn.salonId || event.salonId;
+    const salon = activeSalons.find((s) => s.id === chosenSalonId) || activeSalons[0];
     setEventForDetails(null);
     setSeatMapContext({ event, runTurn, salon });
   };
@@ -240,6 +288,54 @@ export default function App() {
 
       {/* Main Body depending on mode */}
       <main className="flex-1">
+        {/* Universal Server Status & Loading Banner */}
+        {isLoadingServerData && (
+          <div className="bg-indigo-600/10 border-b border-indigo-500/20 px-4 py-2 text-xs text-indigo-400 flex items-center justify-center gap-2">
+            <Loader2 className="w-4 h-4 animate-spin" />
+            <span>در حال دریافت اطلاعات رویدادها و سالن‌ها از وب‌سرویس سرور...</span>
+          </div>
+        )}
+
+        {serverConnectionError && (
+          <div className="bg-amber-500/10 border-b border-amber-500/30 px-4 py-2.5 text-xs text-amber-300 flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
+              <span>خطای اتصال به سرور: {serverConnectionError}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={loadDataFromServer}
+                className="px-3 py-1 rounded-lg bg-amber-500 text-slate-950 font-bold hover:bg-amber-400 transition-colors flex items-center gap-1 cursor-pointer shrink-0"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>تلاش دوباره</span>
+              </button>
+              {!isDesignPreviewActive && (
+                <button
+                  onClick={() => setIsDesignPreviewActive(true)}
+                  className="px-3 py-1 rounded-lg border border-amber-500/40 text-amber-400 font-bold hover:bg-amber-500/10 transition-colors text-[11px] cursor-pointer"
+                >
+                  فعال‌سازی پیش‌نمایش گرافیکی
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
+        {isDesignPreviewActive && (
+          <div className="bg-emerald-500/10 border-b border-emerald-500/20 px-4 py-2 text-xs text-emerald-400 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 shrink-0" />
+              <span>حالت پیش‌نمایش گرافیکی فعال است (نمایش چیدمان و مؤلفه‌ها با داده‌های نمونه).</span>
+            </div>
+            <button
+              onClick={() => setIsDesignPreviewActive(false)}
+              className="text-[11px] font-bold text-slate-400 hover:text-white cursor-pointer underline"
+            >
+              خروج و بازگشت به داده واقعی سرور
+            </button>
+          </div>
+        )}
         
         {/* MODE 1: PUBLIC BUYER PORTAL */}
         {activeMode === 'portal' && (
@@ -281,7 +377,7 @@ export default function App() {
                         : 'text-slate-400 hover:text-slate-200'
                     }`}
                   >
-                    همه رویدادها ({toPersianDigits(events.length)})
+                    همه رویدادها ({toPersianDigits(activeEvents.length)})
                   </button>
 
                   <button
@@ -292,7 +388,7 @@ export default function App() {
                         : 'text-slate-400 hover:text-emerald-400'
                     }`}
                   >
-                    دارای بلیت ({toPersianDigits(events.filter((e) => !e.isSoldOut && !(e.runTurns?.length > 0 && e.runTurns.every((t) => t.isSoldOut || t.availableSeatsCount === 0))).length)})
+                    دارای بلیت ({toPersianDigits(activeEvents.filter((e) => !e.isSoldOut && !(e.runTurns?.length > 0 && e.runTurns.every((t) => t.isSoldOut || t.availableSeatsCount === 0))).length)})
                   </button>
 
                   <button
@@ -305,17 +401,44 @@ export default function App() {
                   >
                     <span>سولد اوت (تکمیل ظرفیت)</span>
                     <span className="text-[10px] bg-rose-500/20 text-rose-300 px-1 rounded font-mono">
-                      {toPersianDigits(events.filter((e) => e.isSoldOut || (e.runTurns?.length > 0 && e.runTurns.every((t) => t.isSoldOut || t.availableSeatsCount === 0))).length)}
+                      {toPersianDigits(activeEvents.filter((e) => e.isSoldOut || (e.runTurns?.length > 0 && e.runTurns.every((t) => t.isSoldOut || t.availableSeatsCount === 0))).length)}
                     </span>
                   </button>
                 </div>
               </div>
 
               {filteredEvents.length === 0 ? (
-                <div className={`py-20 text-center rounded-3xl border ${
+                <div className={`py-16 text-center rounded-3xl border space-y-3 ${
                   isDark ? 'bg-slate-900 border-slate-800 text-slate-400' : 'bg-white border-slate-200 text-slate-500 shadow-xs'
                 }`}>
-                  رویدادی با معیارهای جستجوی شما یافت نشد.
+                  <Layers className="w-10 h-10 mx-auto text-slate-500 opacity-60" />
+                  <div className="text-sm font-bold text-slate-300">
+                    {events.length === 0 && !isDesignPreviewActive
+                      ? 'هیچ برنامه‌ای در پایگاه‌داده سرور یافت نشد.'
+                      : 'رویدادی با معیارهای جستجوی شما یافت نشد.'}
+                  </div>
+                  <p className="text-xs text-slate-500 max-w-md mx-auto">
+                    {events.length === 0 && !isDesignPreviewActive
+                      ? 'پایگاه‌داده خالی است و رویداد ساختگی اضافه نشده است. برای تعریف برنامه و سالن به پنل مدیریت بروید یا پیش‌نمایش گرافیکی را فعال کنید.'
+                      : 'می‌توانید فیلترهای جستجو یا شهر را تغییر دهید.'}
+                  </p>
+                  <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                    <button
+                      onClick={loadDataFromServer}
+                      className="px-3.5 py-1.5 rounded-xl border border-slate-700 hover:bg-slate-800 text-xs text-slate-300 font-bold transition-colors flex items-center gap-1.5 cursor-pointer"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                      <span>بارگذاری مجدد از سرور</span>
+                    </button>
+                    {!isDesignPreviewActive && (
+                      <button
+                        onClick={() => setIsDesignPreviewActive(true)}
+                        className="px-3.5 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 text-xs text-amber-400 font-bold transition-colors cursor-pointer"
+                      >
+                        مشاهده پیش‌نمایش طراحی (داده نمونه)
+                      </button>
+                    )}
+                  </div>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -339,8 +462,8 @@ export default function App() {
         {activeMode === 'box-office' && (
           <VirtualBoxOffice
             theme={theme}
-            events={events}
-            salons={salons}
+            events={activeEvents}
+            salons={activeSalons}
             onBackToPortal={() => setActiveMode('portal')}
             onIssueTicket={(newFactor) => {
               setFactors((prev) => [newFactor, ...prev]);
@@ -352,7 +475,7 @@ export default function App() {
         {activeMode === 'checker' && (
           <TicketChecker
             theme={theme}
-            factors={factors}
+            factors={activeFactors}
             onCheckInTicket={handleCheckInTicket}
             onBackToPortal={() => setActiveMode('portal')}
             initialCode={checkerInitialCode}
@@ -363,10 +486,10 @@ export default function App() {
         {activeMode === 'producer' && (
           <ProducerDashboard
             theme={theme}
-            events={events}
-            salons={salons}
-            factors={factors}
-            discountCodes={discountCodes}
+            events={activeEvents}
+            salons={activeSalons}
+            factors={activeFactors}
+            discountCodes={activeDiscountCodes}
             onAddDiscountCode={handleAddDiscountCode}
             onUpdateDiscountCode={handleUpdateDiscountCode}
             onDeleteDiscountCode={handleDeleteDiscountCode}
@@ -382,10 +505,10 @@ export default function App() {
         {activeMode === 'admin' && (
           <AdminDashboard
             theme={theme}
-            events={events}
-            factors={factors}
-            salons={salons}
-            discountCodes={discountCodes}
+            events={activeEvents}
+            factors={activeFactors}
+            salons={activeSalons}
+            discountCodes={activeDiscountCodes}
             onAddDiscountCode={handleAddDiscountCode}
             onUpdateDiscountCode={handleUpdateDiscountCode}
             onDeleteDiscountCode={handleDeleteDiscountCode}

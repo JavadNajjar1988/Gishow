@@ -1,7 +1,8 @@
 import React from 'react';
-import { Ticket, ShieldCheck, LayoutDashboard, Search, Sparkles, Sun, Moon, Store, Crown } from 'lucide-react';
+import { Ticket, ShieldCheck, LayoutDashboard, Search, Sparkles, Sun, Moon, Store, Crown, User, LogIn } from 'lucide-react';
 import { ActiveAppMode } from '../types';
 import { PWAInstallButton } from './PWAInstallButton';
+import { useAuth } from '../auth/AuthContext';
 
 interface HeaderProps {
   theme: 'light' | 'dark';
@@ -13,6 +14,7 @@ interface HeaderProps {
   selectedCity: string;
   onCityChange: (city: string) => void;
   onTicketTrackClick: () => void;
+  onAccountClick?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -22,9 +24,11 @@ export const Header: React.FC<HeaderProps> = ({
   onModeChange,
   searchQuery,
   onSearchChange,
-  onTicketTrackClick
+  onTicketTrackClick,
+  onAccountClick,
 }) => {
   const isDark = theme === 'dark';
+  const { user, isAuthenticated } = useAuth();
 
   return (
     <header className={`sticky top-0 z-40 transition-colors duration-200 border-b ${
@@ -179,6 +183,35 @@ export const Header: React.FC<HeaderProps> = ({
             >
               پیگیری بلیت
             </button>
+
+            {/* Account / Session Button */}
+            {onAccountClick && (
+              <button
+                onClick={onAccountClick}
+                className={`text-xs px-3.5 py-2 rounded-xl border transition-all cursor-pointer font-bold flex items-center gap-1.5 ${
+                  isAuthenticated && user
+                    ? isDark
+                      ? 'bg-amber-500/10 border-amber-500/30 text-amber-400 hover:bg-amber-500/20'
+                      : 'bg-amber-50 border-amber-300 text-amber-900 hover:bg-amber-100'
+                    : isDark
+                      ? 'bg-slate-900/80 border-slate-800 text-slate-300 hover:text-white hover:border-slate-700'
+                      : 'bg-white border-slate-200 text-slate-700 hover:text-slate-900 shadow-2xs'
+                }`}
+                title={isAuthenticated && user ? `حساب کاربری: ${user.fullName} (${user.role})` : 'ورود / بازیابی حساب'}
+              >
+                {isAuthenticated && user ? (
+                  <>
+                    <User className="w-3.5 h-3.5 text-amber-500" />
+                    <span className="max-w-[100px] truncate">{user.fullName || user.mobile}</span>
+                  </>
+                ) : (
+                  <>
+                    <LogIn className="w-3.5 h-3.5" />
+                    <span>ورود / حساب</span>
+                  </>
+                )}
+              </button>
+            )}
           </div>
 
         </div>
