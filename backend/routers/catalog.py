@@ -8,7 +8,7 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 from sqlalchemy import update
 from sqlalchemy.orm import Session
 from ..database import get_db
-from ..models import Salon, PartOfSalon, ChairInPart, Barname, RunTurn, ChairInBarname, FactorList, EventRole, EventImage, SaleReservation
+from ..models import Salon, PartOfSalon, ChairInPart, Barname, RunTurn, ChairInBarname, FactorList, EventRole, EventImage, SaleReservation, SaleDiscount
 from ..posters import normalize_poster, MAX_UPLOAD_BYTES
 from ..security import require, global_allowed, permitted_event_ids, authorize_event
 
@@ -307,7 +307,7 @@ def edit_event(id: int, body: EventInput, db: Session = Depends(get_db), user=De
 @router.delete('/admin/catalog/events/{id}', status_code=204)
 def delete_event(id: int, db: Session = Depends(get_db), user=Depends(require('events.manage'))):
     event = scoped_event(db,user,id,'events.manage')
-    if event.run_turns or db.query(EventRole).filter_by(event_id=id).first():
+    if db.query(SaleDiscount.id).filter_by(event_id=id).first() or event.run_turns or db.query(EventRole).filter_by(event_id=id).first():
         raise HTTPException(409,'برنامه دارای سانس یا دسترسی تخصیص‌یافته است؛ آن را بایگانی کنید.')
     db.delete(event); db.commit()
     return Response(status_code=204)

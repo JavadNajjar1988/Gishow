@@ -260,6 +260,12 @@ class SaleOrder(Base):
     reservation_id = Column(String(36), ForeignKey('sale_reservations.id'), nullable=False, unique=True)
     user_id = Column(Integer, ForeignKey('tbl_user_lists.id'), nullable=False, index=True)
     amount_irr = Column(BigInteger, nullable=False)
+    subtotal_irr = Column(BigInteger, nullable=False, default=0)
+    discount_amount_irr = Column(BigInteger, nullable=False, default=0)
+    discount_id = Column(String(36), ForeignKey('sale_discounts.id'), nullable=True)
+    discount_code = Column(String(40), nullable=True)
+    customer_name = Column(String(150), nullable=False, default='')
+    customer_mobile = Column(String(20), nullable=False, default='')
     items_json = Column(Text, nullable=False)
     status = Column(String(30), nullable=False, default='pending')
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
@@ -274,3 +280,19 @@ class SaleTicket(Base):
     order_id = Column(String(36), ForeignKey('sale_orders.id'), nullable=False, index=True)
     seat_id = Column(Integer, ForeignKey('tbl_chair_in_barname.id'), nullable=False, unique=True)
     checked_in_at = Column(DateTime, nullable=True)
+    checked_by = Column(Integer, ForeignKey('tbl_user_lists.id'), nullable=True)
+
+
+class SaleDiscount(Base):
+    __tablename__ = 'sale_discounts'
+    id = Column(String(36), primary_key=True)
+    code = Column(String(40), nullable=False, unique=True)
+    event_id = Column(Integer, ForeignKey('tbl_barnames.id'), nullable=True)
+    run_turn_id = Column(Integer, ForeignKey('tbl_run_turns.id'), nullable=True)
+    percent = Column(Integer, nullable=True)
+    fixed_amount_irr = Column(BigInteger, nullable=True)
+    min_seats = Column(Integer, nullable=False, default=1)
+    max_uses = Column(Integer, nullable=False)
+    starts_at = Column(DateTime, nullable=False)
+    ends_at = Column(DateTime, nullable=False)
+    is_active = Column(Boolean, nullable=False, default=True)

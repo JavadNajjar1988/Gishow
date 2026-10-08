@@ -13,7 +13,7 @@ export function PosterUpload({event,onChanged}: {event:EventItem|null;onChanged:
       const saved=await fileUploadApi.uploadPoster(file,serverId(event.id));setImage({...saved,alt:event.title});setMessage('پوستر در سرور ذخیره شد.');onChanged();
     }catch(e){setMessage((e as Error).message);}finally{setBusy(false);}
   }
-  return <section className="space-y-3 border rounded-xl p-3"><h3>پوستر برنامه</h3>
+  return <section className="space-y-3 site-inset p-3"><h3>پوستر برنامه</h3>
     {!event ? <p>پس از ذخیره برنامه، بارگذاری پوستر فعال می‌شود.</p> : <>
       {image && <img src={image.preview_url} alt={image.alt || event.title} className="max-h-64 max-w-full rounded-xl"/>}
       <label className="block">{image?'جایگزینی پوستر':'انتخاب و بارگذاری پوستر'}<input className="block w-full" type="file" accept="image/jpeg,image/png,image/webp" disabled={busy} onChange={e=>{void upload(e.target.files?.[0]);e.target.value='';}}/></label>

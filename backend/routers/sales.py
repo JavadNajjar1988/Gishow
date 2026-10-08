@@ -7,8 +7,9 @@ from sqlalchemy import update,or_,and_
 from sqlalchemy.orm import Session
 from ..database import get_db
 from ..security import current_user
-from ..models import SaleReservation,SaleOrder,SaleTicket,ChairInBarname,Barname,RunTurn,UserList
+from ..models import SaleReservation,SaleOrder,SaleTicket,ChairInBarname,Barname,RunTurn,UserList,Salon
 from ..services.sales import utcnow,turn_for_sale,owned,reservation_view,order_view,valid_chairs,release
+from .discounts import apply_discount
 from ..services.payment_service import get_gateway,gateway_for_mode
 
 router=APIRouter(prefix='/sales',tags=['رزرو و سفارش'])
@@ -19,6 +20,7 @@ class ReserveInput(BaseModel):
 class OrderInput(BaseModel):
     model_config=ConfigDict(extra='forbid')
     reservation_id:str=Field(min_length=36,max_length=36)
+    discount_code:str|None=Field(default=None,pattern=r'^[A-Za-z0-9_-]{3,40}$')
 
 @router.get('/payment-status')
 def payment_status(user=Depends(current_user)):
@@ -72,16 +74,24 @@ def cancel_reservation(id:str,db:Session=Depends(get_db),user=Depends(current_us
 def create_order(body:OrderInput,db:Session=Depends(get_db),user=Depends(current_user)):
     row=owned(db,SaleReservation,body.reservation_id,user,True)
     existing=db.query(SaleOrder).filter_by(reservation_id=row.id).first()
-    if existing:return order_view(db,existing)
+    if existing:
+        if existing.discount_code!=(body.discount_code.upper() if body.discount_code else None):raise HTTPException(409,'مبلغ سفارش ثبت‌شده تغییر نمی‌کند؛ برای انتخاب تخفیف تازه رزرو را دوباره انجام دهید.')
+        return order_view(db,existing)
     turn=turn_for_sale(db,row.run_turn_id);chairs=valid_chairs(db,row)
+    salon=db.get(Salon,turn.salon_id or turn.barname.salon_id)
     items=[]
     for s in chairs:
         if not 0<=s.price<=9007199254740991 or int(s.price)!=s.price:raise HTTPException(409,'مبلغ صندلی معتبر نیست.')
         items.append(dict(seat_id=s.id,amount_irr=int(s.price),row=s.chair.row_number,number=s.chair.seat_number,
-            part_name=s.chair.part.name,event_title=turn.barname.title,run_turn_id=turn.id))
+            part_name=s.chair.part.name,event_title=turn.barname.title,run_turn_id=turn.id,
+            salon_name=salon.name,address=salon.address,
+            starts_at=json.loads(turn.config_json)['starts_at']))
     amount=sum(i['amount_irr'] for i in items)
     if amount<=0 or amount>9007199254740991:raise HTTPException(409,'مبلغ سفارش برای پرداخت معتبر نیست.')
-    order=SaleOrder(id=str(uuid.uuid4()),reservation_id=row.id,user_id=user.id,amount_irr=amount,
+    discount,discount_amount=apply_discount(db,body.discount_code,turn,len(chairs),amount)
+    order=SaleOrder(id=str(uuid.uuid4()),reservation_id=row.id,user_id=user.id,amount_irr=amount-discount_amount,
+        subtotal_irr=amount,discount_amount_irr=discount_amount,discount_id=discount.id if discount else None,
+        discount_code=discount.code if discount else None,customer_name=user.full_name,customer_mobile=user.mobile,
         items_json=json.dumps(items,ensure_ascii=False),status='pending')
     db.add(order);db.commit();return order_view(db,order)
 
@@ -133,4 +143,13 @@ def callback(Authority:str=Query(min_length=1,max_length=100),Status:str=Query(p
             reservation.status='completed';order.status='paid'
             message='پرداخت تأیید و بلیت هر صندلی ثبت شد. نتیجه را در سفارش‌های من ببینید.'
         db.commit()
-    return '<!doctype html><html lang="fa" dir="rtl"><meta charset="utf-8"><title>نتیجه پرداخت</title><body><h1>نتیجه پرداخت</h1><p>'+message+'</p><p>به سایت پذیرنده بازگردید و سفارش‌های من را باز کنید.</p></body></html>'
+    return '<!doctype html><html lang="fa" dir="rtl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>نتیجه پرداخت | لیندو تیکت</title><style>body{margin:0;padding:24px;min-height:90vh;display:grid;place-items:center;background:#f8fafc;color:#0f172a;font-family:Tahoma,sans-serif;line-height:2}main{max-width:560px;padding:32px;border:1px solid #e2e8f0;border-radius:24px;background:white;box-shadow:0 12px 36px #0f172a14}small{color:#b45309}a{display:inline-block;background:linear-gradient(110deg,#f59e0b,#ea580c);color:white;text-decoration:none;border-radius:12px;padding:10px 20px;margin-top:16px}@media(prefers-color-scheme:dark){body{background:#020617;color:#f1f5f9}main{background:#0f172a;border-color:#334155}}</style><main><small>لیندو تیکت</small><h1>نتیجه پرداخت</h1><p>'+message+'</p><p>بلیت‌ها و جزئیات را از بخش سفارش‌های من دریافت کنید.</p><a href="/">بازگشت به سایت</a></main></html>'
+
+
+@router.get('/orders/{id}/receipt',response_class=HTMLResponse)
+def receipt(id:str,download:bool=True,db:Session=Depends(get_db),user=Depends(current_user)):
+    from ..services.receipts import render_receipt
+    order=owned(db,SaleOrder,id,user)
+    if order.status!='paid':raise HTTPException(409,'رسید و بلیت فقط برای سفارش تأییدشده قابل دریافت است.')
+    return HTMLResponse(render_receipt(db,order),headers={'Content-Disposition':f'{"attachment" if download else "inline"}; filename="gishow-{order.id}.html"',
+        'Cache-Control':'no-store','Content-Security-Policy':"default-src 'none'; img-src data:; style-src 'unsafe-inline'"})
