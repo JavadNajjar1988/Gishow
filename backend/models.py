@@ -11,6 +11,8 @@ class Salon(Base):
     city = Column(String(100), nullable=False, default="مشهد")
     address = Column(String(500), nullable=True)
     capacity = Column(Integer, default=0)
+    plan_version = Column(Integer, nullable=False, default=0, server_default="0")
+    config_json = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     parts = relationship("PartOfSalon", back_populates="salon", cascade="all, delete-orphan")
@@ -27,6 +29,7 @@ class PartOfSalon(Base):
     rows = Column(Integer, default=5)
     seats_per_row = Column(Integer, default=10)
     default_price = Column(Float, default=300000)
+    config_json = Column(Text, nullable=True)
 
     salon = relationship("Salon", back_populates="parts")
     chairs = relationship("ChairInPart", back_populates="part", cascade="all, delete-orphan")
@@ -56,6 +59,7 @@ class Barname(Base):
     duration_minutes = Column(Integer, default=90)
     description = Column(Text, nullable=True)
     cast_json = Column(Text, nullable=True) # JSON list of cast members
+    config_json = Column(Text, nullable=True)
     min_price = Column(Float, default=200000)
     max_price = Column(Float, default=800000)
     banner_gradient = Column(String(100), default="from-amber-600 via-stone-900 to-slate-950")
@@ -72,6 +76,8 @@ class RunTurn(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     barname_id = Column(Integer, ForeignKey("tbl_barnames.id"), nullable=False)
+    salon_id = Column(Integer, ForeignKey("tbl_salons.id"), nullable=True)
+    config_json = Column(Text, nullable=True)
     date = Column(String(50), nullable=False) # e.g. "۱۴۰۵/۰۸/۱۸"
     time = Column(String(20), nullable=False) # e.g. "۱۸:۳۰"
     weekday = Column(String(50), nullable=False) # e.g. "چهارشنبه"

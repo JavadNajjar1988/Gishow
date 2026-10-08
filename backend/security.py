@@ -20,6 +20,7 @@ PERMISSIONS = {
     'terminals.read': ('مشاهده پایانه‌ها', 'global'),
     'salons.manage': ('مدیریت سالن‌ها', 'global'),
     'events.read': ('مشاهده برنامه‌های مدیریتی', 'event'),
+    'events.manage': ('ویرایش برنامه و سانس', 'event'),
     'reports.read': ('مشاهده فروش برنامه', 'event'),
     'seats.manage': ('مسدودسازی صندلی برنامه', 'event'),
     'tickets.check': ('کنترل ورود برنامه', 'event'),

@@ -5,15 +5,22 @@ export interface Account {
 }
 export class ApiError extends Error { constructor(public status: number, message: string) { super(message); } }
 export async function api<T>(path: string, method = 'GET', body?: unknown): Promise<T> {
+  return apiRequest<T>(path, {method, body: body === undefined ? undefined : JSON.stringify(body)});
+}
+export async function apiRequest<T>(path: string, options: RequestInit = {}): Promise<T> {
   let response: Response;
+  const headers = new Headers(options.headers);
+  headers.set('X-Gishow-Request', '1');
+  if (!(options.body instanceof FormData)) headers.set('Content-Type', 'application/json');
   try {
-    response = await fetch(`/api${path}`, {method, credentials: 'include', headers: {
-      'Content-Type': 'application/json', 'X-Gishow-Request': '1'
-    }, body: body === undefined ? undefined : JSON.stringify(body)});
+    response = await fetch(`/api${path}`, {...options, credentials: 'include', headers});
   } catch { throw new ApiError(0, 'اتصال به سرور برقرار نشد.'); }
   if (!response.ok) {
     const data = await response.json().catch(() => ({}));
-    throw new ApiError(response.status, typeof data.detail === 'string' ? data.detail : 'اطلاعات فرم معتبر نیست.');
+    const message = typeof data.detail === 'string' ? data.detail : [404,405,501].includes(response.status)
+      ? 'این عملیات هنوز به سرویس سرور متصل نیست؛ چیزی ذخیره نشد.' : response.status === 401
+      ? 'برای ادامه وارد حساب شوید.' : response.status === 403 ? 'دسترسی لازم را ندارید.' : 'اطلاعات فرم معتبر نیست.';
+    throw new ApiError(response.status, message);
   }
   return response.status === 204 ? undefined as T : response.json();
 }

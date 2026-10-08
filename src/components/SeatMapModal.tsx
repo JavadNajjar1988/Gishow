@@ -382,6 +382,21 @@ export const SeatMapModal: React.FC<SeatMapModalProps> = ({
           </div>
         </div>
 
+        {/* Inventory Notice Banner (نمایش موجودی صندلی‌ها و ساختار سالن) */}
+        <div className={`px-4 py-2.5 text-xs flex items-center justify-between gap-3 border-b shrink-0 ${
+          isDark ? 'bg-amber-500/10 border-amber-500/20 text-amber-300' : 'bg-amber-50 border-amber-200 text-amber-900'
+        }`}>
+          <div className="flex items-center gap-2">
+            <Info className="w-4 h-4 text-amber-500 shrink-0" />
+            <span>
+              پلان صندلی‌ها در این مرحله جهت نمایش چینش معماری سالن، جایگاه‌ها و وضعیت موجودی است؛ رزرو قطعی و تراکنش بانکی پس از تکمیل اتصال درگاه فعال می‌گردد.
+            </span>
+          </div>
+          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 font-bold shrink-0">
+            نمایش موجودی
+          </span>
+        </div>
+
         {/* =========================================================================
             STAGE 1: MACRO ARCHITECTURAL VENUE PLAN (پلان معماری کل سالن)
         ========================================================================= */}

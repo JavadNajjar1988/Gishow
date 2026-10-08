@@ -14,6 +14,8 @@ def process_checkout(req: CheckoutRequest, db: Session = Depends(get_db)):
     sans = db.query(RunTurn).filter(RunTurn.id == req.run_turn_id).first()
     if not sans:
         raise HTTPException(status_code=404, detail="سانس رویداد نامعتبر است.")
+    if sans.config_json:
+        raise HTTPException(501, detail="پرداخت و صدور بلیت واقعی این برنامه هنوز فعال نشده است.")
 
     # Fetch selected chairs
     chairs = db.query(ChairInBarname).filter(

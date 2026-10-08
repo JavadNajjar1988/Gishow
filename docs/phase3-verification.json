@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-08",
+  "baseline": "72eaef3ef8b629168fa18b8c26fc3f93e0af0197",
+  "reviewed_main": "0b9f3c5ce93b94485e2c0a0d16db43e02207fd84",
+  "schema_head": "0003_catalog",
+  "normal_npm_install": "passed",
+  "isolated_clean_npm_ci": "passed",
+  "typecheck": "passed",
+  "production_build": "passed",
+  "pwa_build": "passed",
+  "sqlite_account_runtime_tests": 15,
+  "sqlite_catalog_tests": 7,
+  "test_pg_suite_passed": 22,
+  "test_pg_suite_database_breakdown": {"postgresql_account_catalog": 20, "sqlite_runtime": 2},
+  "browser": {
+    "environment": "isolated local database",
+    "login": "passed",
+    "salon_metadata_save_and_reload": "passed",
+    "independent_second_venue_real_inventory": "passed",
+    "mobile_viewport_width": 390,
+    "mobile_horizontal_overflow": false,
+    "initial_empty_render": "fixed"
+  },
+  "production_database_migrated": false,
+  "production_api_restarted": false,
+  "legacy_data_imported": false,
+  "payment_acceptance": "not performed",
+  "full_phase3_acceptance": "partial; remaining items documented in handoff result"
+}

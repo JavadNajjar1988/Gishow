@@ -37,13 +37,13 @@ export const Header: React.FC<HeaderProps> = ({
         : 'bg-white/90 backdrop-blur-md border-slate-200/80 text-slate-900 shadow-xs'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20 gap-4">
+        <div className="flex flex-wrap items-center justify-between min-h-20 py-3 gap-3">
           
           {/* Zone 1: Single Brand Wordmark */}
           <div className="flex items-center gap-3">
             <button 
               onClick={() => onModeChange('portal')}
-              className="flex items-center gap-2.5 text-right group cursor-pointer focus:outline-none"
+              className="flex flex-wrap items-center gap-2.5 text-right group cursor-pointer focus:outline-none"
             >
               <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-rose-600 flex items-center justify-center shadow-md shadow-amber-500/20 group-hover:scale-105 transition-transform duration-200">
                 <Ticket className="w-5 h-5 text-white" />
@@ -85,7 +85,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Zone 3: Mode Switcher, Theme Toggle & Navigation Actions */}
-          <div className="flex items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-2.5">
             
             {/* Theme Toggle Button (Light / Dark) */}
             <button
@@ -146,7 +146,7 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
               )}
 
-              {(hasPermission(user, 'events.read') || hasPermission(user, 'reports.read') || hasPermission(user, 'seats.manage')) && (
+              {(hasPermission(user, 'events.read') || hasPermission(user, 'reports.read') || hasPermission(user, 'seats.manage') || hasPermission(user, 'events.manage')) && (
               <button
                 onClick={() => onModeChange('producer')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
@@ -161,7 +161,7 @@ export const Header: React.FC<HeaderProps> = ({
               </button>
               )}
 
-              {(hasPermission(user, 'accounts.manage') || hasPermission(user, 'roles.manage')) && (
+              {(['accounts.manage','roles.manage','salons.manage'].some(p=>hasPermission(user,p))) && (
               <button
                 onClick={() => onModeChange('admin')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
