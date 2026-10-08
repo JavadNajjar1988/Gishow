@@ -3,6 +3,8 @@ import { Salon, EventItem, DiscountCode, FactorItem } from '../types';
 export const MOCK_SALONS: Salon[] = [
   {
     id: 'salon-1',
+    stagePosition: 'top',
+    aislesCount: 2,
     name: 'سالن همایش‌های شهرما مشهد',
     city: 'مشهد',
     address: 'مشهد مقدس - میدان طالقانی - مجموعه فرهنگی هنری شهرما',
@@ -10,6 +12,7 @@ export const MOCK_SALONS: Salon[] = [
     parts: [
       {
         id: 'part-vip',
+        shape: 'arc',
         salonId: 'salon-1',
         name: 'جایگاه ویژه (VIP)',
         tier: 'vip',
@@ -19,6 +22,7 @@ export const MOCK_SALONS: Salon[] = [
       },
       {
         id: 'part-ground-center',
+        shape: 'arc',
         salonId: 'salon-1',
         name: 'همکف وسط',
         tier: 'ground',

@@ -1,0 +1,8 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {buildSeatLayout} from './seatLayout';
+import {Seat} from '../types';
+const seats:Seat[]=[{id:'a',partId:'p',partName:'همکف',row:4,number:1,price:100,status:'available'},{id:'b',partId:'p',partName:'همکف',row:4,number:3,price:200,status:'sold'},{id:'c',partId:'p',partName:'همکف',row:8,number:2,price:300,status:'reserved'}];
+test('layout preserves server identifiers, gaps, rows and inventory without making seats',()=>{const plan=buildSeatLayout(seats,'straight',2);assert.deepEqual(plan.rows,[4,8]);assert.deepEqual(plan.positions.map(p=>p.seat),seats);assert.equal(plan.positions.length,3);assert.ok(plan.positions[1].x-plan.positions[0].x>42);assert.ok(plan.positions[2].y>plan.positions[0].y);for(const p of plan.positions){assert.ok(p.x+32<=plan.width);assert.ok(p.y+36<=plan.height);}});
+test('curved and angled shapes retain actual seats while changing the geometry',()=>{const straight=buildSeatLayout(seats),arc=buildSeatLayout(seats,'arc'),left=buildSeatLayout(seats,'angled_left'),right=buildSeatLayout(seats,'angled_right');assert.deepEqual(arc.positions.map(p=>p.seat.id),['a','b','c']);assert.notEqual(arc.positions[0].y,straight.positions[0].y);assert.notEqual(left.positions[0].y,right.positions[0].y);assert.notEqual(arc.positions[0].rotation,0);});
+test('empty venue remains finite and has no selectable invented chairs',()=>{const p=buildSeatLayout([]);assert.equal(p.positions.length,0);assert.ok(Number.isFinite(p.width)&&Number.isFinite(p.height));});
