@@ -51,6 +51,7 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
         {/* Modal Body */}
         <div className="p-6 md:p-8 space-y-6 max-h-[72vh] overflow-y-auto">
           
+          {event.posterUrl && <img src={event.posterUrl} alt={event.images?.[0]?.alt || event.title} className="w-full max-h-96 object-contain rounded-xl"/>}
           {/* Quick Info Bar */}
           <div className={`grid grid-cols-2 sm:grid-cols-3 gap-3 p-4 rounded-2xl border text-xs ${
             isDark ? 'bg-slate-950/60 border-slate-800 text-slate-300' : 'bg-slate-50 border-slate-200 text-slate-700'

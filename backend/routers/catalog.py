@@ -1,13 +1,15 @@
 """Persisted catalog, isolated from the legacy price/date contract."""
 import json
+import hashlib
 from datetime import datetime, timezone, timedelta
 from typing import Literal
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, Depends, HTTPException, Response, UploadFile, File, Form
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 from sqlalchemy import update
 from sqlalchemy.orm import Session
 from ..database import get_db
-from ..models import Salon, PartOfSalon, ChairInPart, Barname, RunTurn, ChairInBarname, FactorList, EventRole
+from ..models import Salon, PartOfSalon, ChairInPart, Barname, RunTurn, ChairInBarname, FactorList, EventRole, EventImage
+from ..posters import normalize_poster, MAX_UPLOAD_BYTES
 from ..security import require, global_allowed, permitted_event_ids, authorize_event
 
 router = APIRouter(tags=['مدیریت فهرست و پلان'])
@@ -210,7 +212,54 @@ def event_view(db, event, public=False):
         date_range=event.date_range, duration_minutes=event.duration_minutes, description=event.description,
         cast=json.loads(event.cast_json or '[]'), min_price=min(prices,default=0), max_price=max(prices,default=0),
         is_featured=event.is_featured, is_active=event.is_active, **data,
+        images=[image_view(image) for image in event.images],
         run_turns=[turn_view(db,t) for t in turns])
+
+def image_view(image):
+    revision = image.content_hash[:16]
+    return dict(id=image.id, event_id=image.event_id, alt=image.alt, width=image.width, height=image.height,
+        url=f'/api/catalog/images/{image.id}?v={revision}',
+        preview_url=f'/api/admin/catalog/events/{image.event_id}/images/{image.id}?v={revision}')
+
+@router.post('/admin/catalog/events/{id}/images', status_code=201)
+def upload_image(id: int, file: UploadFile = File(...), alt: str = Form('', max_length=500),
+                 db: Session = Depends(get_db), user=Depends(require('events.manage'))):
+    event = scoped_event(db,user,id,'events.manage')
+    try:
+        content = file.file.read(MAX_UPLOAD_BYTES + 1)
+    finally:
+        file.file.close()
+    normalized,width,height = normalize_poster(content)
+    image = db.query(EventImage).filter_by(event_id=event.id).first()
+    if image is None:
+        image = EventImage(event_id=event.id); db.add(image)
+    image.content, image.width, image.height = normalized,width,height
+    image.content_hash, image.alt = hashlib.sha256(normalized).hexdigest(),alt.strip()
+    db.commit(); db.refresh(image)
+    return image_view(image)
+
+@router.get('/admin/catalog/events/{id}/images/{image_id}')
+def preview_image(id: int, image_id: int, db: Session = Depends(get_db), user=Depends(require('events.read'))):
+    authorize_event(db,user,'events.read',id)
+    image = find(db,EventImage,image_id)
+    if image.event_id != id:
+        raise HTTPException(404,'تصویر متعلق به برنامه نیست.')
+    return Response(image.content, media_type='image/webp', headers={'Cache-Control':'no-store'})
+
+@router.delete('/admin/catalog/events/{id}/images/{image_id}', status_code=204)
+def delete_image(id: int, image_id: int, db: Session = Depends(get_db), user=Depends(require('events.manage'))):
+    scoped_event(db,user,id,'events.manage')
+    image = find(db,EventImage,image_id)
+    if image.event_id != id:
+        raise HTTPException(404,'تصویر متعلق به برنامه نیست.')
+    db.delete(image); db.commit()
+    return Response(status_code=204)
+
+@router.get('/catalog/images/{image_id}')
+def public_image(image_id: int, db: Session = Depends(get_db)):
+    image = find(db,EventImage,image_id)
+    public_event(db,image.event_id)
+    return Response(image.content, media_type='image/webp', headers={'Cache-Control':'no-store'})
 
 def scoped_event(db,user,id,permission):
     authorize_event(db,user,permission,id)

@@ -26,7 +26,7 @@ def health(db: Session = Depends(get_db)):
     try:
         db.execute(text("SELECT 1"))
         version = db.execute(text("SELECT version_num FROM alembic_version")).scalar()
-        if version != "0003_catalog":
+        if version != "0004_event_images":
             raise ValueError("Schema migration required")
     except Exception:
         raise HTTPException(status_code=503, detail="پایگاه داده آماده نیست؛ اتصال و تغییرات ساختار بررسی شود.")

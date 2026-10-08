@@ -67,6 +67,7 @@ export interface Seat {
 }
 
 export interface EventItem {
+  images?: {id:number;url:string;preview_url:string;alt:string}[];
   moneyUnit?: string;
   id: string;
   title: string;

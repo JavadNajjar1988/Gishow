@@ -1,5 +1,5 @@
 import {Salon, PartOfSalon, EventItem, CreateSalonPayload, CreateBarnamePayload, CreateSansPayload, Seat} from '../types';
-import {api, ApiError} from '../auth/api';
+import {api, apiRequest, ApiError} from '../auth/api';
 
 export function serverId(id: string | number): number {
   const value = Number(id);
@@ -55,7 +55,7 @@ export function normalizeTurn(raw: any) {
     salesStartAt: raw.sale_starts_at, salesEndAt: raw.sale_ends_at};
 }
 export function normalizeEvent(raw: any): EventItem {
-  return {id:String(raw.id),moneyUnit:raw.money_unit,title:raw.title,subTitle:raw.sub_title,category:raw.category,city:raw.city || '',
+  return {images:raw.images || [],posterUrl:raw.images?.[0]?.url,id:String(raw.id),moneyUnit:raw.money_unit,title:raw.title,subTitle:raw.sub_title,category:raw.category,city:raw.city || '',
     salonId:String(raw.salon_id),salonName:raw.salon_name || '',address:raw.address || '',dateRange:raw.date_range || '',
     durationMinutes:raw.duration_minutes ?? 0,description:raw.description || '',cast:raw.cast || [],rules:raw.rules || [],
     minPrice:(raw.min_price ?? 0)/10,maxPrice:(raw.max_price ?? 0)/10,
@@ -96,7 +96,11 @@ export const sansApi = {
   },
 };
 export const fileUploadApi = {
-  async uploadPoster(file: File): Promise<{url:string;fileName:string}> {
-    throw new ApiError(501,'سرویس بارگذاری تصویر هنوز پیاده نشده است؛ تصویر فقط پیش‌نمایش است.');
+  async uploadPoster(file: File, eventId?: number): Promise<{url:string;preview_url:string;id:number;fileName:string}> {
+    if (!eventId) throw new Error('ابتدا برنامه را در سرور ذخیره کنید.');
+    const body = new FormData(); body.append('file',file);
+    const image = await apiRequest<any>(`/admin/catalog/events/${serverId(eventId)}/images`,{method:'POST',body});
+    return {...image,fileName:file.name};
   },
+  async removePoster(eventId:number,imageId:number) {await api(`/admin/catalog/events/${serverId(eventId)}/images/${serverId(imageId)}`,'DELETE');},
 };

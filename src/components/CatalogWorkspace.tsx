@@ -1,3 +1,5 @@
+import {PosterUpload} from './PosterUpload';
+import {PersianDateTimeField} from './PersianDateTimeField';
 import React, {useEffect, useState} from 'react';
 import {useAuth} from '../auth/AuthContext';
 import {hasPermission} from '../auth/api';
@@ -65,15 +67,15 @@ export function CatalogWorkspace({theme,mode,onBack}: {theme:'light'|'dark';mode
           {canEdit(e) && e.moneyUnit==='IRR' && salons.some(s=>s.moneyUnit==='IRR') && <div className="flex flex-wrap gap-2"><button className={button} onClick={()=>setEventEditor(e)}>ویرایش برنامه</button><button className={button} onClick={()=>setTurnEvent(e)}>افزودن سانس</button><button className={`${button} text-rose-700`} disabled={busy} onClick={()=>{if(window.confirm('برنامه حذف شود؟')) void work(()=>barnameApi.deleteBarname(serverId(e.id)));}}>حذف برنامه</button></div>}
         </article>)}</div>
       </div>
-      <p className="text-sm">بارگذاری تصویر، اطلاع‌رسانی، پرداخت، تسویه و صدور بلیت مهمان هنوز در این بخش فعال نشده‌اند.</p>
+      <p className="text-sm">اطلاع‌رسانی، پرداخت، تسویه و صدور بلیت مهمان هنوز در این بخش فعال نشده‌اند.</p>
       {salonEditor!==undefined && <SalonPlanBuilderModal theme={theme} initialSalon={salonEditor} onClose={()=>setSalonEditor(undefined)} onSaveSalon={()=>void load()}/>}
-      {eventEditor!==undefined && <EventForm key={eventEditor?.id || 'new'} initial={eventEditor} salons={salons.filter(s=>s.moneyUnit==='IRR')} busy={busy} onClose={()=>setEventEditor(undefined)} onSave={p=>void work(async()=>{if(eventEditor) await barnameApi.updateBarname(serverId(eventEditor.id),p);else await barnameApi.createBarname(p);setEventEditor(undefined);})}/>}
+      {eventEditor!==undefined && <EventForm onPosterChanged={()=>void load()} key={eventEditor?.id || 'new'} initial={eventEditor} salons={salons.filter(s=>s.moneyUnit==='IRR')} busy={busy} onClose={()=>setEventEditor(undefined)} onSave={p=>void work(async()=>{const saved=eventEditor?await barnameApi.updateBarname(serverId(eventEditor.id),p):await barnameApi.createBarname(p);setEventEditor(saved);})}/>}
       {turnEvent && <TurnForm key={turnEvent.id} event={turnEvent} salons={salons.filter(s=>s.moneyUnit==='IRR')} busy={busy} onClose={()=>setTurnEvent(null)} onSave={p=>void work(async()=>{await sansApi.createSans(p);setTurnEvent(null);})}/>}
     </>}
   </section>;
 }
 const input = 'border border-slate-300 rounded-xl p-3 w-full bg-white text-slate-900';
-function EventForm({initial,salons,busy,onClose,onSave}: {initial:EventItem|null;salons:Salon[];busy:boolean;onClose:()=>void;onSave:(p:any)=>void}) {
+function EventForm({initial,salons,busy,onClose,onSave,onPosterChanged}: {onPosterChanged:()=>void;initial:EventItem|null;salons:Salon[];busy:boolean;onClose:()=>void;onSave:(p:any)=>void}) {
   const [title,setTitle]=useState(initial?.title || '');
   const [salon,setSalon]=useState(initial?.salonId || salons[0]?.id || '');
   const [category,setCategory]=useState<EventCategory>(initial?.category || 'concert');
@@ -89,7 +91,7 @@ function EventForm({initial,salons,busy,onClose,onSave}: {initial:EventItem|null
   return <form className="border bg-white text-slate-900 rounded-2xl p-4 space-y-4" onSubmit={e=>{e.preventDefault();if(busy)return;onSave({title,salonId:serverId(salon),category,description,subTitle,durationMinutes:duration,
     rules:rules.split('\n').map(s=>s.trim()).filter(Boolean),cast:cast.split('\n').filter(s=>s.trim()).map(s=>{const [name,role]=s.split('|');return {name:name.trim(),role:role?.trim() || ''};}),
     ticketNotice:notice,language,isDraft:draft,isFeatured:featured});}}>
-    <h2 className="font-bold">{initial?'ویرایش برنامه':'برنامه تازه'}</h2><fieldset disabled={busy} className="grid sm:grid-cols-2 gap-4">
+    <PosterUpload event={initial} onChanged={onPosterChanged}/><h2 className="font-bold">{initial?'ویرایش برنامه':'برنامه تازه'}</h2><fieldset disabled={busy} className="grid sm:grid-cols-2 gap-4">
     <label>عنوان<input className={input} required maxLength={250} value={title} onChange={e=>setTitle(e.target.value)}/></label>
     <label>زیرعنوان<input className={input} maxLength={300} value={subTitle} onChange={e=>setSubTitle(e.target.value)}/></label>
     <label>سالن پیش‌فرض<select className={input} required value={salon} onChange={e=>setSalon(e.target.value)}>{salons.map(s=><option key={s.id} value={s.id}>{s.name}</option>)}</select></label>
@@ -113,18 +115,18 @@ function TurnForm({event,salons,busy,onClose,onSave}: {event:EventItem;salons:Sa
   const [prices,setPrices]=useState<Record<string,number>>({});
   const [error,setError]=useState('');
   const salon=salons.find(s=>s.id===salonId);
-  const date = (s:string) => s ? `${s}:00+03:30` : undefined;
+  const date = (s:string) => s || undefined;
   return <form className="border bg-white text-slate-900 rounded-2xl p-4 space-y-4" onSubmit={e=>{e.preventDefault();if(busy)return;setError('');try{
     if(!salon)throw new Error('سالن را انتخاب کنید.');
-    if(saleStart && saleEnd && saleEnd<saleStart)throw new Error('پایان فروش پیش از شروع فروش است.');
+    if(saleStart && saleEnd && Date.parse(saleEnd)<Date.parse(saleStart))throw new Error('پایان فروش پیش از شروع فروش است.');
     onSave({barnameId:serverId(event.id),salonId:serverId(salonId),startsAt:date(start),salesStartAt:date(saleStart),salesEndAt:date(saleEnd),description,
       partPrices:salon.parts.map(p=>({part_id:serverId(p.id),amount_irr:moneyIRR(prices[p.id] ?? p.price)}))});
   }catch(e){setError((e as Error).message);}}}>
     <h2 className="font-bold">سانس تازه برای {event.title}</h2>{error&&<p role="alert" className="text-rose-700">{error}</p>}
     <fieldset disabled={busy} className="grid sm:grid-cols-2 gap-4"><label>سالن مستقل سانس<select className={input} required value={salonId} onChange={e=>{setSalonId(e.target.value);setPrices({});}}><option value="">انتخاب سالن</option>{salons.map(s=><option key={s.id} value={s.id}>{s.name}</option>)}</select></label>
-    <label>زمان اجرا؛ ورودی میلادی با ساعت تهران<input dir="ltr" className={input} type="datetime-local" step={60} required value={start} onChange={e=>setStart(e.target.value)}/>{start&&<span className="block">{new Intl.DateTimeFormat('fa-IR',{timeZone:'Asia/Tehran',dateStyle:'full',timeStyle:'short'}).format(new Date(date(start)!))}</span>}</label>
-    <label>شروع فروش؛ ورودی میلادی با ساعت تهران<input dir="ltr" className={input} type="datetime-local" step={60} value={saleStart} onChange={e=>setSaleStart(e.target.value)}/></label>
-    <label>پایان فروش؛ ورودی میلادی با ساعت تهران<input dir="ltr" className={input} type="datetime-local" step={60} value={saleEnd} onChange={e=>setSaleEnd(e.target.value)}/></label>
+    <PersianDateTimeField label="زمان اجرا" required onChange={setStart}/>
+    <PersianDateTimeField label="شروع فروش" onChange={setSaleStart}/>
+    <PersianDateTimeField label="پایان فروش" onChange={setSaleEnd}/>
     <label>توضیح سانس<textarea className={input} maxLength={2000} value={description} onChange={e=>setDescription(e.target.value)}/></label>
     {salon?.parts.map(p=><label key={p.id}>قیمت {p.name}، تومان<input className={input} type="number" min={0} step={1} required value={prices[p.id] ?? p.price} onChange={e=>setPrices({...prices,[p.id]:Number(e.target.value)})}/></label>)}
     <button className="bg-slate-900 text-white p-3 rounded-xl">ذخیره سانس در سرور</button><button type="button" onClick={onClose}>بستن فرم</button></fieldset>
