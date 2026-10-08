@@ -89,11 +89,11 @@ def block_chairs_for_organizers(
         raise HTTPException(422, 'عملیات معتبر نیست.')
     status_to_set = "blocked" if action == "block" else "available"
     updated_count = 0
-    for cid in chair_ids:
+    for cid in sorted(set(chair_ids)):
         status_row = db.query(ChairInBarname).filter(
             ChairInBarname.run_turn_id == run_turn_id,
             ChairInBarname.chair_id == cid
-        ).first()
+        ).with_for_update().first()
         if status_row:
             expected = 'available' if action == 'block' else 'blocked'
             if status_row.status != expected:

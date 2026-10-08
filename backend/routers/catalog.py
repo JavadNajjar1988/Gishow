@@ -8,7 +8,7 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 from sqlalchemy import update
 from sqlalchemy.orm import Session
 from ..database import get_db
-from ..models import Salon, PartOfSalon, ChairInPart, Barname, RunTurn, ChairInBarname, FactorList, EventRole, EventImage
+from ..models import Salon, PartOfSalon, ChairInPart, Barname, RunTurn, ChairInBarname, FactorList, EventRole, EventImage, SaleReservation
 from ..posters import normalize_poster, MAX_UPLOAD_BYTES
 from ..security import require, global_allowed, permitted_event_ids, authorize_event
 
@@ -324,7 +324,7 @@ def save_turn(db,event,turn,body):
     if set(part_prices) != {p.id for p in salon.parts}:
         raise HTTPException(422,'قیمت تمام جایگاه‌های همین سالن لازم است.')
     inventory = db.query(ChairInBarname).filter_by(run_turn_id=turn.id).all() if turn.id else []
-    has_factors = turn.id and db.query(FactorList.id).filter_by(run_turn_id=turn.id).first()
+    has_factors = turn.id and (db.query(FactorList.id).filter_by(run_turn_id=turn.id).first() or db.query(SaleReservation.id).filter_by(run_turn_id=turn.id).first())
     changing_inventory = (turn.salon_id is not None and turn.salon_id != salon.id) or any(
         s.price != part_prices.get(s.chair.part_id) for s in inventory)
     if changing_inventory and (has_factors or any(not available(s) for s in inventory)):
@@ -365,7 +365,7 @@ def delete_turn(id: int, turn_id: int, db: Session = Depends(get_db), user=Depen
     turn = find(db,RunTurn,turn_id)
     if turn.barname_id != id:
         raise HTTPException(404,'سانس متعلق به برنامه نیست.')
-    if turn.factors or any(not available(s) for s in turn.chair_statuses):
+    if turn.factors or db.query(SaleReservation.id).filter_by(run_turn_id=turn.id).first() or any(not available(s) for s in turn.chair_statuses):
         raise HTTPException(409,'سانس دارای بلیت یا صندلی غیرآزاد است و حذف نمی‌شود.')
     db.delete(turn); db.commit()
     return Response(status_code=204)

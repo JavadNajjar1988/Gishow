@@ -22,7 +22,7 @@ def get_seat_plan_for_sans(run_turn_id: int, db: Session = Depends(get_db)):
         ChairInBarname.run_turn_id == run_turn_id,
         ChairInBarname.status == "reserved",
         ChairInBarname.locked_until < now
-    ).update({"status": "available", "locked_until": None})
+    ).update({"status": "available", "locked_until": None, "reservation_id": None})
     db.commit()
 
     chair_statuses = db.query(ChairInBarname).filter(ChairInBarname.run_turn_id == run_turn_id).all()
@@ -41,38 +41,6 @@ def get_seat_plan_for_sans(run_turn_id: int, db: Session = Depends(get_db)):
         })
     return results
 
-@router.post("/lock", summary="قفل موقت صندلی‌ها به مدت ۱۰ دقیقه جهت پرداخت")
-def lock_seats_temporarily(req: SeatLockRequest, db: Session = Depends(get_db)):
-    sans = db.get(RunTurn, req.run_turn_id)
-    if sans and sans.config_json:
-        raise HTTPException(501, detail="رزرو و پرداخت برنامه‌های فهرست جدید در گام فروش فعال می‌شوند.")
-    now = datetime.utcnow()
-    expire_time = now + timedelta(seconds=req.lock_duration_seconds)
-
-    # Check if any seat is already sold or locked
-    existing_locks = db.query(ChairInBarname).filter(
-        ChairInBarname.run_turn_id == req.run_turn_id,
-        ChairInBarname.id.in_(req.seat_ids),
-        ChairInBarname.status != "available"
-    ).all()
-
-    for item in existing_locks:
-        if item.status not in ("available", "reserved", "sold"):
-            raise HTTPException(409, detail="صندلی برای فروش عمومی آزاد نیست.")
-        if item.status == "sold":
-            raise HTTPException(status_code=400, detail=f"صندلی {item.id} قبلاً فروخته شده است.")
-        if item.status == "reserved" and item.locked_until and item.locked_until > now:
-            raise HTTPException(status_code=400, detail=f"صندلی {item.id} در حال حاضر توسط خریدار دیگری در حال پرداخت است.")
-
-    # Lock the seats
-    db.query(ChairInBarname).filter(
-        ChairInBarname.run_turn_id == req.run_turn_id,
-        ChairInBarname.id.in_(req.seat_ids)
-    ).update({"status": "reserved", "locked_until": expire_time}, synchronize_session=False)
-
-    db.commit()
-    return {
-        "success": True,
-        "message": "صندلی‌ها به مدت ۱۰ دقیقه قفل گردیدند.",
-        "expires_at": expire_time.isoformat()
-    }
+@router.post('/lock')
+def legacy_lock():
+    raise HTTPException(501,'رزرو بدون مالک غیرفعال است؛ از مسیر رزرو حساب کاربری استفاده کنید.')

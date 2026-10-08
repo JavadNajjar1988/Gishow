@@ -19,6 +19,9 @@ services:
       DATABASE_URL: postgresql+psycopg://gishow_user:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}@db:5432/gishow_db
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173}
       COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      ZARINPAL_MODE: ${ZARINPAL_MODE:-sandbox}
+      ZARINPAL_MERCHANT_ID: ${ZARINPAL_MERCHANT_ID:-}
+      ZARINPAL_CALLBACK_URL: ${ZARINPAL_CALLBACK_URL:-}
     depends_on:
       db:
         condition: service_healthy

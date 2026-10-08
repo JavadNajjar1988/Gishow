@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Float, Text, LargeBinary
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Float, Text, LargeBinary, BigInteger
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from .database import Base
@@ -109,6 +109,7 @@ class ChairInBarname(Base):
     status = Column(String(20), default="available") # 'available', 'reserved', 'sold'
     price = Column(Float, nullable=False)
     locked_until = Column(DateTime, nullable=True)
+    reservation_id = Column(String(36), ForeignKey('sale_reservations.id'), nullable=True, index=True)
 
     run_turn = relationship("RunTurn", back_populates="chair_statuses")
     chair = relationship("ChairInPart")
@@ -242,3 +243,34 @@ class SecurityAudit(Base):
     target_id = Column(Integer, nullable=True)
     action = Column(String(80), nullable=False)
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+
+
+class SaleReservation(Base):
+    __tablename__ = 'sale_reservations'
+    id = Column(String(36), primary_key=True)
+    user_id = Column(Integer, ForeignKey('tbl_user_lists.id'), nullable=False, index=True)
+    run_turn_id = Column(Integer, ForeignKey('tbl_run_turns.id'), nullable=False)
+    seat_ids_json = Column(Text, nullable=False)
+    expires_at = Column(DateTime, nullable=False)
+    status = Column(String(30), nullable=False, default='active')
+
+class SaleOrder(Base):
+    __tablename__ = 'sale_orders'
+    id = Column(String(36), primary_key=True)
+    reservation_id = Column(String(36), ForeignKey('sale_reservations.id'), nullable=False, unique=True)
+    user_id = Column(Integer, ForeignKey('tbl_user_lists.id'), nullable=False, index=True)
+    amount_irr = Column(BigInteger, nullable=False)
+    items_json = Column(Text, nullable=False)
+    status = Column(String(30), nullable=False, default='pending')
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    authority = Column(String(100), nullable=True, unique=True)
+    ref_id = Column(String(100), nullable=True, unique=True)
+    gateway_mode = Column(String(10), nullable=True)
+    paid_at = Column(DateTime, nullable=True)
+
+class SaleTicket(Base):
+    __tablename__ = 'sale_tickets'
+    id = Column(String(64), primary_key=True)
+    order_id = Column(String(36), ForeignKey('sale_orders.id'), nullable=False, index=True)
+    seat_id = Column(Integer, ForeignKey('tbl_chair_in_barname.id'), nullable=False, unique=True)
+    checked_in_at = Column(DateTime, nullable=True)

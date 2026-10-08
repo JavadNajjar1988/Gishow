@@ -257,8 +257,8 @@ def test_seat_management_cannot_cross_event_or_free_sold_seat(site):
         chair_id, status_id = chair.id, status.id
     assert client.post('/api/admin/chair-block', json={'run_turn_id':other_turn,'chair_ids':[chair_id]}).status_code == 403
     assert client.post('/api/admin/chair-block', json={'run_turn_id':own_turn,'chair_ids':[chair_id]}).status_code == 200
-    assert client.post('/api/seats/lock', json={'run_turn_id':own_turn,'seat_ids':[status_id]}).status_code == 409
-    assert client.post('/api/checkout/process', json={'run_turn_id':own_turn,'seat_ids':[status_id], 'customer_name':'کاربر', 'customer_mobile':'09123456789','customer_national_code':'0000000000'}).status_code == 409
+    assert client.post('/api/seats/lock', json={'run_turn_id':own_turn,'seat_ids':[status_id]}).status_code == 501
+    assert client.post('/api/checkout/process', json={'run_turn_id':own_turn,'seat_ids':[status_id], 'customer_name':'کاربر', 'customer_mobile':'09123456789','customer_national_code':'0000000000'}).status_code == 501
     with factory() as db:
         db.get(ChairInBarname, status_id).status='sold'; db.commit()
     assert client.post('/api/admin/chair-block', json={'run_turn_id':own_turn,'chair_ids':[chair_id],'action':'unblock'}).status_code == 409

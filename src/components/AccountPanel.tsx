@@ -1,8 +1,10 @@
+import {MyOrders} from './MyOrders';
 import React, {useEffect, useRef, useState} from 'react';
 import {Account, api} from '../auth/api';
 import {useAuth} from '../auth/AuthContext';
 export function AccountPanel({onClose}: {onClose: () => void}) {
   const {user, setUser, refresh, logout} = useAuth();
+  const [showOrders,setShowOrders]=useState(false);
   const [mode, setMode] = useState<'login' | 'register' | 'recover'>('login');
   const [mobile, setMobile] = useState('');
   const [name, setName] = useState(user?.full_name || '');
@@ -69,6 +71,7 @@ export function AccountPanel({onClose}: {onClose: () => void}) {
         <div className="flex flex-wrap gap-4 text-sm">{mode !== 'login' && <button onClick={() => {setMode('login'); setError('');}}>ورود</button>}{mode !== 'register' && <button onClick={() => {setMode('register'); setError('');}}>ثبت‌نام</button>}{mode !== 'recover' && <button onClick={() => {setMode('recover'); setError('');}}>گذرواژه را فراموش کرده‌ام</button>}</div>
         {mode === 'recover' && <p className="text-sm text-slate-600">یکی از کدهایی را وارد کنید که هنگام ثبت‌نام یا نوسازی دریافت کرده‌اید. کد بازیابی از طریق پیامک ارسال نمی‌شود.</p>}
       </> : <>
+        <button className={button} onClick={()=>setShowOrders(!showOrders)}>سفارش‌های من</button>{showOrders&&<MyOrders/>}
         <p>شماره همراه شما: <bdi>{user.mobile}</bdi></p>
         <form className="space-y-3" onSubmit={e => {e.preventDefault(); void action(async () => { setUser(await api<Account>('/auth/me', 'PATCH', {full_name:name, national_code:nationalCode || null, current_password:currentPassword})); setCurrentPassword(''); setMessage('اطلاعات حساب ذخیره شد.'); });}}>
           <label className="block">نام و نام خانوادگی<input className={input} value={name} onChange={e => setName(e.target.value)} required minLength={2} maxLength={150} /></label>
