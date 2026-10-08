@@ -47,7 +47,7 @@ export function CatalogWorkspace({theme,mode,onBack}: {theme:'light'|'dark';mode
   const panel = 'site-surface p-5';
   const button = 'site-secondary';
   return <section dir="rtl" className="max-w-6xl mx-auto p-4 sm:p-8 space-y-5">
-    <div className="flex flex-wrap gap-3 justify-between"><h1 className="text-2xl font-bold">{mode==='admin'?'مدیریت سالن و برنامه':'برنامه‌های مجاز شما'}</h1><button className={button} onClick={onBack}>بازگشت به سایت</button></div>
+    <div className="workspace-heading flex flex-wrap gap-3 justify-between"><h1 className="text-2xl font-bold">{mode==='admin'?'مدیریت سالن و برنامه':'برنامه‌های مجاز شما'}</h1><button className={button} onClick={onBack}>بازگشت به سایت</button></div>
     <nav className="flex flex-wrap gap-3"><button className={button} onClick={()=>setTab('catalog')}>سالن، برنامه و سانس</button><button className={button} onClick={()=>setTab('accounts')}>{mode==='admin'?'حساب‌ها و دسترسی':'گزارش فروش مجاز'}</button>{hasPermission(user,'events.manage')&&<button className={button} onClick={()=>setTab('discounts')}>کدهای تخفیف</button>}</nav>
     {tab==='discounts'?<DiscountWorkspace events={events.filter(canEdit)} globalManage={globalManage}/>:tab==='accounts' ? <SecureWorkspace mode={mode} onBack={onBack}/> : <>
       {error && <p role="alert" className="site-error">{error}</p>}
