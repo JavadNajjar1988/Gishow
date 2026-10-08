@@ -355,12 +355,12 @@ export default function App() {
                   <Layers className="w-10 h-10 mx-auto text-slate-500 opacity-60" />
                   <div className="text-sm font-bold text-slate-300">
                     {events.length === 0 && !isDesignPreviewActive
-                      ? 'هیچ برنامه‌ای در پایگاه‌داده سرور یافت نشد.'
+                      ? 'در حال حاضر برنامه منتشرشده‌ای برای نمایش وجود ندارد.'
                       : 'رویدادی با معیارهای جستجوی شما یافت نشد.'}
                   </div>
                   <p className="text-xs text-slate-500 max-w-md mx-auto">
                     {events.length === 0 && !isDesignPreviewActive
-                      ? 'پایگاه‌داده خالی است و رویداد ساختگی اضافه نشده است. برای تعریف برنامه و سالن به پنل مدیریت بروید یا پیش‌نمایش گرافیکی را فعال کنید.'
+                      ? 'برای بررسی برنامه‌های تازه، فهرست را دوباره دریافت کنید.'
                       : 'می‌توانید فیلترهای جستجو یا شهر را تغییر دهید.'}
                   </p>
                   <div className="flex flex-wrap items-center justify-center gap-3 pt-2">

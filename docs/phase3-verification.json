@@ -11,7 +11,10 @@
   "sqlite_account_runtime_tests": 15,
   "sqlite_catalog_tests": 7,
   "test_pg_suite_passed": 22,
-  "test_pg_suite_database_breakdown": {"postgresql_account_catalog": 20, "sqlite_runtime": 2},
+  "test_pg_suite_database_breakdown": {
+    "postgresql_account_catalog": 20,
+    "sqlite_runtime": 2
+  },
   "browser": {
     "environment": "isolated local database",
     "login": "passed",
@@ -21,9 +24,20 @@
     "mobile_horizontal_overflow": false,
     "initial_empty_render": "fixed"
   },
-  "production_database_migrated": false,
-  "production_api_restarted": false,
+  "production_database_migrated": true,
+  "production_api_restarted": true,
   "legacy_data_imported": false,
   "payment_acceptance": "not performed",
-  "full_phase3_acceptance": "partial; remaining items documented in handoff result"
+  "full_phase3_acceptance": "partial; remaining items documented in handoff result",
+  "local_deployment": {
+    "merge_commit": "77b944227fcf7fb66fc637bea260b7d63c2636e3",
+    "docker_project": "gishow-5450",
+    "health": "ready",
+    "schema_version": "0003_catalog",
+    "public_events_count": 0,
+    "anonymous_admin_catalog_http": 401,
+    "frontend_api_proxy_health": "ready",
+    "record_counts_preserved": true,
+    "database_backup": "private local backup, not committed"
+  }
 }
