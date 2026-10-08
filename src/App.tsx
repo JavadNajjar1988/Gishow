@@ -132,7 +132,7 @@ export default function App() {
 
   const handleTrackSubmit = (query: string) => {
     const clean = query.trim().toUpperCase();
-    const found = factors.find(
+    const found = activeFactors.find(
       (f) =>
         f.factorNumber.toUpperCase() === clean ||
         f.trackingCode.toUpperCase() === clean ||
@@ -465,6 +465,7 @@ export default function App() {
       {/* 4. Digital Ticket with QR Code Modal */}
       {successFactor && (
         <TicketSuccessModal
+          isPreview={isDesignPreviewActive}
           theme={theme}
           factor={successFactor}
           onClose={() => setSuccessFactor(null)}

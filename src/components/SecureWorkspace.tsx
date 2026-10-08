@@ -62,7 +62,7 @@ export function SecureWorkspace({mode, onBack}: {mode:'admin'|'producer'|'checke
   const target = users.find(u=>u.id===Number(targetId));
   const permissionName = (code:string) => permissions.find(p=>p.code===code)?.name || ({'reports.read':'مشاهده فروش برنامه','events.read':'مشاهده برنامه‌ها','tickets.check':'کنترل ورود','seats.manage':'مدیریت صندلی','accounts.manage':'مدیریت حساب‌ها','roles.manage':'مدیریت نقش‌ها','salons.manage':'مدیریت سالن‌ها','terminals.read':'مشاهده پایانه‌ها'}[code] || 'مجوز اختصاصی');
   return <section dir="rtl" className="max-w-5xl mx-auto p-4 sm:p-8 space-y-6">
-    <div className="flex justify-between items-center"><h1 className="text-2xl font-bold">{mode==='admin'?'مدیریت حساب‌ها و دسترسی':mode==='checker'?'کنترل ورود':mode==='producer'?'برنامه‌های مجاز شما':'گیشه'}</h1><button className="site-secondary" onClick={onBack}>بازگشت به سایت</button></div>
+    <div className="workspace-heading flex flex-wrap gap-3 justify-between items-center"><h1 className="text-2xl font-bold">{mode==='admin'?'مدیریت حساب‌ها و دسترسی':mode==='checker'?'کنترل ورود':mode==='producer'?'برنامه‌های مجاز شما':'گیشه'}</h1><button className="site-secondary" onClick={onBack}>بازگشت به سایت</button></div>
     {error && <p role="alert" className="site-error">{error}</p>}
     {message && <p role="status" className="site-success">{message}</p>}
     {mode === 'box-office' && <p>صدور واقعی بلیت گیشه در گام فروش پیاده می‌شود.</p>}
