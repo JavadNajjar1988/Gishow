@@ -9,6 +9,8 @@ export interface RunTurn {
   id: string;
   eventId: string;
   salonId?: string; // Every sans can have an independent salon
+  salonName?: string;
+  salonAddress?: string;
   date: string;
   time: string;
   weekday: string;
@@ -48,6 +50,8 @@ export interface Salon {
   stagePosition?: 'top' | 'center' | 'thrust' | 'bottom';
   aislesCount?: number;
   isActive?: boolean;
+  version?: number;
+  moneyUnit?: string;
 }
 
 export type SeatStatus = 'available' | 'selected' | 'reserved' | 'sold';
@@ -63,6 +67,7 @@ export interface Seat {
 }
 
 export interface EventItem {
+  moneyUnit?: string;
   id: string;
   title: string;
   subTitle?: string;
@@ -227,32 +232,6 @@ export interface UserAccount {
   totalPurchasedAmount: number;
 }
 
-// Authentication & Session Contracts (Phase 3)
-export interface AuthUser {
-  id: number;
-  mobile: string;
-  fullName: string;
-  role: UserRole;
-  nationalCode?: string;
-  assignedEventIds?: number[]; // For producers with event-specific authorization
-}
-
-export interface AuthSession {
-  user: AuthUser;
-  expiresAt: string;
-}
-
-export interface LoginCredentials {
-  mobile: string;
-  password: string;
-}
-
-export interface RecoveryCredentials {
-  mobile: string;
-  personalRecoveryCode: string;
-  newPassword?: string;
-}
-
 // Phase 3 Backend Request Payloads & Response Schemas
 export interface CreateSalonPayload {
   name: string;
@@ -262,7 +241,10 @@ export interface CreateSalonPayload {
   layoutTemplate?: string;
   stagePosition?: string;
   aislesCount?: number;
+  version?: number;
+  isActive?: boolean;
   parts?: Array<{
+    id?: number;
     name: string;
     tier: string;
     rows: number;
@@ -306,4 +288,6 @@ export interface CreateSansPayload {
   description?: string;
   tierPricesRial?: Record<string, number>;
   isSoldOut?: boolean;
+  startsAt?: string;
+  partPrices?: {part_id: number; amount_irr: number}[];
 }

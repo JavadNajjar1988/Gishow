@@ -1,0 +1,1313 @@
+{
+  "assembly_entry": "httpdocs/bin/EasyTicket_Site.dll",
+  "sha256": "cef9697600c59fc33aed44c89697564215cd44c4c986a8ff33244c97eb194ad1",
+  "controllers": [
+    {
+      "namespace": "EasyTicket_Site.Controllers",
+      "type": "AccountController",
+      "methods": [
+        "CloseAccount",
+        "Index",
+        "LoginUser",
+        "RecoveryPassword",
+        "RigesterUser",
+        "Role"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Controllers",
+      "type": "HomeController",
+      "methods": [
+        "AcceptFinalBuy",
+        "Base64Encode",
+        "CancelFactor",
+        "ChangeLanguage",
+        "CheckSingleChair",
+        "CheckSingleChairInFinalBay",
+        "CheckTrackingCode",
+        "DeleteMarkdownFromFactor",
+        "Dispose",
+        "GetChairList",
+        "GoToBank",
+        "GoToTemporaryReservation",
+        "Index",
+        "MarkdownCode",
+        "PaymentReceipt",
+        "SaveFactorToBank",
+        "SaveTemporaryReservationFactorToBank",
+        "SelectChairForBuy",
+        "SelectPartForBuy",
+        "SelectRunTurns",
+        "SetStatusChair",
+        "ShowTicket",
+        "sign_hash"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Controllers",
+      "type": "InstallationController",
+      "methods": [
+        "Index",
+        "IsServerConnected"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Controllers",
+      "type": "MoreController",
+      "methods": [
+        "AboutMe",
+        "BuyingGuide",
+        "ContactUs",
+        "Cooperatewithus",
+        "Faq",
+        "PurchaseRules",
+        "SecurePaymentGuide"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Controllers",
+      "type": "PartialViewController",
+      "methods": [
+        "AboutBarname",
+        "EventLocation",
+        "HeaderBarnameByImage",
+        "HeaderBarnameByRunTurn",
+        "ListActiveBarname",
+        "ListCountryCode",
+        "LoginUser",
+        "SelectLanguage",
+        "SlideShow"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Controllers",
+      "type": "PurchaseController",
+      "methods": [
+        "CancelTemporaryReservation",
+        "Dispose",
+        "Index",
+        "SaveEditUserData",
+        "SaveTicketToPDFFromReport",
+        "ShowTicketForPDF",
+        "ShowTicketPurchase"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Areas.TransitionProgram.Controllers",
+      "type": "ActressesController",
+      "methods": [
+        "Create",
+        "Delete",
+        "DeleteConfirmed",
+        "Dispose",
+        "Edit",
+        "Index"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Areas.TransitionProgram.Controllers",
+      "type": "BarnameController",
+      "methods": [
+        "Create",
+        "Delete",
+        "DeleteConfirmed",
+        "Dispose",
+        "Edit",
+        "Index"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Areas.TransitionProgram.Controllers",
+      "type": "ChairForBarnameController",
+      "methods": [
+        "ChairsManage",
+        "CheckUserForVirtualTicket",
+        "CountStatusChair",
+        "DeleteAllChair",
+        "Dispose",
+        "GetChairFromSalon",
+        "GetChairList",
+        "GetFilterChairList",
+        "Index",
+        "ListChairForVirtualTicket",
+        "RenderQrCode",
+        "SaveFactorToBank",
+        "SetNewPriceChair",
+        "SetNewUserVirtualTicket",
+        "SetStatusChair",
+        "SetUserVirtualTicket"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Areas.TransitionProgram.Controllers",
+      "type": "FactorListsController",
+      "methods": [
+        "Delete",
+        "DeleteConfirmed",
+        "Dispose",
+        "Index",
+        "SendSMSBuys",
+        "ShowListChair"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Areas.TransitionProgram.Controllers",
+      "type": "ImageBarnamesController",
+      "methods": [
+        "Create",
+        "Delete",
+        "DeleteConfirmed",
+        "Dispose",
+        "Edit",
+        "Index"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Areas.TransitionProgram.Controllers",
+      "type": "ImagesMadareksController",
+      "methods": [
+        "Create",
+        "Delete",
+        "DeleteConfirmed",
+        "Dispose",
+        "Edit",
+        "Index"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Areas.TransitionProgram.Controllers",
+      "type": "MarkdownListsController",
+      "methods": [
+        "Create",
+        "Delete",
+        "DeleteConfirmed",
+        "Dispose",
+        "Edit",
+        "Index"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Areas.TransitionProgram.Controllers",
+      "type": "RunTurnsController",
+      "methods": [
+        "Create",
+        "Delete",
+        "DeleteConfirmed",
+        "Dispose",
+        "Edit",
+        "Index"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Areas.TransitionProgram.Controllers",
+      "type": "TransitionProgramController",
+      "methods": [
+        "ActiveSite",
+        "Dispose",
+        "Index"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Areas.TransitionProgram.Controllers",
+      "type": "UserListsController",
+      "methods": [
+        "Dispose",
+        "Index",
+        "SendSMSBuys",
+        "SendSMSUserPass",
+        "ShowListBuy"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Areas.TicketChecker.Controllers",
+      "type": "TicketCheckerController",
+      "methods": [
+        "Dispose",
+        "Index"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Areas.AdminSite.Controllers",
+      "type": "ActressesController",
+      "methods": [
+        "Create",
+        "Delete",
+        "DeleteConfirmed",
+        "Dispose",
+        "Edit",
+        "Index"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Areas.AdminSite.Controllers",
+      "type": "AdminSettingSiteController",
+      "methods": [
+        "AboutMe",
+        "BuyingGuide",
+        "CallSupport",
+        "ContactUs",
+        "Cooperatewithus",
+        "CountChoiceChair",
+        "DollarPrice",
+        "EasyTicketReport",
+        "Faq",
+        "Index",
+        "Kavehnegar",
+        "LogoSiteSave",
+        "PurchaseRules",
+        "ReportDwonload",
+        "SecurePaymentGuide",
+        "SiteSignature",
+        "SupportLink",
+        "TemplateName",
+        "TimeResetSet",
+        "WhatsAppFollowUpLink",
+        "WhatsAppSupportSalesLink"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Areas.AdminSite.Controllers",
+      "type": "AdminSiteController",
+      "methods": [
+        "ActiveSite",
+        "Dispose",
+        "Index"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Areas.AdminSite.Controllers",
+      "type": "BarnameController",
+      "methods": [
+        "Create",
+        "Delete",
+        "DeleteConfirmed",
+        "DeleteUserAccess",
+        "Details",
+        "Dispose",
+        "Edit",
+        "GetUserAccess",
+        "Index",
+        "InsertUserAccess"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Areas.AdminSite.Controllers",
+      "type": "ChairForBarnameController",
+      "methods": [
+        "ChairsManage",
+        "CheckUserForVirtualTicket",
+        "CountStatusChair",
+        "DeleteAllChair",
+        "Dispose",
+        "GetChairFromSalon",
+        "GetChairList",
+        "GetFilterChairList",
+        "Index",
+        "ListChairForVirtualTicket",
+        "RenderQrCode",
+        "SaveFactorToBank",
+        "SetNewPriceChair",
+        "SetNewUserVirtualTicket",
+        "SetStatusChair",
+        "SetUserVirtualTicket"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Areas.AdminSite.Controllers",
+      "type": "FactorListsController",
+      "methods": [
+        "AcceptTemporaryReservation",
+        "CheckDeleteKey",
+        "Delete",
+        "DeleteConfirmed",
+        "Dispose",
+        "Index",
+        "SendDeleteKey",
+        "SendSMSBuys",
+        "ShowFactorList",
+        "ShowListChair",
+        "ShowReportListForush"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Areas.AdminSite.Controllers",
+      "type": "ImageBarnamesController",
+      "methods": [
+        "Create",
+        "Delete",
+        "DeleteConfirmed",
+        "Dispose",
+        "Edit",
+        "Index"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Areas.AdminSite.Controllers",
+      "type": "ImagesMadareksController",
+      "methods": [
+        "Create",
+        "Delete",
+        "DeleteConfirmed",
+        "Dispose",
+        "Edit",
+        "Index"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Areas.AdminSite.Controllers",
+      "type": "MaliManagmentController",
+      "methods": [
+        "Index"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Areas.AdminSite.Controllers",
+      "type": "MarkdownListsController",
+      "methods": [
+        "Create",
+        "Delete",
+        "DeleteConfirmed",
+        "Dispose",
+        "Edit",
+        "Index"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Areas.AdminSite.Controllers",
+      "type": "AdminPartialViewController",
+      "methods": [
+        "AdminLoginUser"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Areas.AdminSite.Controllers",
+      "type": "RunTurnsController",
+      "methods": [
+        "Create",
+        "Delete",
+        "DeleteConfirmed",
+        "Dispose",
+        "Edit",
+        "Index"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Areas.AdminSite.Controllers",
+      "type": "SlideShowController",
+      "methods": [
+        "Create",
+        "Delete",
+        "DeleteConfirmed",
+        "Dispose",
+        "Edit",
+        "Index"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Areas.AdminSite.Controllers",
+      "type": "UserListsController",
+      "methods": [
+        "DeleteBarnameAccess",
+        "Dispose",
+        "GetAccessBarname",
+        "GetAccessLevel",
+        "GetListUser",
+        "GetRolesList",
+        "Index",
+        "InsertBarnameAccess",
+        "SaveEditUserData",
+        "SendSMSBuys",
+        "SendSMSUserPass",
+        "SetAccessLevel",
+        "SetRolesList",
+        "ShowListBuy"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Areas.AdminSite.Controllers",
+      "type": "BankTerminalsController",
+      "methods": [
+        "Create",
+        "Delete",
+        "DeleteConfirmed",
+        "Dispose",
+        "Edit",
+        "Index"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Areas.AdminSite.Controllers",
+      "type": "ChairInPartsController",
+      "methods": [
+        "AddNewRowChair",
+        "ChangeChairID",
+        "CountStatusChair",
+        "DeleteAllChair",
+        "DeleteRowChair",
+        "Dispose",
+        "GetChairList",
+        "Index",
+        "RebuildChairsNumber",
+        "SetStatusChair"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Areas.AdminSite.Controllers",
+      "type": "PartOfSalonsController",
+      "methods": [
+        "Create",
+        "Delete",
+        "DeleteConfirmed",
+        "Dispose",
+        "Edit",
+        "Index"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Areas.AdminSite.Controllers",
+      "type": "SalonsController",
+      "methods": [
+        "Create",
+        "Delete",
+        "DeleteConfirmed",
+        "Dispose",
+        "Edit",
+        "Index",
+        "SalonPlan",
+        "SaveSalonPlan"
+      ]
+    }
+  ],
+  "models": [
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "DashbordData_ViewModel",
+      "properties": [
+        "BarnameData",
+        "CountAllBarname",
+        "CountAllChairsForSale",
+        "CountBarnameActive",
+        "CountBarnameNoActive",
+        "CountChairsReady",
+        "CountChairsSale",
+        "CountCustomer",
+        "CountCustomerActive",
+        "CountCustomerNoActive",
+        "SumSaleDay",
+        "SumSaleDayVaghei",
+        "SumSaleDayVirtual",
+        "SumSaleWeek",
+        "SumSaleWeekVaghei",
+        "SumSaleWeekVirtual"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "DashbordBarnameData_ViewModel",
+      "properties": [
+        "BarnameID",
+        "BarnameName",
+        "ChairPrice",
+        "ChartValue",
+        "CountAllChair",
+        "CountLockChair",
+        "CountReadyChair",
+        "CountSaleChair",
+        "CountVirtualSaleChair",
+        "Order_ForShow",
+        "SumSaleChair"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "ChairPriceGroup",
+      "properties": [
+        "CountPrice",
+        "PriceChair",
+        "SumPrice"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "AddNewRow_ViewModel",
+      "properties": [
+        "CountChair",
+        "PartOfSalon_ID",
+        "RowNumber",
+        "RowTitel",
+        "Salon_ID",
+        "StartChairNumber"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "FactorList_ViewModel",
+      "properties": [
+        "Bank_Name",
+        "Barname_Name",
+        "Chairs_Count",
+        "Data_Insert",
+        "ID",
+        "Payment_Status",
+        "Purchase_CountryCode",
+        "Purchase_ID",
+        "Purchase_Mobile",
+        "Purchase_Name",
+        "RunTurn",
+        "Sum_Price",
+        "Tracking_Factor"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "RunTurn_ViewModel",
+      "properties": [
+        "BarnameName",
+        "Barname_ISActive",
+        "ID",
+        "RunTurns",
+        "SalonName"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "Actress",
+      "properties": [
+        "Barname",
+        "Barname_ID",
+        "DateInsert",
+        "ID",
+        "Image",
+        "Name"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "BankTerminal",
+      "properties": [
+        "Bank_Name_EN",
+        "Bank_Name_FA",
+        "DateInsert",
+        "FactorsList",
+        "ID",
+        "IsActive",
+        "IsShow",
+        "Merchant_ID",
+        "Terminal_ID",
+        "Transaction_Key"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "Barname",
+      "properties": [
+        "AboutBarname",
+        "Actresses",
+        "CauseDeActive",
+        "DateInsert",
+        "DateStartBuyTickets",
+        "DateStartInform",
+        "DirectorName",
+        "EventLocation",
+        "ID",
+        "ImagesBarname",
+        "ImagesMadarek",
+        "IsActive",
+        "Language",
+        "LanguageID",
+        "MarkdownsList",
+        "Name",
+        "Order_ForShow",
+        "PriceChairInSales",
+        "PriceChairInShow",
+        "RunPeriod",
+        "RunTime",
+        "RunTurns",
+        "TicketDescription",
+        "UserAccessBarname"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "ChairInBarname",
+      "properties": [
+        "Barcode_Data",
+        "Barcode_RandomCode",
+        "Barname",
+        "Barname_ID",
+        "ChairNumber",
+        "ChairNumberForShow",
+        "ChairsStatus",
+        "Checker_Accept",
+        "Checker_Accept_By",
+        "Checker_ID",
+        "Date_Check",
+        "Factor_ID",
+        "ID",
+        "ImageBarCodeName",
+        "PartOfSalon_ID",
+        "PartOfSalon_Name",
+        "Payment_Finishid",
+        "PriceChair",
+        "RowNumber",
+        "RowNumberForShow",
+        "RowTitel",
+        "RunTurns_ID",
+        "Salon_ID",
+        "Salon_Name",
+        "TimeReserve",
+        "TrackingFactor",
+        "UserToken"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "ChairInPart",
+      "properties": [
+        "ChairNumber",
+        "ChairNumberForShow",
+        "ChairsStatus",
+        "ID",
+        "PartOfSalon",
+        "PartOfSalon_ID",
+        "RowNumber",
+        "RowNumberForShow",
+        "RowTitel",
+        "Salon_ID",
+        "StartChairNumber"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "EndeavorBuyFail",
+      "properties": [
+        "Bank_Name",
+        "Barname_ID",
+        "Chair_List",
+        "ID",
+        "Part_ID",
+        "RunTurns_ID",
+        "Salon_ID",
+        "User_ID",
+        "User_Token"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "ImageBarname",
+      "properties": [
+        "Barname",
+        "Barname_ID",
+        "DateInsert",
+        "ID",
+        "ImageName"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "ImagesMadarek",
+      "properties": [
+        "Barname",
+        "Barname_ID",
+        "DateInsert",
+        "ID",
+        "ImageCaption",
+        "ImageName"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "Language",
+      "properties": [
+        "Barnames",
+        "ID",
+        "LanguageName"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "MarkdownList",
+      "properties": [
+        "Barname",
+        "Barname_ID",
+        "Condition_MinimumChair",
+        "DateInsert",
+        "FactorMarkdown",
+        "ID",
+        "IsActive",
+        "Markdown_Class",
+        "Markdown_Code",
+        "Markdown_Count",
+        "Markdown_Price_Unit"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "PartOfSalon",
+      "properties": [
+        "ChairsInPart",
+        "CountChairs",
+        "DateInsert",
+        "DirectionChair",
+        "Floor",
+        "ID",
+        "Name",
+        "PartMapPointList",
+        "RowPart",
+        "Salon",
+        "Salon_ID",
+        "Side"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "RoleAccessLevel",
+      "properties": [
+        "AccessLevel_Name",
+        "AccessLevel_Titel",
+        "DefuoltAccess",
+        "Group_Item",
+        "ID",
+        "Order_Item",
+        "RoleList",
+        "Role_ID",
+        "UserRoleAccessLevel"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "RunTurn",
+      "properties": [
+        "Barname",
+        "Barname_ID",
+        "DateInsert",
+        "DateRun",
+        "EventLocation",
+        "ID",
+        "IsShow",
+        "MessageTemporaryReservation",
+        "Salon",
+        "Salon_ID",
+        "TemporaryReservation",
+        "TimeRun"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "Salon",
+      "properties": [
+        "Address",
+        "DateInsert",
+        "ID",
+        "IsActive",
+        "IsPlanShow",
+        "Name",
+        "PartOfSalon",
+        "PlanImageName"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "SettingSite",
+      "properties": [
+        "AboutMe",
+        "AdminCellPhone",
+        "BuyingGuide",
+        "CallSupport",
+        "CallSupportType",
+        "ContactUs",
+        "Cooperatewithus",
+        "CountChoiceChair",
+        "DollarPrice",
+        "Faq",
+        "ID",
+        "KavehnegarMerchent",
+        "PurchaseRules",
+        "SecurePaymentGuide",
+        "SiteSignature",
+        "SiteSignatureLink",
+        "SupportLink",
+        "TemplateName",
+        "TimeResetClient",
+        "TimeResetServer",
+        "WhatsAppFollowUpDescription",
+        "WhatsAppFollowUpLink",
+        "WhatsAppSupportSalesDescription",
+        "WhatsAppSupportSalesLink"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "SlideShow",
+      "properties": [
+        "DateInsert",
+        "ID",
+        "ImageName",
+        "IsShow",
+        "Order_ForShow"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "UserAccessBarname",
+      "properties": [
+        "Barname",
+        "Barname_ID",
+        "ID",
+        "RoleList",
+        "Role_ID",
+        "UserList",
+        "User_ID"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "UserRoleAccessLevel",
+      "properties": [
+        "ID",
+        "RoleAccessLevel",
+        "RoleAccessLevel_ID",
+        "Role_ID",
+        "UserList",
+        "User_ID"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "AcceptFinal_ViewModel",
+      "properties": [
+        "BankTerminal",
+        "Barname_ID",
+        "ChairSelect",
+        "CountryCode",
+        "FactorMarkdown",
+        "MessageTemporaryReservation",
+        "Part_ID",
+        "Part_Name",
+        "RunTurn_ID",
+        "Salon_ID",
+        "SumFactorMarkdown",
+        "SumPriceSelectChair",
+        "TemporaryReservation",
+        "UserCellPhone",
+        "UserName",
+        "UserToken",
+        "WhatsAppSupportSalesDescription",
+        "WhatsAppSupportSalesLink"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "Login_ViewModel",
+      "properties": [
+        "Mobile",
+        "Password"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "Rigester_ViewModel",
+      "properties": [
+        "CountryCode",
+        "FullName",
+        "Mobile",
+        "Password",
+        "RePassword"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "RecoveryPassword_ViewModel",
+      "properties": [
+        "Mobile"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "BarnameData_ViewModel",
+      "properties": [
+        "Barname_ID",
+        "CountSelectChairList",
+        "ListGroupPrice",
+        "Part_ID",
+        "Part_Name",
+        "PriceInShow",
+        "RunTurn_ID",
+        "Salon_ID",
+        "SelectChairListInServer",
+        "SumPriceSelectChairList",
+        "TimeReset",
+        "strPriceInShow"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "Buy_ViewModel",
+      "properties": [
+        "Barname",
+        "Barname_ID",
+        "CountChairForBuy",
+        "EventLocation",
+        "PartOfSalon",
+        "RunTurn_ID",
+        "SalonIsPlanShow",
+        "SalonPlanImageName"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "DatabaseContext",
+      "properties": [
+        "Actresses",
+        "BanksTerminal",
+        "Barnames",
+        "ChairsInBarname",
+        "ChairsInPart",
+        "FactorMarkdowns",
+        "FactorsList",
+        "ImagesBarname",
+        "ImagesMadarek",
+        "Languages",
+        "MarkdownsList",
+        "PartsOfSalon",
+        "RoleAccessLevels",
+        "RolesList",
+        "RunTurns",
+        "Salons",
+        "SettingSite",
+        "SlideShow",
+        "UserAccessBarnames",
+        "UserRoleAccessLevels",
+        "UserRoles",
+        "UsersList"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "FactorList",
+      "properties": [
+        "AppStatus",
+        "AppStatus_Code",
+        "BankTerminal",
+        "BankTerminal_ID",
+        "Barname_ID",
+        "CellPhoneDeleteKey",
+        "ChairCount",
+        "DataInsertInt",
+        "DateDeleteFactor",
+        "DateInsert",
+        "DeleteFactor",
+        "DeleteKey",
+        "ID",
+        "Order_ID",
+        "Part_ID",
+        "Payment_Finishid",
+        "RealTransaction_DateTime",
+        "Reference_Number",
+        "RequestKey",
+        "RunTurns_ID",
+        "Salon_ID",
+        "SelectChair_List",
+        "SumCost_Amount",
+        "SumFactorMarkdown",
+        "TrackingFactor",
+        "UserList",
+        "UserToken",
+        "User_ID",
+        "User_Sold_ID"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "FactorMarkdown",
+      "properties": [
+        "Factor_ID",
+        "Factor_SumPrice",
+        "ID",
+        "MarkdownList",
+        "Markdown_Class",
+        "Markdown_Code",
+        "Markdown_Count",
+        "Markdown_ID",
+        "Markdown_Price_Unit",
+        "Markdown_SumPrice",
+        "Payment_Finishid",
+        "TimeReserve",
+        "UserToken"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "CheckActiveSite_ViewModel",
+      "properties": [
+        "HashSitePath",
+        "ResultActice",
+        "TextActive",
+        "TimeLastCheck",
+        "WebSiteAddress",
+        "WebSiteName"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "CheckAdminSite_ViewModel",
+      "properties": [
+        "result",
+        "text",
+        "username",
+        "value"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "EventLocation_ViewModel",
+      "properties": [
+        "EventLocation"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "Installation_ViewModel",
+      "properties": [
+        "AdminSite_Mobile",
+        "AdminSite_Name",
+        "ConnectionType",
+        "DB_Name",
+        "DB_Password",
+        "DB_ServerName",
+        "DB_UserName"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "PaymentCallback_Parsian_ViewModel",
+      "properties": [
+        "Amount",
+        "HashCardNumber",
+        "OrderId",
+        "RRN",
+        "TerminalNo",
+        "Token",
+        "TspToken",
+        "status"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "Factor_ViewModel",
+      "properties": [
+        "BankTerminal_ID",
+        "Bank_Name",
+        "Barname_ID",
+        "CountChairs",
+        "CountryCode",
+        "FactorMarkdown",
+        "MerchantID",
+        "Order_ID",
+        "Part_ID",
+        "RequestKey",
+        "ReturnURL",
+        "RunTurn_ID",
+        "Salon_ID",
+        "SelectChair_List",
+        "SumCost",
+        "SumFactorMarkdown",
+        "TerminalID",
+        "TrackingFactor",
+        "TransactionKey",
+        "UserCellPhone",
+        "UserFullName",
+        "UserToken",
+        "User_ID",
+        "factor_ID"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "PaymentReceipt_ViewModel",
+      "properties": [
+        "Barname_ID",
+        "Barname_Name",
+        "CountChair",
+        "Factor_ID",
+        "Part_ID",
+        "Purchase_Mobile",
+        "Purchase_Name",
+        "Receipt_LargText",
+        "Receipt_LargText2",
+        "Receipt_SmalText",
+        "RunTurn_ID",
+        "Salon_ID",
+        "SumCost",
+        "TrackingFactor"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "Purchase_ViewModel",
+      "properties": [
+        "Barname_Name",
+        "ChairCount",
+        "DateRun",
+        "Director_Name",
+        "ID",
+        "Payment_Finishid",
+        "PriceChairInShow",
+        "Purchase_Mobile",
+        "SumCost_Amount",
+        "TimeRun",
+        "TrackingFactor"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "RoleList",
+      "properties": [
+        "ID",
+        "RoleAccessLevel",
+        "RoleName",
+        "RoleTitel"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "RunTurns_ViewModel",
+      "properties": [
+        "Barname_ID",
+        "DateRun",
+        "DateStartBuyTickets",
+        "ISShow",
+        "ReadyChair",
+        "RunTurn_ID",
+        "Salon_Name",
+        "SoldChair",
+        "SoldOut_Status",
+        "TimeRun"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "TopPageData_ViewModel",
+      "properties": [
+        "Barname_ID",
+        "Barname_Name",
+        "CountAllChair",
+        "CountChairForBuy",
+        "CountRunTime",
+        "CountSelectChairList",
+        "DateRun",
+        "DirectorName",
+        "FirstImageBarname",
+        "Part_ID",
+        "RunPeriod",
+        "RunTurn_ID",
+        "Salon_ID",
+        "Salon_Name",
+        "SelectChairListInServer",
+        "StartPrice",
+        "SumPriceSelectChairList",
+        "TimeReset",
+        "TimeRun",
+        "UserToken"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "ShowTicket_ViewModel",
+      "properties": [
+        "BarcodeName",
+        "BarnameName",
+        "ChairNumber",
+        "ChairNumberForShow",
+        "ID",
+        "ImageName",
+        "PartName",
+        "RowNumber",
+        "RowNumberForShow",
+        "RowTitel",
+        "RunTurnsDate",
+        "RunTurnsTime",
+        "SalonName",
+        "TrackingFactor",
+        "UserMobile"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "UserList",
+      "properties": [
+        "CodeNumber",
+        "CountryCode",
+        "DateInsert",
+        "FactorList",
+        "FullName",
+        "ID",
+        "Image",
+        "IsActive",
+        "Mobile",
+        "Password",
+        "UserAccessBarname",
+        "UserRoleAccessLevel",
+        "UserRoles"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "UserList_ViewModel",
+      "properties": [
+        "CodeNumber",
+        "DateInsert",
+        "FullName",
+        "ID",
+        "Image",
+        "IsActive",
+        "Mobile",
+        "Password"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "UserLogin_ViewModel",
+      "properties": [
+        "CountryCode",
+        "DateInsert",
+        "ISAdminSite",
+        "ISPurchase",
+        "ISTicketChecker",
+        "ISTransitionProgram",
+        "Mobile",
+        "User_AllAccessLevel",
+        "User_ID",
+        "User_Image",
+        "User_Name"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "UserRoles",
+      "properties": [
+        "ID",
+        "RoleList",
+        "Role_ID",
+        "TestNewField",
+        "UserList",
+        "User_ID"
+      ]
+    },
+    {
+      "namespace": "EasyTicket_Site.Models",
+      "type": "UserSelectData_ViewModel",
+      "properties": [
+        "Barname_ID",
+        "Part_ID",
+        "RunTurns_ID",
+        "Salon_ID"
+      ]
+    }
+  ],
+  "limitations": [
+    "Method names do not prove routes, authorization or runtime behavior.",
+    "Properties are inferred from getter names; database schema is separate.",
+    "No method bodies, configuration values or customer data exported."
+  ]
+}

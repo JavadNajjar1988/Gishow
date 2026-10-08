@@ -57,7 +57,7 @@ def get_events(
 @router.get("/{event_id}", response_model=BarnameOut, summary="دریافت جزئیات کامل رویداد")
 def get_event_detail(event_id: int, db: Session = Depends(get_db)):
     event = db.query(Barname).filter(Barname.id == event_id).first()
-    if not event:
+    if not event or not event.is_active:
         raise HTTPException(status_code=404, detail="رویداد مورد نظر یافت نشد.")
 
     return {

@@ -14,6 +14,8 @@ def process_checkout(req: CheckoutRequest, db: Session = Depends(get_db)):
     sans = db.query(RunTurn).filter(RunTurn.id == req.run_turn_id).first()
     if not sans:
         raise HTTPException(status_code=404, detail="سانس رویداد نامعتبر است.")
+    if sans.config_json:
+        raise HTTPException(501, detail="پرداخت و صدور بلیت واقعی این برنامه هنوز فعال نشده است.")
 
     # Fetch selected chairs
     chairs = db.query(ChairInBarname).filter(
@@ -23,6 +25,9 @@ def process_checkout(req: CheckoutRequest, db: Session = Depends(get_db)):
 
     if len(chairs) != len(req.seat_ids):
         raise HTTPException(status_code=400, detail="برخی صندلی‌های انتخابی معتبر نیستند.")
+
+    if any(c.status not in ("available", "reserved") for c in chairs):
+        raise HTTPException(409, detail="صندلی برای فروش عمومی آزاد نیست.")
 
     subtotal = sum(c.price for c in chairs)
     discount_amount = 0.0

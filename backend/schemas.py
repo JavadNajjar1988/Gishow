@@ -103,7 +103,7 @@ class FactorOut(BaseModel):
     checked_in_at: Optional[datetime] = None
 
 class TicketCheckRequest(BaseModel):
-    code: str = Field(..., description="شماره فاکتور یا کد رهگیری بلیت")
+    code: str = Field(..., min_length=1, max_length=500, description="شماره فاکتور یا کد رهگیری بلیت")
 
 class TicketCheckResponse(BaseModel):
     status: str # 'valid', 'already_checked', 'invalid'

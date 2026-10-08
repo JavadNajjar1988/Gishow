@@ -13,6 +13,8 @@ def get_seat_plan_for_sans(run_turn_id: int, db: Session = Depends(get_db)):
     sans = db.query(RunTurn).filter(RunTurn.id == run_turn_id).first()
     if not sans:
         raise HTTPException(status_code=404, detail="سانس مورد نظر یافت نشد.")
+    if not sans.barname.is_active:
+        raise HTTPException(404, detail="برنامه منتشر نشده است.")
 
     now = datetime.utcnow()
     # Expire old temporary locks
@@ -41,6 +43,9 @@ def get_seat_plan_for_sans(run_turn_id: int, db: Session = Depends(get_db)):
 
 @router.post("/lock", summary="قفل موقت صندلی‌ها به مدت ۱۰ دقیقه جهت پرداخت")
 def lock_seats_temporarily(req: SeatLockRequest, db: Session = Depends(get_db)):
+    sans = db.get(RunTurn, req.run_turn_id)
+    if sans and sans.config_json:
+        raise HTTPException(501, detail="رزرو و پرداخت برنامه‌های فهرست جدید در گام فروش فعال می‌شوند.")
     now = datetime.utcnow()
     expire_time = now + timedelta(seconds=req.lock_duration_seconds)
 
@@ -48,10 +53,12 @@ def lock_seats_temporarily(req: SeatLockRequest, db: Session = Depends(get_db)):
     existing_locks = db.query(ChairInBarname).filter(
         ChairInBarname.run_turn_id == req.run_turn_id,
         ChairInBarname.id.in_(req.seat_ids),
-        ChairInBarname.status.in_(["sold", "reserved"])
+        ChairInBarname.status != "available"
     ).all()
 
     for item in existing_locks:
+        if item.status not in ("available", "reserved", "sold"):
+            raise HTTPException(409, detail="صندلی برای فروش عمومی آزاد نیست.")
         if item.status == "sold":
             raise HTTPException(status_code=400, detail=f"صندلی {item.id} قبلاً فروخته شده است.")
         if item.status == "reserved" and item.locked_until and item.locked_until > now:

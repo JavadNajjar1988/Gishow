@@ -1,7 +1,7 @@
 import React from 'react';
 import { Calendar, MapPin, Music, Theater, Film, Smile, Presentation, Sparkles, ChevronLeft } from 'lucide-react';
 import { EventItem } from '../types';
-import { formatPrice } from '../utils/formatters';
+import { formatPrice, toPersianDigits } from '../utils/formatters';
 
 interface HeroBannerProps {
   theme: 'light' | 'dark';
@@ -104,7 +104,7 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
                   onClick={() => onSelectEvent(featuredEvent)}
                   className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-rose-600 text-slate-950 font-extrabold text-sm hover:from-amber-400 hover:to-rose-500 transition-all shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40 cursor-pointer flex items-center gap-2"
                 >
-                  <span>خرید آنلاین بلیت و انتخاب صندلی</span>
+                  <span>جزئیات برنامه و مشاهده موجودی</span>
                   <ChevronLeft className="w-4 h-4" />
                 </button>
 
@@ -131,11 +131,11 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
                 
                 <div className="relative z-10 flex justify-between items-start">
                   <span className="text-[11px] text-amber-300 font-bold bg-slate-950/70 px-2.5 py-1 rounded-md border border-amber-500/30">
-                    اجرای زنده موسیقی
+                    اطلاعات برنامه
                   </span>
                   <div className="text-right">
-                    <span className="text-[10px] text-slate-300 block">ظرفیت سالن</span>
-                    <span className="text-xs font-bold text-white">۳۸۰ صندلی</span>
+                    <span className="text-[10px] text-slate-300 block">تعداد سانس</span>
+                    <span className="text-xs font-bold text-white">{toPersianDigits(featuredEvent.runTurns.length)} سانس</span>
                   </div>
                 </div>
 
@@ -144,13 +144,13 @@ export const HeroBanner: React.FC<HeroBannerProps> = ({
                   <div className="w-16 h-16 mx-auto rounded-full bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-300 shadow-inner">
                     <Music className="w-8 h-8" />
                   </div>
-                  <p className="text-xs text-amber-200 font-bold">پلان بصری سالن همایش‌های شهرما مشهد</p>
-                  <p className="text-[11px] text-slate-300">انتخاب دقیق ردیف و صندلی با آیکون‌های اختصاصی</p>
+                  <p className="text-xs text-amber-200 font-bold">{featuredEvent.salonName}</p>
+                  <p className="text-[11px] text-slate-300">نمایش پلان و موجودی سانس انتخاب‌شده</p>
                 </div>
 
                 <div className="relative z-10 flex items-center justify-between text-[11px] text-slate-200 border-t border-slate-700/60 pt-3">
-                  <span>سانس‌های چهارشنبه و پنج‌شنبه</span>
-                  <span className="text-emerald-400 font-bold">در حال فروش آنلاین</span>
+                  <span>سانس‌های ثبت‌شده برنامه</span>
+                  <span className="text-emerald-400 font-bold">مشاهده موجودی</span>
                 </div>
 
               </div>

@@ -1,8 +1,8 @@
 import React from 'react';
-import { Ticket, ShieldCheck, LayoutDashboard, Search, Sparkles, Sun, Moon, Store, Crown, User, LogIn } from 'lucide-react';
+import { Ticket, ShieldCheck, LayoutDashboard, Search, Sparkles, Sun, Moon, Store, Crown } from 'lucide-react';
+import {useAuth} from '../auth/AuthContext';
+import {hasPermission} from '../auth/api';
 import { ActiveAppMode } from '../types';
-import { PWAInstallButton } from './PWAInstallButton';
-import { useAuth } from '../auth/AuthContext';
 
 interface HeaderProps {
   theme: 'light' | 'dark';
@@ -14,7 +14,7 @@ interface HeaderProps {
   selectedCity: string;
   onCityChange: (city: string) => void;
   onTicketTrackClick: () => void;
-  onAccountClick?: () => void;
+  onAccountClick: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -25,10 +25,10 @@ export const Header: React.FC<HeaderProps> = ({
   searchQuery,
   onSearchChange,
   onTicketTrackClick,
-  onAccountClick,
+  onAccountClick
 }) => {
   const isDark = theme === 'dark';
-  const { user, isAuthenticated } = useAuth();
+  const {user} = useAuth();
 
   return (
     <header className={`sticky top-0 z-40 transition-colors duration-200 border-b ${
@@ -37,13 +37,13 @@ export const Header: React.FC<HeaderProps> = ({
         : 'bg-white/90 backdrop-blur-md border-slate-200/80 text-slate-900 shadow-xs'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20 gap-4">
+        <div className="flex flex-wrap items-center justify-between min-h-20 py-3 gap-3">
           
           {/* Zone 1: Single Brand Wordmark */}
           <div className="flex items-center gap-3">
             <button 
               onClick={() => onModeChange('portal')}
-              className="flex items-center gap-2.5 text-right group cursor-pointer focus:outline-none"
+              className="flex flex-wrap items-center gap-2.5 text-right group cursor-pointer focus:outline-none"
             >
               <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 to-rose-600 flex items-center justify-center shadow-md shadow-amber-500/20 group-hover:scale-105 transition-transform duration-200">
                 <Ticket className="w-5 h-5 text-white" />
@@ -85,7 +85,7 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Zone 3: Mode Switcher, Theme Toggle & Navigation Actions */}
-          <div className="flex items-center gap-2.5">
+          <div className="flex flex-wrap items-center gap-2.5">
             
             {/* Theme Toggle Button (Light / Dark) */}
             <button
@@ -116,6 +116,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <span className="hidden sm:inline">خرید بلیت</span>
               </button>
 
+              {hasPermission(user, 'events.read') && (
               <button
                 onClick={() => onModeChange('box-office')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
@@ -128,7 +129,9 @@ export const Header: React.FC<HeaderProps> = ({
                 <Store className="w-3.5 h-3.5" />
                 <span>گیشه مجازی</span>
               </button>
+              )}
 
+              {hasPermission(user, 'tickets.check') && (
               <button
                 onClick={() => onModeChange('checker')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
@@ -141,7 +144,9 @@ export const Header: React.FC<HeaderProps> = ({
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span>چکِر گیت</span>
               </button>
+              )}
 
+              {(hasPermission(user, 'events.read') || hasPermission(user, 'reports.read') || hasPermission(user, 'seats.manage') || hasPermission(user, 'events.manage')) && (
               <button
                 onClick={() => onModeChange('producer')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
@@ -154,7 +159,9 @@ export const Header: React.FC<HeaderProps> = ({
                 <Crown className="w-3.5 h-3.5" />
                 <span>پنل تهیه‌کننده</span>
               </button>
+              )}
 
+              {(['accounts.manage','roles.manage','salons.manage'].some(p=>hasPermission(user,p))) && (
               <button
                 onClick={() => onModeChange('admin')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-colors cursor-pointer ${
@@ -167,11 +174,10 @@ export const Header: React.FC<HeaderProps> = ({
                 <LayoutDashboard className="w-3.5 h-3.5" />
                 <span>مدیریت</span>
               </button>
+              )}
             </div>
 
-            {/* PWA Install Button */}
-            <PWAInstallButton variant="header" />
-
+            <button onClick={onAccountClick} className="text-xs px-3 py-2 rounded-xl border font-bold">{user ? 'حساب من' : 'ورود و ثبت‌نام'}</button>
             {/* Ticket Track Button */}
             <button
               onClick={onTicketTrackClick}
@@ -183,35 +189,6 @@ export const Header: React.FC<HeaderProps> = ({
             >
               پیگیری بلیت
             </button>
-
-            {/* Account / Session Button */}
-            {onAccountClick && (
-              <button
-                onClick={onAccountClick}
-                className={`text-xs px-3.5 py-2 rounded-xl border transition-all cursor-pointer font-bold flex items-center gap-1.5 ${
-                  isAuthenticated && user
-                    ? isDark
-                      ? 'bg-amber-500/10 border-amber-500/30 text-amber-400 hover:bg-amber-500/20'
-                      : 'bg-amber-50 border-amber-300 text-amber-900 hover:bg-amber-100'
-                    : isDark
-                      ? 'bg-slate-900/80 border-slate-800 text-slate-300 hover:text-white hover:border-slate-700'
-                      : 'bg-white border-slate-200 text-slate-700 hover:text-slate-900 shadow-2xs'
-                }`}
-                title={isAuthenticated && user ? `حساب کاربری: ${user.fullName} (${user.role})` : 'ورود / بازیابی حساب'}
-              >
-                {isAuthenticated && user ? (
-                  <>
-                    <User className="w-3.5 h-3.5 text-amber-500" />
-                    <span className="max-w-[100px] truncate">{user.fullName || user.mobile}</span>
-                  </>
-                ) : (
-                  <>
-                    <LogIn className="w-3.5 h-3.5" />
-                    <span>ورود / حساب</span>
-                  </>
-                )}
-              </button>
-            )}
           </div>
 
         </div>

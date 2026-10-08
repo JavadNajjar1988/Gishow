@@ -151,6 +151,7 @@ export const EventDetailsModal: React.FC<EventDetailsModalProps> = ({
                           ساعت {sans.time}
                         </span>
                       </div>
+                      <p className="text-xs">{sans.salonName || event.salonName}؛ {sans.salonAddress || event.address}</p>
                       <p className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                         {isSoldOut ? (
                           <span className="text-rose-500 font-black">

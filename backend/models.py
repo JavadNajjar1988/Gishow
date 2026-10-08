@@ -11,6 +11,8 @@ class Salon(Base):
     city = Column(String(100), nullable=False, default="مشهد")
     address = Column(String(500), nullable=True)
     capacity = Column(Integer, default=0)
+    plan_version = Column(Integer, nullable=False, default=0, server_default="0")
+    config_json = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     parts = relationship("PartOfSalon", back_populates="salon", cascade="all, delete-orphan")
@@ -27,6 +29,7 @@ class PartOfSalon(Base):
     rows = Column(Integer, default=5)
     seats_per_row = Column(Integer, default=10)
     default_price = Column(Float, default=300000)
+    config_json = Column(Text, nullable=True)
 
     salon = relationship("Salon", back_populates="parts")
     chairs = relationship("ChairInPart", back_populates="part", cascade="all, delete-orphan")
@@ -56,6 +59,7 @@ class Barname(Base):
     duration_minutes = Column(Integer, default=90)
     description = Column(Text, nullable=True)
     cast_json = Column(Text, nullable=True) # JSON list of cast members
+    config_json = Column(Text, nullable=True)
     min_price = Column(Float, default=200000)
     max_price = Column(Float, default=800000)
     banner_gradient = Column(String(100), default="from-amber-600 via-stone-900 to-slate-950")
@@ -72,6 +76,8 @@ class RunTurn(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     barname_id = Column(Integer, ForeignKey("tbl_barnames.id"), nullable=False)
+    salon_id = Column(Integer, ForeignKey("tbl_salons.id"), nullable=True)
+    config_json = Column(Text, nullable=True)
     date = Column(String(50), nullable=False) # e.g. "۱۴۰۵/۰۸/۱۸"
     time = Column(String(20), nullable=False) # e.g. "۱۸:۳۰"
     weekday = Column(String(50), nullable=False) # e.g. "چهارشنبه"
@@ -138,6 +144,7 @@ class UserList(Base):
     mobile = Column(String(20), unique=True, index=True, nullable=False)
     national_code = Column(String(20), nullable=True)
     password_hash = Column(String(255), nullable=True)
+    is_active = Column(Boolean, nullable=False, default=True, server_default="true")
     role = Column(String(50), default="customer") # 'admin', 'producer', 'checker', 'customer'
     created_at = Column(DateTime, default=datetime.utcnow)
 
@@ -151,3 +158,75 @@ class BankTerminal(Base):
     username = Column(String(50), nullable=True)
     password = Column(String(100), nullable=True)
     is_active = Column(Boolean, default=True)
+
+
+class Role(Base):
+    __tablename__ = "auth_roles"
+    id = Column(Integer, primary_key=True)
+    code = Column(String(50), unique=True, nullable=False)
+    name = Column(String(150), nullable=False)
+    scope = Column(String(10), nullable=False)  # global or event
+
+
+class Permission(Base):
+    __tablename__ = "auth_permissions"
+    code = Column(String(80), primary_key=True)
+    name = Column(String(150), nullable=False)
+    scope = Column(String(10), nullable=False)
+
+
+class RolePermission(Base):
+    __tablename__ = "auth_role_permissions"
+    role_id = Column(Integer, ForeignKey("auth_roles.id"), primary_key=True)
+    permission_code = Column(String(80), ForeignKey("auth_permissions.code"), primary_key=True)
+
+
+class UserRole(Base):
+    __tablename__ = "auth_user_roles"
+    user_id = Column(Integer, ForeignKey("tbl_user_lists.id"), primary_key=True)
+    role_id = Column(Integer, ForeignKey("auth_roles.id"), primary_key=True)
+
+
+class EventRole(Base):
+    __tablename__ = "auth_event_roles"
+    user_id = Column(Integer, ForeignKey("tbl_user_lists.id"), primary_key=True)
+    event_id = Column(Integer, ForeignKey("tbl_barnames.id"), primary_key=True)
+    role_id = Column(Integer, ForeignKey("auth_roles.id"), primary_key=True)
+
+
+class UserPermission(Base):
+    __tablename__ = "auth_user_permissions"
+    user_id = Column(Integer, ForeignKey("tbl_user_lists.id"), primary_key=True)
+    permission_code = Column(String(80), ForeignKey("auth_permissions.code"), primary_key=True)
+    allowed = Column(Boolean, nullable=False)
+
+
+class AuthSession(Base):
+    __tablename__ = "auth_sessions"
+    token_hash = Column(String(64), primary_key=True)
+    user_id = Column(Integer, ForeignKey("tbl_user_lists.id"), nullable=False, index=True)
+    expires_at = Column(DateTime, nullable=False)
+
+
+class RecoveryCode(Base):
+    __tablename__ = "auth_recovery_codes"
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("tbl_user_lists.id"), nullable=False, index=True)
+    code_hash = Column(String(64), unique=True, nullable=False)
+    used_at = Column(DateTime, nullable=True)
+
+
+class AuthThrottle(Base):
+    __tablename__ = "auth_throttles"
+    key = Column(String(64), primary_key=True)
+    attempts = Column(Integer, nullable=False)
+    expires_at = Column(DateTime, nullable=False)
+
+
+class SecurityAudit(Base):
+    __tablename__ = "auth_audit"
+    id = Column(Integer, primary_key=True)
+    actor_id = Column(Integer, ForeignKey("tbl_user_lists.id"), nullable=True)
+    target_id = Column(Integer, nullable=True)
+    action = Column(String(80), nullable=False)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)

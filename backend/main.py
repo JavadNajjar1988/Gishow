@@ -1,120 +1,41 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from .database import engine, Base, SessionLocal
-from .models import Salon, PartOfSalon, ChairInPart, Barname, RunTurn, ChairInBarname, MarkdownList, FactorList
-from .routers import events, seats, checkout, checker, admin
-from datetime import datetime
+from sqlalchemy import text
+from sqlalchemy.orm import Session
+import os
+from .database import get_db
+from .routers import events, seats, checkout, checker, admin, auth, access, catalog
 
-# Auto-create tables
-Base.metadata.create_all(bind=engine)
+app = FastAPI(title="سامانه فروش بلیت گیشو", version="2.0.0")
+origins = [value.strip() for value in os.getenv("CORS_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000,http://localhost:5173,http://127.0.0.1:5173").split(",") if value.strip()]
+if "*" in origins:
+    raise ValueError("Explicit CORS origins are required for account sessions")
+app.add_middleware(CORSMiddleware, allow_origins=origins,
+                   allow_credentials=True, allow_methods=["GET", "POST", "PATCH", "DELETE"],
+                   allow_headers=["Content-Type", "Authorization", "X-Gishow-Request"])
+for router in (events.router, seats.router, checkout.router, checker.router, admin.router, auth.router, access.router):
+    app.include_router(router, prefix="/api")
+app.include_router(catalog.router, prefix="/api")
 
-app = FastAPI(
-    title="سامانه جامع رزرواسیون و فروش آنلاین بلیت گیشو (Gishow API)",
-    description="وب‌سرویس‌های مدرن بک‌اند توسعه داده شده با Python و FastAPI معادل سیستم LinduTicket_Site",
-    version="2.0.0",
-    docs_url="/docs",
-    redoc_url="/redoc"
-)
-
-# Enable CORS for React frontend
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# Register Routers
-app.include_router(events.router, prefix="/api")
-app.include_router(seats.router, prefix="/api")
-app.include_router(checkout.router, prefix="/api")
-app.include_router(checker.router, prefix="/api")
-app.include_router(admin.router, prefix="/api")
-
-@app.get("/", tags=["وضعیت سرور"])
+@app.get("/")
 def root():
-    return {
-        "status": "online",
-        "service": "Gishow Ticket Reservation FastAPI Backend",
-        "version": "2.0.0",
-        "docs": "/docs",
-        "message": "سامانه فروش آنلاین بلیت گیشو با موفقیت در حال اجرا است."
-    }
+    return {"status": "online", "service": "Gishow", "version": "2.0.0"}
 
-# Seed default data on startup if database is fresh
-@app.on_event("startup")
-def seed_initial_data():
-    db = SessionLocal()
+@app.get("/api/health")
+def health(db: Session = Depends(get_db)):
     try:
-        if db.query(Salon).count() == 0:
-            # Seed Salon
-            shahr_ma = Salon(
-                name="سالن همایش‌های شهرما مشهد",
-                city="مشهد",
-                address="مشهد مقدس - میدان طالقانی - سالن شهرما",
-                capacity=380
-            )
-            db.add(shahr_ma)
-            db.commit()
-            db.refresh(shahr_ma)
+        db.execute(text("SELECT 1"))
+        version = db.execute(text("SELECT version_num FROM alembic_version")).scalar()
+        if version != "0003_catalog":
+            raise ValueError("Schema migration required")
+    except Exception:
+        raise HTTPException(status_code=503, detail="پایگاه داده آماده نیست؛ اتصال و تغییرات ساختار بررسی شود.")
+    return {"status": "ready", "schema_version": version}
 
-            # Seed Parts
-            vip_part = PartOfSalon(
-                salon_id=shahr_ma.id,
-                name="جایگاه ویژه (VIP)",
-                tier="vip",
-                rows=3,
-                seats_per_row=14,
-                default_price=850000
-            )
-            ground_part = PartOfSalon(
-                salon_id=shahr_ma.id,
-                name="همکف وسط",
-                tier="ground",
-                rows=8,
-                seats_per_row=18,
-                default_price=650000
-            )
-            db.add_all([vip_part, ground_part])
-            db.commit()
-
-            # Seed Event
-            concert = Barname(
-                salon_id=shahr_ma.id,
-                title="کنسرت بزرگ علیرضا قربانی",
-                sub_title="تور کنسرت‌های آواز پارسی و ارکستر سازهای زهی",
-                category="concert",
-                city="مشهد",
-                date_range="۱۸ الی ۲۲ آبان ۱۴۰۵",
-                duration_minutes=110,
-                description="کنسرت باشکوه علیرضا قربانی در سالن شهرما مشهد",
-                min_price=320000,
-                max_price=850000,
-                is_featured=True,
-                is_active=True
-            )
-            db.add(concert)
-            db.commit()
-            db.refresh(concert)
-
-            # Seed Sans
-            sans = RunTurn(
-                barname_id=concert.id,
-                date="۱۴۰۵/۰۸/۱۸",
-                time="۱۸:۳۰",
-                weekday="چهارشنبه"
-            )
-            db.add(sans)
-            db.commit()
-
-            # Seed Promo Codes
-            disc = MarkdownList(
-                code="GISHOW20",
-                discount_percent=20,
-                description="۲۰٪ تخفیف ویژه کاربران سامانه گیشو"
-            )
-            db.add(disc)
-            db.commit()
-    finally:
-        db.close()
+@app.middleware("http")
+async def private_responses(request, call_next):
+    response = await call_next(request)
+    if request.url.path.startswith(("/api/auth", "/api/admin", "/api/access", "/api/checker", "/api/catalog/run-turns")):
+        response.headers["Cache-Control"] = "no-store"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    return response

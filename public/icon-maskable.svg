@@ -18,19 +18,19 @@
   <!-- Inner 80% Safe Zone contains all graphics (Center: 256, 256, Radius: 204px) -->
   <g transform="translate(136, 146)">
     <!-- Scaled Ticket Body inside 240x220 safe zone -->
-    <path d="M 26,0 
-             L 214,0 
-             A 26,26 0 0,1 240,26 
-             L 240,90 
-             A 22,22 0 0,0 240,134 
-             L 240,194 
-             A 26,26 0 0,1 214,220 
-             L 26,220 
-             A 26,26 0 0,1 0,194 
-             L 0,134 
-             A 22,22 0 0,0 0,90 
-             L 0,26 
-             A 26,26 0 0,1 26,0 Z" 
+    <path d="M 26,0
+             L 214,0
+             A 26,26 0 0,1 240,26
+             L 240,90
+             A 22,22 0 0,0 240,134
+             L 240,194
+             A 26,26 0 0,1 214,220
+             L 26,220
+             A 26,26 0 0,1 0,194
+             L 0,134
+             A 22,22 0 0,0 0,90
+             L 0,26
+             A 26,26 0 0,1 26,0 Z"
           fill="url(#goldMask)" />
 
     <line x1="72" y1="16" x2="72" y2="204" stroke="#ffffff" stroke-opacity="0.45" stroke-width="3" stroke-dasharray="6 6" />
@@ -48,7 +48,7 @@
     <g transform="translate(94, 52)">
       <path d="M 16,32 Q 62,0 108,32" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-opacity="0.9" />
       <path d="M 28,47 Q 62,20 96,47" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-opacity="0.7" />
-      
+
       <!-- Center Star -->
       <path d="M 62,70 L 64,80 L 74,82 L 64,84 L 62,94 L 60,84 L 50,82 L 60,80 Z" fill="#ffffff" />
 

@@ -6,3 +6,12 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# Private temporary legacy database backup; never publish customer data.
+.local-audit/
+__pycache__/
+*.pyc
+
+.venv/
+.pytest_cache/
+backend/*.db

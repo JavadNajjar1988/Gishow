@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Salon, PartOfSalon } from '../types';
 import { toPersianDigits, formatPrice } from '../utils/formatters';
-import { salonApi } from '../services/apiServices';
+import { salonApi, moneyIRR, serverId } from '../services/apiServices';
+import {useDialogFocus} from '../hooks/useDialogFocus';
 import { 
   Building, 
   X, 
@@ -80,6 +81,8 @@ export const SalonPlanBuilderModal: React.FC<SalonPlanBuilderModalProps> = ({
   onSaveSalon,
 }) => {
   const isDark = theme === 'dark';
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useDialogFocus(dialogRef, onClose);
 
   // Basic Details
   const [salonName, setSalonName] = useState(initialSalon?.name || '');
@@ -228,83 +231,35 @@ export const SalonPlanBuilderModal: React.FC<SalonPlanBuilderModalProps> = ({
       return;
     }
 
-    const salonId = initialSalon?.id || `salon-${Date.now()}`;
-    const finalizedParts: PartOfSalon[] = parts.map((p, idx) => ({
-      ...p,
-      salonId,
-      id: p.id || `part-${salonId}-${idx}`,
-    }));
-
-    const newSalon: Salon = {
-      id: salonId,
-      name: salonName.trim(),
-      city: salonCity.trim(),
-      address: salonAddress.trim() || 'آدرس ثبت‌نشده',
-      capacity: totalCapacity, // strictly computed from valid parts
-      parts: finalizedParts,
-      layoutTemplate,
-      stagePosition,
-      aislesCount,
-      isActive,
-    };
-
+    if (hasValidationErrors || isSaving) return;
     setIsSaving(true);
     setSaveFeedback(null);
-
     try {
-      const numericId = Number(salonId);
-      if (initialSalon && !isNaN(numericId)) {
-        await salonApi.updateSalon(numericId, {
-          name: newSalon.name,
-          city: newSalon.city,
-          address: newSalon.address,
-          capacity: totalCapacity,
-          layoutTemplate,
-          stagePosition,
-          aislesCount,
-        });
-        setSaveFeedback({
-          type: 'success',
-          message: 'بروزرسانی مشخصات سالن و پلان در سرور با موفقیت ثبت شد.',
-        });
-      } else {
-        await salonApi.createSalon({
-          name: newSalon.name,
-          city: newSalon.city,
-          address: newSalon.address,
-          capacity: totalCapacity,
-          layoutTemplate,
-          stagePosition,
-          aislesCount,
-          parts: finalizedParts.map(p => ({
-            name: p.name,
-            tier: p.tier,
-            rows: p.rows,
-            seatsPerRow: p.seatsPerRow,
-            price: p.price * 10, // تبدیل دقیق تومان به ریال
-            shape: p.shape,
-            isAccessible: p.isAccessible,
-            doorAccess: p.doorAccess,
-          })),
-        });
-        setSaveFeedback({
-          type: 'success',
-          message: 'سالن و پلان صندلی‌ها با موفقیت در سرور ایجاد شد (وضعیت: ذخیره تأییدشده).',
-        });
-      }
+      const payload = {
+        name: salonName.trim(), city: salonCity.trim(), address: salonAddress.trim(),
+        layoutTemplate, stagePosition, aislesCount, isActive,
+        version: initialSalon?.version ?? 0,
+        parts: parts.map(p => ({
+          id: /^\d+$/.test(p.id) ? serverId(p.id) : undefined,
+          name:p.name.trim(), tier:p.tier, rows:p.rows, seatsPerRow:p.seatsPerRow,
+          price:moneyIRR(p.price), shape:p.shape, isAccessible:p.isAccessible, doorAccess:p.doorAccess,
+        })),
+      };
+      const saved = initialSalon
+        ? await salonApi.updateSalon(serverId(initialSalon.id), payload)
+        : await salonApi.createSalon(payload);
+      setSaveFeedback({type:'success',message:'سالن و پلان با شناسه‌های سرور ذخیره شدند.'});
       setIsSavedOnServer(true);
-      onSaveSalon(newSalon);
-      setTimeout(() => {
-        onClose();
-      }, 1000);
+      onSaveSalon(saved);
+      onClose();
     } catch (err: any) {
       // Honest response: inform user that backend route is pending implementation according to Phase 3 contract
       const isRoutePending = err.status === 404 || err.code === 'NOT_FOUND' || err.message?.includes('یافت نشد');
       setIsSavedOnServer(false);
       setSaveFeedback({
         type: 'warning',
-        message: isRoutePending 
-          ? 'اتصال ذخیره سالن و پلان در سرور منتظر پیاده‌سازی مسیر پیشنهادی فاز ۳ است (POST/PUT /api/admin/salons - ۴۰۴). وضعیت در سرور ثبت نشد و در حالت پیش‌نمایش باقی می‌ماند.'
+        message: isRoutePending
+          ? 'سرویس ذخیره سالن و پلان در دسترس نیست. تغییرات ذخیره نشدند و فرم برای تلاش دوباره حفظ شده است.'
           : `خطای سرور (${err.message || 'خطا در ذخیره‌سازی'}). سالن در سرور ذخیره نشد.`,
       });
     } finally {
@@ -360,7 +315,7 @@ export const SalonPlanBuilderModal: React.FC<SalonPlanBuilderModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+    <div ref={dialogRef} role="dialog" aria-modal="true" aria-label="ویرایش سالن و پلان" className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
       <div className={`max-w-6xl w-full border rounded-3xl p-5 sm:p-7 space-y-6 shadow-2xl my-4 flex flex-col max-h-[96vh] overflow-hidden ${
         isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
       }`}>
@@ -1026,7 +981,7 @@ export const SalonPlanBuilderModal: React.FC<SalonPlanBuilderModalProps> = ({
 
         {/* Action Buttons Footer with Honest Server Status Banner */}
         <div className="space-y-3 pt-3 border-t border-slate-200 dark:border-slate-800 shrink-0">
-          
+
           {/* Honest Feedback Banner */}
           {saveFeedback && (
             <div className={`p-3 rounded-2xl text-xs flex items-center gap-2.5 ${

@@ -1,0 +1,619 @@
+{
+  "backup_sha256": "8ff0abb89bf13f5df135ee0c8456be1548b874b481ce26b359af9399e7a3b0fe",
+  "aggregate_only": true,
+  "database_read_only": true,
+  "checks": {
+    "money_reconciliation": [
+      {
+        "factors_with_seats": 870,
+        "exact_subtotal_match": 864,
+        "seat_sum_ten_times_factor": 0,
+        "factor_ten_times_seat_sum": 0
+      }
+    ],
+    "phone_validation": [
+      {
+        "total": 923,
+        "valid_iranian_shape": 913
+      }
+    ],
+    "currency_settings": [
+      {
+        "display_currency": "ریال",
+        "sales_currency": "ریال",
+        "count": 4
+      }
+    ],
+    "factor_clock_match": [
+      {
+        "total": 918,
+        "text_matches_compact_number": 918
+      }
+    ],
+    "orphan_seat_states": [
+      {
+        "status": "SoldChair",
+        "paid": true,
+        "checked_in": false,
+        "count": 7
+      }
+    ],
+    "orphan_factor_states": [
+      {
+        "paid": true,
+        "deleted": true,
+        "count": 1
+      }
+    ],
+    "virtual_seat_states": [
+      {
+        "seat_paid": false,
+        "checked_in": false,
+        "has_factor": 0,
+        "count": 718
+      },
+      {
+        "seat_paid": false,
+        "checked_in": true,
+        "has_factor": 0,
+        "count": 2
+      },
+      {
+        "seat_paid": true,
+        "checked_in": false,
+        "has_factor": 1,
+        "factor_paid": true,
+        "count": 2
+      }
+    ],
+    "seat_statuses": [
+      {
+        "status": "DeleteChair",
+        "count": 175,
+        "paid": 0,
+        "checked_in": 0
+      },
+      {
+        "status": "InterimLockChair",
+        "count": 13,
+        "paid": 0,
+        "checked_in": 0
+      },
+      {
+        "status": "LockChair",
+        "count": 340,
+        "paid": 0,
+        "checked_in": 0
+      },
+      {
+        "status": "ReadyChair",
+        "count": 3326,
+        "paid": 0,
+        "checked_in": 0
+      },
+      {
+        "status": "SoldChair",
+        "count": 2746,
+        "paid": 2746,
+        "checked_in": 826
+      },
+      {
+        "status": "SoldVirtualChair",
+        "count": 722,
+        "paid": 2,
+        "checked_in": 2
+      }
+    ],
+    "base_seat_statuses": [
+      {
+        "status": "DeleteChair",
+        "count": 75
+      },
+      {
+        "status": "ReadyChair",
+        "count": 961
+      }
+    ],
+    "payment_states": [
+      {
+        "paid": true,
+        "deleted": false,
+        "gateway_code": 0,
+        "count": 886
+      },
+      {
+        "paid": true,
+        "deleted": true,
+        "gateway_code": 0,
+        "count": 32
+      }
+    ],
+    "amounts": [
+      {
+        "source": "seat",
+        "min_amount": 0,
+        "max_amount": 1000000,
+        "negative_count": 0
+      },
+      {
+        "source": "factor",
+        "min_amount": 0,
+        "max_amount": 7500000,
+        "negative_count": 0
+      },
+      {
+        "source": "discount",
+        "min_amount": 0,
+        "max_amount": 250000,
+        "negative_count": 0
+      }
+    ],
+    "password_formats": [
+      {
+        "length": 32,
+        "format": "hex32",
+        "count": 923
+      }
+    ],
+    "mobile_formats": [
+      {
+        "digits": 7,
+        "country_code": 98,
+        "count": 1
+      },
+      {
+        "digits": 9,
+        "country_code": 98,
+        "count": 3
+      },
+      {
+        "digits": 10,
+        "country_code": 98,
+        "count": 909
+      },
+      {
+        "digits": 11,
+        "country_code": 98,
+        "count": 5
+      },
+      {
+        "digits": 12,
+        "country_code": 98,
+        "count": 5
+      }
+    ],
+    "mobile_duplicates": [
+      {
+        "duplicate_groups": 1,
+        "extra_records": 1
+      }
+    ],
+    "seat_factor_integrity": [
+      {
+        "missing_factor": 7,
+        "paid_without_factor": 0,
+        "paid_seat_unpaid_factor": 0,
+        "checked_unpaid": 2
+      }
+    ],
+    "seat_sans_integrity": [
+      {
+        "missing_sans": 0,
+        "different_salon": 0,
+        "different_event": 0
+      }
+    ],
+    "factor_integrity": [
+      {
+        "missing_sans": 1,
+        "missing_salon": 0,
+        "missing_event": 0,
+        "missing_part": 0
+      }
+    ],
+    "discount_factor_integrity": [
+      {
+        "missing_factor": 0
+      }
+    ],
+    "seat_identity_duplicates": [
+      {
+        "duplicate_groups": 0,
+        "extra_records": 0
+      }
+    ],
+    "barcode_duplicates": [
+      {
+        "duplicate_groups": 0,
+        "extra_records": 0
+      }
+    ],
+    "role_membership_duplicates": [
+      {
+        "duplicate_groups": 0,
+        "extra_records": 0
+      }
+    ],
+    "event_access_duplicates": [
+      {
+        "duplicate_groups": 0,
+        "extra_records": 0
+      }
+    ],
+    "discount_types": [
+      {
+        "kind": "درصدی",
+        "value": 10,
+        "minimum_seats": 1,
+        "count": 1
+      },
+      {
+        "kind": "درصدی",
+        "value": 35,
+        "minimum_seats": 1,
+        "count": 1
+      },
+      {
+        "kind": "درصدی",
+        "value": 50,
+        "minimum_seats": 5,
+        "count": 1
+      },
+      {
+        "kind": "مبلغی",
+        "value": 15000,
+        "minimum_seats": 2,
+        "count": 1
+      },
+      {
+        "kind": "مبلغی",
+        "value": 50000,
+        "minimum_seats": 4,
+        "count": 1
+      },
+      {
+        "kind": "مبلغی",
+        "value": 1000000,
+        "minimum_seats": 4,
+        "count": 1
+      }
+    ],
+    "clock_number_formats": [
+      {
+        "source": "seat_reserve",
+        "digits": 12,
+        "count": 14
+      },
+      {
+        "source": "seat_reserve",
+        "digits": 1,
+        "count": 7308
+      },
+      {
+        "source": "factor_insert",
+        "digits": 12,
+        "count": 918
+      }
+    ],
+    "date_formats": [
+      {
+        "source": "Actresses.DateInsert",
+        "total": 0
+      },
+      {
+        "source": "BankTerminals.DateInsert",
+        "total": 5,
+        "empty_count": 0,
+        "min_length": 16,
+        "max_length": 16,
+        "slash_date_count": 5,
+        "solar_year_prefix_count": 5,
+        "clock_prefix_count": 0
+      },
+      {
+        "source": "Barnames.DateStartBuyTickets",
+        "total": 4,
+        "empty_count": 0,
+        "min_length": 10,
+        "max_length": 10,
+        "slash_date_count": 4,
+        "solar_year_prefix_count": 4,
+        "clock_prefix_count": 0
+      },
+      {
+        "source": "Barnames.DateStartInform",
+        "total": 4,
+        "empty_count": 0,
+        "min_length": 10,
+        "max_length": 10,
+        "slash_date_count": 4,
+        "solar_year_prefix_count": 4,
+        "clock_prefix_count": 0
+      },
+      {
+        "source": "Barnames.DateInsert",
+        "total": 4,
+        "empty_count": 0,
+        "min_length": 16,
+        "max_length": 16,
+        "slash_date_count": 4,
+        "solar_year_prefix_count": 4,
+        "clock_prefix_count": 0
+      },
+      {
+        "source": "ChairInBarnames.Date_Check",
+        "total": 7322,
+        "empty_count": 6494,
+        "min_length": 16,
+        "max_length": 16,
+        "slash_date_count": 828,
+        "solar_year_prefix_count": 828,
+        "clock_prefix_count": 0
+      },
+      {
+        "source": "FactorLists.RealTransaction_DateTime",
+        "total": 918,
+        "empty_count": 918,
+        "min_length": 0,
+        "max_length": 0,
+        "slash_date_count": 0,
+        "solar_year_prefix_count": 0,
+        "clock_prefix_count": 0
+      },
+      {
+        "source": "FactorLists.DateInsert",
+        "total": 918,
+        "empty_count": 0,
+        "min_length": 16,
+        "max_length": 16,
+        "slash_date_count": 918,
+        "solar_year_prefix_count": 918,
+        "clock_prefix_count": 0
+      },
+      {
+        "source": "FactorLists.DateDeleteFactor",
+        "total": 918,
+        "empty_count": 886,
+        "min_length": 16,
+        "max_length": 16,
+        "slash_date_count": 32,
+        "solar_year_prefix_count": 32,
+        "clock_prefix_count": 0
+      },
+      {
+        "source": "ImageBarnames.DateInsert",
+        "total": 6,
+        "empty_count": 0,
+        "min_length": 16,
+        "max_length": 16,
+        "slash_date_count": 6,
+        "solar_year_prefix_count": 6,
+        "clock_prefix_count": 0
+      },
+      {
+        "source": "ImagesMadareks.DateInsert",
+        "total": 1,
+        "empty_count": 1,
+        "slash_date_count": 0,
+        "solar_year_prefix_count": 0,
+        "clock_prefix_count": 0
+      },
+      {
+        "source": "MarkdownLists.DateInsert",
+        "total": 6,
+        "empty_count": 0,
+        "min_length": 16,
+        "max_length": 16,
+        "slash_date_count": 6,
+        "solar_year_prefix_count": 6,
+        "clock_prefix_count": 0
+      },
+      {
+        "source": "PartOfSalons.DateInsert",
+        "total": 27,
+        "empty_count": 4,
+        "min_length": 16,
+        "max_length": 16,
+        "slash_date_count": 23,
+        "solar_year_prefix_count": 23,
+        "clock_prefix_count": 0
+      },
+      {
+        "source": "RunTurns.DateRun",
+        "total": 17,
+        "empty_count": 0,
+        "min_length": 9,
+        "max_length": 22,
+        "slash_date_count": 0,
+        "solar_year_prefix_count": 0,
+        "clock_prefix_count": 0
+      },
+      {
+        "source": "RunTurns.TimeRun",
+        "total": 17,
+        "empty_count": 0,
+        "min_length": 5,
+        "max_length": 5,
+        "slash_date_count": 0,
+        "solar_year_prefix_count": 0,
+        "clock_prefix_count": 17
+      },
+      {
+        "source": "RunTurns.DateInsert",
+        "total": 17,
+        "empty_count": 17,
+        "slash_date_count": 0,
+        "solar_year_prefix_count": 0,
+        "clock_prefix_count": 0
+      },
+      {
+        "source": "Salons.DateInsert",
+        "total": 2,
+        "empty_count": 0,
+        "min_length": 16,
+        "max_length": 16,
+        "slash_date_count": 2,
+        "solar_year_prefix_count": 2,
+        "clock_prefix_count": 0
+      },
+      {
+        "source": "SlideShows.DateInsert",
+        "total": 0
+      },
+      {
+        "source": "UserLists.DateInsert",
+        "total": 923,
+        "empty_count": 0,
+        "min_length": 16,
+        "max_length": 16,
+        "slash_date_count": 923,
+        "solar_year_prefix_count": 923,
+        "clock_prefix_count": 0
+      }
+    ],
+    "foreign_key_integrity": [
+      {
+        "constraint_name": "FK_dbo.Actresses_dbo.Barnames_Barname_ID",
+        "missing_references": 0
+      },
+      {
+        "constraint_name": "FK_dbo.Barnames_dbo.Languages_LanguageID",
+        "missing_references": 0
+      },
+      {
+        "constraint_name": "FK_dbo.ChairInBarnames_dbo.Barnames_Barname_ID",
+        "missing_references": 0
+      },
+      {
+        "constraint_name": "FK_dbo.ChairInParts_dbo.PartOfSalons_PartOfSalon_ID",
+        "missing_references": 0
+      },
+      {
+        "constraint_name": "FK_dbo.FactorLists_dbo.BankTerminals_BankTerminal_ID",
+        "missing_references": 0
+      },
+      {
+        "constraint_name": "FK_dbo.FactorLists_dbo.UserLists_User_ID",
+        "missing_references": 0
+      },
+      {
+        "constraint_name": "FK_dbo.FactorMarkdowns_dbo.MarkdownLists_Markdown_ID",
+        "missing_references": 0
+      },
+      {
+        "constraint_name": "FK_dbo.ImageBarnames_dbo.Barnames_Barname_ID",
+        "missing_references": 0
+      },
+      {
+        "constraint_name": "FK_dbo.ImagesMadareks_dbo.Barnames_Barname_ID",
+        "missing_references": 0
+      },
+      {
+        "constraint_name": "FK_dbo.MarkdownLists_dbo.Barnames_Barname_ID",
+        "missing_references": 0
+      },
+      {
+        "constraint_name": "FK_dbo.PartOfSalons_dbo.Salons_Salon_ID",
+        "missing_references": 0
+      },
+      {
+        "constraint_name": "FK_dbo.RoleAccessLevels_dbo.RoleLists_Role_ID",
+        "missing_references": 0
+      },
+      {
+        "constraint_name": "FK_dbo.RunTurns_dbo.Barnames_Barname_ID",
+        "missing_references": 0
+      },
+      {
+        "constraint_name": "FK_dbo.RunTurns_dbo.Salons_Salon_ID",
+        "missing_references": 0
+      },
+      {
+        "constraint_name": "FK_dbo.UserAccessBarnames_dbo.Barnames_Barname_ID",
+        "missing_references": 0
+      },
+      {
+        "constraint_name": "FK_dbo.UserAccessBarnames_dbo.RoleLists_Role_ID",
+        "missing_references": 0
+      },
+      {
+        "constraint_name": "FK_dbo.UserAccessBarnames_dbo.UserLists_User_ID",
+        "missing_references": 0
+      },
+      {
+        "constraint_name": "FK_dbo.UserRoleAccessLevels_dbo.RoleAccessLevels_RoleAccessLevel_ID",
+        "missing_references": 0
+      },
+      {
+        "constraint_name": "FK_dbo.UserRoleAccessLevels_dbo.UserLists_User_ID",
+        "missing_references": 0
+      },
+      {
+        "constraint_name": "FK_dbo.UserRoles_dbo.RoleLists_Role_ID",
+        "missing_references": 0
+      },
+      {
+        "constraint_name": "FK_dbo.UserRoles_dbo.UserLists_User_ID",
+        "missing_references": 0
+      }
+    ],
+    "asset_reference_inventory": [
+      {
+        "source": "ImageBarnames.ImageName",
+        "references": 6,
+        "basename_found": 6,
+        "basename_not_found": 0,
+        "ambiguous_basename": 1,
+        "note": "Basename match is preliminary; full-path and file-content validation remain."
+      },
+      {
+        "source": "ImagesMadareks.ImageName",
+        "references": 1,
+        "basename_found": 1,
+        "basename_not_found": 0,
+        "ambiguous_basename": 0,
+        "note": "Basename match is preliminary; full-path and file-content validation remain."
+      },
+      {
+        "source": "Actresses.Image",
+        "references": 0,
+        "basename_found": 0,
+        "basename_not_found": 0,
+        "ambiguous_basename": 0,
+        "note": "Basename match is preliminary; full-path and file-content validation remain."
+      },
+      {
+        "source": "Salons.PlanImageName",
+        "references": 2,
+        "basename_found": 2,
+        "basename_not_found": 0,
+        "ambiguous_basename": 0,
+        "note": "Basename match is preliminary; full-path and file-content validation remain."
+      },
+      {
+        "source": "SlideShows.ImageName",
+        "references": 0,
+        "basename_found": 0,
+        "basename_not_found": 0,
+        "ambiguous_basename": 0,
+        "note": "Basename match is preliminary; full-path and file-content validation remain."
+      },
+      {
+        "source": "UserLists.Image",
+        "references": 923,
+        "basename_found": 923,
+        "basename_not_found": 0,
+        "ambiguous_basename": 923,
+        "note": "Basename match is preliminary; full-path and file-content validation remain."
+      },
+      {
+        "source": "ChairInBarnames.ImageBarCodeName",
+        "references": 2748,
+        "basename_found": 2748,
+        "basename_not_found": 0,
+        "ambiguous_basename": 0,
+        "note": "Basename match is preliminary; full-path and file-content validation remain."
+      }
+    ]
+  }
+}
