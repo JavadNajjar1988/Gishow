@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Float, Text
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Float, Text, LargeBinary
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from .database import Base
@@ -69,6 +69,18 @@ class Barname(Base):
 
     salon = relationship("Salon", back_populates="barnames")
     run_turns = relationship("RunTurn", back_populates="barname", cascade="all, delete-orphan")
+    images = relationship("EventImage", cascade="all, delete-orphan")
+
+
+class EventImage(Base):
+    __tablename__ = 'catalog_event_images'
+    id = Column(Integer, primary_key=True)
+    event_id = Column(Integer, ForeignKey('tbl_barnames.id'), nullable=False, unique=True)
+    content = Column(LargeBinary, nullable=False)
+    content_hash = Column(String(64), nullable=False)
+    width = Column(Integer, nullable=False)
+    height = Column(Integer, nullable=False)
+    alt = Column(String(500), nullable=False, default='')
 
 
 class RunTurn(Base):

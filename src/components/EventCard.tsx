@@ -61,6 +61,7 @@ export const EventCard: React.FC<EventCardProps> = ({ theme, event, onSelect }) 
         {/* Artistic Visual Art Slot with Ambient Lighting */}
         <div className={`relative aspect-[16/10] w-full bg-gradient-to-br ${event.bannerGradient} p-5 flex flex-col justify-between overflow-hidden text-white`}>
           
+          {event.posterUrl && <img src={event.posterUrl} alt={event.images?.[0]?.alt || event.title} loading="lazy" className="absolute inset-0 w-full h-full object-cover"/>}
           {/* Subtle Stage Spotlights */}
           <div className="absolute top-0 right-1/4 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none" />
           <div className="absolute bottom-0 left-10 w-24 h-24 bg-black/40 rounded-full blur-xl pointer-events-none" />
